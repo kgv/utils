@@ -1,0 +1,15 @@
+[
+    {
+        "type": "V",
+        "pos": 84.45,
+        "start": -16.59,
+        "end": 870.88,
+        "color": "#ff7f0e",
+        "width": 0.5,
+        "text": "Triolein",
+        "label_pos": 0.19,
+        "label_offset": 1.2,
+        "layer": "Задний",
+        "font_size": 14
+    }
+]

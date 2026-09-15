@@ -1,0 +1,41 @@
+[
+    {
+        "type": "V",
+        "pos": 173.42,
+        "start": -3.0,
+        "end": 110.0,
+        "color": "#000000",
+        "width": 0.0,
+        "text": "",
+        "label_pos": 0.93,
+        "label_offset": 0.0,
+        "layer": "Задний",
+        "font_size": 18
+    },
+    {
+        "type": "V",
+        "pos": 173.04,
+        "start": -3.0,
+        "end": 110.0,
+        "color": "#000000",
+        "width": 0.0,
+        "text": "",
+        "label_pos": 0.38,
+        "label_offset": 0.0,
+        "layer": "Задний",
+        "font_size": 18
+    },
+    {
+        "type": "V",
+        "pos": 173.01,
+        "start": -3.0,
+        "end": 110.0,
+        "color": "#000000",
+        "width": 0.0,
+        "text": "",
+        "label_pos": 0.26,
+        "label_offset": -0.008,
+        "layer": "Задний",
+        "font_size": 18
+    }
+]

@@ -1,0 +1,54 @@
+[
+    {
+        "type": "V",
+        "pos": 173.42,
+        "start": -3.0,
+        "end": 110.0,
+        "color": "#000000",
+        "width": 0.0,
+        "text": "",
+        "label_pos": 0.93,
+        "label_offset": 0.0,
+        "layer": "Задний",
+        "font_size": 18
+    },
+    {
+        "type": "V",
+        "pos": 173.39,
+        "start": -3.0,
+        "end": 110.0,
+        "color": "#000000",
+        "width": 0.0,
+        "text": "",
+        "label_pos": 0.57,
+        "label_offset": -0.008,
+        "layer": "Задний",
+        "font_size": 18
+    },
+    {
+        "type": "V",
+        "pos": 173.14,
+        "start": -3.0,
+        "end": 110.0,
+        "color": "#000000",
+        "width": 0.0,
+        "text": "",
+        "label_pos": 0.12,
+        "label_offset": 0.0,
+        "layer": "Задний",
+        "font_size": 18
+    },
+    {
+        "type": "V",
+        "pos": 172.97,
+        "start": -3.0,
+        "end": 110.0,
+        "color": "#000000",
+        "width": 0.0,
+        "text": "",
+        "label_pos": 0.79,
+        "label_offset": 0.0,
+        "layer": "Задний",
+        "font_size": 18
+    }
+]
