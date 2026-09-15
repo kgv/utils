@@ -1,0 +1,80 @@
+[
+    {
+        "type": "V",
+        "pos": 173.47,
+        "start": -3.0,
+        "end": 110.0,
+        "color": "#000000",
+        "width": 0.0,
+        "text": "",
+        "label_pos": 0.24,
+        "label_offset": 0.016,
+        "layer": "Задний",
+        "font_size": 18
+    },
+    {
+        "type": "V",
+        "pos": 173.44,
+        "start": -3.0,
+        "end": 110.0,
+        "color": "#000000",
+        "width": 0.0,
+        "text": "",
+        "label_pos": 0.93,
+        "label_offset": 0.0,
+        "layer": "Задний",
+        "font_size": 18
+    },
+    {
+        "type": "V",
+        "pos": 173.42,
+        "start": -3.0,
+        "end": 110.0,
+        "color": "#000000",
+        "width": 0.0,
+        "text": "",
+        "label_pos": 0.54,
+        "label_offset": -0.016,
+        "layer": "Задний",
+        "font_size": 18
+    },
+    {
+        "type": "V",
+        "pos": 173.05,
+        "start": -3.0,
+        "end": 110.0,
+        "color": "#000000",
+        "width": 0.0,
+        "text": "",
+        "label_pos": 0.33,
+        "label_offset": 0.016,
+        "layer": "Задний",
+        "font_size": 18
+    },
+    {
+        "type": "V",
+        "pos": 173.02,
+        "start": -3.0,
+        "end": 110.0,
+        "color": "#000000",
+        "width": 0.0,
+        "text": "",
+        "label_pos": 0.37,
+        "label_offset": 0.0,
+        "layer": "Задний",
+        "font_size": 18
+    },
+    {
+        "type": "V",
+        "pos": 173.0,
+        "start": -3.0,
+        "end": 110.0,
+        "color": "#000000",
+        "width": 0.0,
+        "text": "",
+        "label_pos": 0.21,
+        "label_offset": -0.008,
+        "layer": "Задний",
+        "font_size": 18
+    }
+]

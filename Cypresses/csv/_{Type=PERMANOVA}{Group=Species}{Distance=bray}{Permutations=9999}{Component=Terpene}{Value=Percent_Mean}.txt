@@ -1,0 +1,27 @@
+=== PERMANOVA ===
+group: Species 
+method: bray 
+permutations: 9999 
+
+Permutation test for adonis under reduced model
+Permutation: free
+Number of permutations: 9999
+
+adonis2(formula = perm_formula, data = mydata, permutations = PERMUTATIONS)
+         Df SumOfSqs      R2     F Pr(>F)    
+Model    13   9.5134 0.82068 9.153  1e-04 ***
+Residual 26   2.0787 0.17932                 
+Total    39  11.5922 1.00000                 
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+=== BETADISPER (Homogeneity of dispersion) ===
+
+Permutation test for homogeneity of multivariate dispersions
+Permutation: free
+Number of permutations: 9999
+
+Response: Distances
+          Df  Sum Sq  Mean Sq      F N.Perm Pr(>F)
+Groups    13 0.48713 0.037472 1.4385   9999 0.2208
+Residuals 26 0.67727 0.026049                     

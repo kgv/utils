@@ -1,0 +1,93 @@
+[
+    {
+        "type": "V",
+        "pos": 320.098406866193,
+        "start": -3.22,
+        "end": 169.29,
+        "color": "#000000",
+        "width": 0.1,
+        "text": "Tricaproin\n320.1",
+        "label_pos": 0.115,
+        "label_offset": 0.0,
+        "layer": "Задний",
+        "font_size": 12
+    },
+    {
+        "type": "V",
+        "pos": 689.879899792373,
+        "start": -3.22,
+        "end": 169.29,
+        "color": "#000000",
+        "width": 0.1,
+        "text": "Tricaprylin\n689.88",
+        "label_pos": 0.42,
+        "label_offset": 0.0,
+        "layer": "Задний",
+        "font_size": 12
+    },
+    {
+        "type": "V",
+        "pos": 1649.15845878422,
+        "start": -3.22,
+        "end": 169.29,
+        "color": "#000000",
+        "width": 0.1,
+        "text": "Tricaprin\n1649.16",
+        "label_pos": 0.415,
+        "label_offset": 0.0,
+        "layer": "Задний",
+        "font_size": 12
+    },
+    {
+        "type": "V",
+        "pos": 3013.48500184715,
+        "start": -3.22,
+        "end": 169.29,
+        "color": "#000000",
+        "width": 0.1,
+        "text": "Trilaurin\n3013.49",
+        "label_pos": 0.515,
+        "label_offset": 0.0,
+        "layer": "Задний",
+        "font_size": 12
+    },
+    {
+        "type": "V",
+        "pos": 4288.92865394801,
+        "start": -3.22,
+        "end": 169.29,
+        "color": "#000000",
+        "width": 0.1,
+        "text": "Trimyristin\n4288.93",
+        "label_pos": 0.64,
+        "label_offset": 0.0,
+        "layer": "Задний",
+        "font_size": 12
+    },
+    {
+        "type": "V",
+        "pos": 5058.19149198383,
+        "start": -3.22,
+        "end": 169.29,
+        "color": "#000000",
+        "width": 0.1,
+        "text": "Triolein\n5058.19",
+        "label_pos": 0.975,
+        "label_offset": 0.0,
+        "layer": "Задний",
+        "font_size": 12
+    },
+    {
+        "type": "V",
+        "pos": 6315.71856658906,
+        "start": -3.22,
+        "end": 169.29,
+        "color": "#000000",
+        "width": 0.1,
+        "text": "Tristearin\n6315.72",
+        "label_pos": 0.23,
+        "label_offset": 0.0,
+        "layer": "Задний",
+        "font_size": 12
+    }
+]

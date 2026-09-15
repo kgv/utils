@@ -1,0 +1,76 @@
+=== IndVal ===
+group: Ni, Week 
+distance: bray 
+
+ Multilevel pattern analysis
+ ---------------------------
+
+ Association function: r.g
+ Significance level (alpha): 0.05
+
+ Total number of species: 18
+ Selected number of species: 18 
+ Number of species associated to 1 group: 0 
+ Number of species associated to 2 groups: 6 
+ Number of species associated to 3 groups: 1 
+ Number of species associated to 4 groups: 3 
+ Number of species associated to 5 groups: 2 
+ Number of species associated to 6 groups: 3 
+ Number of species associated to 7 groups: 1 
+ Number of species associated to 8 groups: 2 
+ Number of species associated to 9 groups: 0 
+ Number of species associated to 10 groups: 0 
+ Number of species associated to 11 groups: 0 
+
+ List of species associated to each combination: 
+
+ Group 750.1+1000.1  #sps.  6 
+               stat p.value    
+11-Me-12-18:1 0.733   0.001 ***
+15-24:1       0.716   0.001 ***
+9-16:1        0.697   0.001 ***
+20:0          0.640   0.001 ***
+26:0          0.630   0.001 ***
+11-18:1       0.579   0.001 ***
+
+ Group 750.1+1000.1+1000.5  #sps.  1 
+            stat p.value   
+12,15-18:2 0.557   0.002 **
+
+ Group 0.1+50.1+750.1+1000.1  #sps.  1 
+      stat p.value    
+22:0 0.665   0.001 ***
+
+ Group 0.1+750.1+1000.1+0.5  #sps.  1 
+      stat p.value    
+18:0 0.685   0.001 ***
+
+ Group 50.1+250.1+750.1+1000.1  #sps.  1 
+         stat p.value    
+di-16:0 0.615   0.001 ***
+
+ Group 250.1+500.1+750.1+1000.1+500.5  #sps.  1 
+           stat p.value    
+9,12-18:2 0.688   0.001 ***
+
+ Group 750.1+1000.1+500.5+750.5+1000.5  #sps.  1 
+        stat p.value    
+9-18:1 0.797   0.001 ***
+
+ Group 0.1+50.1+250.1+500.1+750.1+1000.1  #sps.  3 
+      stat p.value    
+24:0 0.788   0.001 ***
+16:0 0.720   0.001 ***
+23:0 0.525   0.003 ** 
+
+ Group 0.1+50.1+250.1+500.1+750.1+1000.1+0.5  #sps.  1 
+          stat p.value    
+7,10-16:2 0.67   0.001 ***
+
+ Group 0.1+50.1+250.1+500.1+750.1+1000.1+0.5+50.5  #sps.  2 
+              stat p.value    
+9,12,15-18:3 0.759   0.001 ***
+14:0         0.514   0.003 ** 
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1 
+NULL
