@@ -321,28 +321,32 @@ class AppController:
         self.request_refresh(force=True)
 
     def on_auto_label_pos(self, plot_idx: int, helper_idx: int):
-        h = self.data_manager.plots[plot_idx].helpers[helper_idx]
-        max_val = float('-inf')
+        p = self.data_manager.plots[plot_idx]
+        h = p.helpers[helper_idx]
         
-        for p in self.data_manager.plots:
-            if not p.visible or len(p.t) == 0: continue
-            y_data = self.plotter.plot_lines[p.id].get_ydata()
+        if len(p.t) == 0: 
+            return
             
-            if h.line_type == 'V':
-                idx_closest = np.argmin(np.abs(p.t - h.pos))
-                max_val = max(max_val, y_data[idx_closest])
-            else:
-                idx_closest = np.argmin(np.abs(y_data - h.pos))
-                max_val = max(max_val, p.t[idx_closest])
-                
-        if max_val != float('-inf'):
-            lim = self.plotter.ax.get_ylim() if h.line_type == 'V' else self.plotter.ax.get_xlim()
-            padding = abs(lim[1] - lim[0]) * 0.02
-            h.label_pos = round(max_val + padding, 2)
+        y_data = self.plotter.plot_lines[p.id].get_ydata()
+        
+        if h.line_type == 'V':
+            # Ищем ближайшую точку по оси X (времени)
+            idx_closest = np.argmin(np.abs(p.t - h.pos))
+            val = y_data[idx_closest]
+            lim = self.plotter.ax.get_ylim()
+        else:
+            # Ищем ближайшую точку по оси Y (интенсивности)
+            idx_closest = np.argmin(np.abs(y_data - h.pos))
+            val = p.t[idx_closest]
+            lim = self.plotter.ax.get_xlim()
             
-            dx, dy = self._get_steps()
-            self.control_panel.tab_helpers.update_list(self.data_manager.plots, dx, dy)
-            self.request_refresh(force=True)
+        # Добавляем небольшой отступ (2% от видимого диапазона оси)
+        padding = abs(lim[1] - lim[0]) * 0.02
+        h.label_pos = round(val + padding, 2)
+        
+        dx, dy = self._get_steps()
+        self.control_panel.tab_helpers.update_list(self.data_manager.plots, dx, dy)
+        self.request_refresh(force=True)
 
     # --- Утилиты ---
     def show_color_picker(self, idx: int, is_helper: bool, helper_idx: int = -1):
