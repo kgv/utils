@@ -11,7 +11,6 @@ class DataManager:
     
     def __init__(self) -> None:
         self.plots: List[PlotItem] = []
-        self.helpers: List[HelperLine] = []
         self.config: StyleConfig = StyleConfig()
         
         # Границы данных для осей
@@ -50,9 +49,7 @@ class DataManager:
             return None, None
 
     def add_plot(self, filepath: str, color: str, line_width: float) -> Optional[PlotItem]:
-        """
-        Создает и добавляет новый график в реестр.
-        """
+        """Создает и добавляет новый график в реестр."""
         t_raw, y = self.load_data_from_file(filepath)
         if t_raw is None or y is None:
             return None
@@ -64,7 +61,8 @@ class DataManager:
             y_orig=y,
             color=color,
             label=label,
-            line_width=line_width
+            line_width=line_width,
+            filepath=filepath
         )
         
         self.plots.append(plot_item)
@@ -85,22 +83,25 @@ class DataManager:
         if 0 <= index < len(self.plots) and 0 <= new_index < len(self.plots):
             self.plots[index], self.plots[new_index] = self.plots[new_index], self.plots[index]
 
-    def add_helper_line(self, line_type: str, pos: float, start: float, end: float) -> HelperLine:
-        """Добавляет вспомогательную линию."""
-        helper = HelperLine(
-            line_type=line_type,
-            pos=pos,
-            start=start,
-            end=end,
-            label_pos=end
-        )
-        self.helpers.append(helper)
-        return helper
+    def add_helper_line(self, plot_idx: int, line_type: str, pos: float, start: float, end: float) -> Optional[HelperLine]:
+        """Добавляет вспомогательную линию к конкретному графику."""
+        if 0 <= plot_idx < len(self.plots):
+            helper = HelperLine(
+                line_type=line_type,
+                pos=pos,
+                start=start,
+                end=end,
+                label_pos=end
+            )
+            self.plots[plot_idx].helpers.append(helper)
+            return helper
+        return None
 
-    def remove_helper_line(self, index: int) -> None:
-        """Удаляет вспомогательную линию по индексу."""
-        if 0 <= index < len(self.helpers):
-            self.helpers.pop(index)
+    def remove_helper_line(self, plot_idx: int, helper_idx: int) -> None:
+        """Удаляет вспомогательную линию по индексам."""
+        if 0 <= plot_idx < len(self.plots):
+            if 0 <= helper_idx < len(self.plots[plot_idx].helpers):
+                self.plots[plot_idx].helpers.pop(helper_idx)
 
     def recalculate_time_data(self) -> None:
         """
@@ -134,6 +135,5 @@ class DataManager:
     def clear_all(self) -> None:
         """Очищает все данные."""
         self.plots.clear()
-        self.helpers.clear()
         self.all_data_bounds = [float('inf'), float('-inf')]
         self.global_y_max = 0.0

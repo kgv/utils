@@ -105,63 +105,47 @@ class ChromatogramPlotter:
                 else:
                     new_y_min, new_y_max = (0, 105) if y_mode == "Нормированный" else (0, 1)
             else:
-                # Если графиков нет, ориентируемся на вспомогательные линии
-                all_y_coords = []
-                for h in data_manager.helpers:
-                    if h.line_type == 'H':
-                        all_y_coords.append(h.pos)
-                    else:
-                        all_y_coords.extend([h.start, h.end])
-                
-                if all_y_coords:
-                    min_y, max_y = min(all_y_coords), max(all_y_coords)
-                    padding = (max_y - min_y) * 0.1 if (max_y - min_y) > 0 else 1.0
-                    new_y_min, new_y_max = min_y - padding, max_y + padding
-                else:
-                    new_y_min, new_y_max = (0, 105) if y_mode == "Нормированный" else (0, 1)
+                new_y_min, new_y_max = (0, 105) if y_mode == "Нормированный" else (0, 1)
             
             self.ax.set_ylim(new_y_min, new_y_max)
         else:
             self.ax.set_ylim(y_min, y_max)
 
         # 5. Отрисовка вспомогательных линий
-        self._draw_helper_lines(data_manager.helpers)
+        self._draw_helper_lines(data_manager.plots)
 
         # 6. Применение глобальных стилей (шрифты, сетка, тики)
         self._apply_style(config, y_mode)
         
         return new_y_min, new_y_max
 
-    def _draw_helper_lines(self, helpers: List[HelperLine]) -> None:
+    def _draw_helper_lines(self, plots: List[PlotItem]) -> None:
         """Отрисовывает вспомогательные линии и текст."""
         for artist in self.helper_artists:
             artist.remove()
         self.helper_artists.clear()
 
-        for h in helpers:
-            z = 1 if h.layer == 'Задний' else 50
-            txt = h.text if h.text.strip() else str(h.pos)
-            
-            if h.line_type == 'V':
-                line, = self.ax.plot([h.pos, h.pos], [h.start, h.end], color=h.color, lw=h.width, zorder=z)
-                tx = h.pos + h.label_offset
-                ty = h.label_pos
-            else:
-                line, = self.ax.plot([h.start, h.end], [h.pos, h.pos], color=h.color, lw=h.width, zorder=z)
-                ty = h.pos + h.label_offset
-                tx = h.label_pos
+        for p in plots:
+            if not p.visible: continue  # Скрываем линии, если скрыт сам график
+            for h in p.helpers:
+                z = 1 if h.layer == 'Задний' else 50
+                txt = h.text if h.text.strip() else str(h.pos)
                 
-            # text_artist = self.ax.text(
-            #     tx, ty, txt, color=h.color, fontsize=h.font_size,
-            #     va='center', ha='center', fontweight='bold', zorder=z+1,
-            #     rotation=h.label_rotation, rotation_mode='anchor'
-            # )
-            text_artist = self.ax.text(
-                tx, ty, txt, color=h.color, fontsize=h.font_size,
-                va='bottom', ha='center', fontweight='bold', zorder=z+1,
-                rotation=h.label_rotation,
-            )
-            self.helper_artists.extend([line, text_artist])
+                if h.line_type == 'V':
+                    line, = self.ax.plot([h.pos, h.pos], [h.start, h.end], color=h.color, lw=h.width, zorder=z)
+                    tx = h.pos + h.label_offset
+                    ty = h.label_pos
+                else:
+                    line, = self.ax.plot([h.start, h.end], [h.pos, h.pos], color=h.color, lw=h.width, zorder=z)
+                    ty = h.pos + h.label_offset
+                    tx = h.label_pos
+                    
+                text_artist = self.ax.text(
+                    tx, ty, txt, color=h.color, fontsize=h.font_size,
+                    va='bottom', ha='center', fontweight='bold', zorder=z+1,
+                    rotation=h.label_rotation,
+                )
+                self.helper_artists.extend([line, text_artist])
 
     def _apply_style(self, config: StyleConfig, y_mode: str) -> None:
         """Применяет настройки оформления к осям, сетке и легенде."""

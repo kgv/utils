@@ -71,13 +71,15 @@ class AppController:
             
         self._sync_x_bounds()
         self.control_panel.tab_files.update_list(self.data_manager.plots)
+        dx, dy = self._get_steps()
+        self.control_panel.tab_helpers.update_list(self.data_manager.plots, dx, dy)
         self.request_refresh(force=True)
 
     def on_clear_all(self):
         self.data_manager.clear_all()
         self.plotter.clear()
         self.control_panel.tab_files.update_list(self.data_manager.plots)
-        self.control_panel.tab_helpers.update_list(self.data_manager.helpers, 0.1, 0.1)
+        self.control_panel.tab_helpers.update_list(self.data_manager.plots, 0.1, 0.1)
         self._sync_x_bounds()
         self.request_refresh(force=True)
 
@@ -92,13 +94,87 @@ class AppController:
     def on_move_plot(self, idx: int, direction: int):
         self.data_manager.move_plot(idx, direction)
         self.control_panel.tab_files.update_list(self.data_manager.plots)
+        dx, dy = self._get_steps()
+        self.control_panel.tab_helpers.update_list(self.data_manager.plots, dx, dy)
         self.request_refresh(force=True)
 
     def on_remove_plot(self, idx: int):
         self.data_manager.remove_plot(idx)
         self._sync_x_bounds()
         self.control_panel.tab_files.update_list(self.data_manager.plots)
+        dx, dy = self._get_steps()
+        self.control_panel.tab_helpers.update_list(self.data_manager.plots, dx, dy)
         self.request_refresh(force=True)
+
+    def on_export_file_settings(self):
+        path = filedialog.asksaveasfilename(defaultextension=".json", filetypes=[("JSON", "*.json")])
+        if not path: return
+        
+        export_data = []
+        for p in self.data_manager.plots:
+            plot_dict = {
+                'filepath': p.filepath,
+                'color': p.color,
+                'label': p.label,
+                'linestyle': p.linestyle,
+                'line_width': p.line_width,
+                'show_in_legend': p.show_in_legend,
+                'x_offset': p.x_offset,
+                'y_offset': p.y_offset,
+                'visible': p.visible,
+                'helpers': [h.__dict__ for h in p.helpers]
+            }
+            export_data.append(plot_dict)
+            
+        with open(path, 'w', encoding='utf-8') as f:
+            json.dump(export_data, f, indent=4, ensure_ascii=False)
+
+    def on_import_file_settings(self):
+        path = filedialog.askopenfilename(filetypes=[("JSON", "*.json")])
+        if not path: return
+        
+        try:
+            with open(path, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+                
+            for p_dict in data:
+                filepath = p_dict.get('filepath')
+                if not filepath or not os.path.exists(filepath):
+                    print(f"Файл не найден: {filepath}")
+                    continue
+                    
+                plot_item = self.data_manager.add_plot(filepath, p_dict.get('color', '#000000'), p_dict.get('line_width', 1.5))
+                if not plot_item: continue
+                
+                plot_item.label = p_dict.get('label', plot_item.label)
+                plot_item.linestyle = p_dict.get('linestyle', '-')
+                plot_item.show_in_legend = p_dict.get('show_in_legend', True)
+                plot_item.x_offset = p_dict.get('x_offset', 0.0)
+                plot_item.y_offset = p_dict.get('y_offset', 0.0)
+                plot_item.visible = p_dict.get('visible', True)
+                
+                for h_dict in p_dict.get('helpers', []):
+                    h = HelperLine(
+                        line_type=h_dict['line_type'], 
+                        pos=h_dict['pos'], 
+                        start=h_dict['start'], 
+                        end=h_dict['end'], 
+                        label_pos=h_dict['label_pos']
+                    )
+                    for k, v in h_dict.items():
+                        if hasattr(h, k) and k != 'id':
+                            setattr(h, k, v)
+                    plot_item.helpers.append(h)
+                    
+            self.data_manager.recalculate_time_data()
+            self._sync_x_bounds()
+            self.control_panel.tab_files.update_list(self.data_manager.plots)
+            dx, dy = self._get_steps()
+            self.control_panel.tab_helpers.update_list(self.data_manager.plots, dx, dy)
+            self.request_refresh(force=True)
+            
+        except Exception as e:
+            print(f"Ошибка импорта настроек файлов: {e}")
 
     # --- Обработчики масштаба ---
     def _sync_x_bounds(self):
@@ -211,36 +287,41 @@ class AppController:
         xlim, ylim = self.plotter.ax.get_xlim(), self.plotter.ax.get_ylim()
         return abs(xlim[1] - xlim[0]) / 100.0 or 0.1, abs(ylim[1] - ylim[0]) / 100.0 or 0.1
 
-    def on_add_helper(self, line_type: str):
+    def on_add_helper(self):
+        plot_str = self.control_panel.tab_helpers.target_plot_var.get()
+        if not plot_str: return
+        plot_idx = int(plot_str.split(':')[0])
+        line_type = self.control_panel.tab_helpers.h_type.get()
+        
         xlim, ylim = self.plotter.ax.get_xlim(), self.plotter.ax.get_ylim()
         is_v = line_type == 'V'
         pos = round(np.mean(xlim if is_v else ylim), 2)
         start = round(ylim[0] if is_v else xlim[0], 2)
         end = round(ylim[1] if is_v else xlim[1], 2)
         
-        self.data_manager.add_helper_line(line_type, pos, start, end)
+        self.data_manager.add_helper_line(plot_idx, line_type, pos, start, end)
         dx, dy = self._get_steps()
-        self.control_panel.tab_helpers.update_list(self.data_manager.helpers, dx, dy)
+        self.control_panel.tab_helpers.update_list(self.data_manager.plots, dx, dy)
         self.request_refresh(force=True)
 
-    def update_helper(self, idx: int, key: str, val: any):
+    def update_helper(self, plot_idx: int, helper_idx: int, key: str, val: any):
         try:
             if key in ['pos', 'start', 'end', 'label_offset', 'label_rotation', 'label_pos', 'width']:
                 val = float(str(val).replace(',', '.'))
             elif key == 'font_size':
                 val = int(float(str(val).replace(',', '.')))
-            setattr(self.data_manager.helpers[idx], key, val)
+            setattr(self.data_manager.plots[plot_idx].helpers[helper_idx], key, val)
             self.request_refresh()
         except ValueError: pass
 
-    def on_remove_helper(self, idx: int):
-        self.data_manager.remove_helper_line(idx)
+    def on_remove_helper(self, plot_idx: int, helper_idx: int):
+        self.data_manager.remove_helper_line(plot_idx, helper_idx)
         dx, dy = self._get_steps()
-        self.control_panel.tab_helpers.update_list(self.data_manager.helpers, dx, dy)
+        self.control_panel.tab_helpers.update_list(self.data_manager.plots, dx, dy)
         self.request_refresh(force=True)
 
-    def on_auto_label_pos(self, idx: int):
-        h = self.data_manager.helpers[idx]
+    def on_auto_label_pos(self, plot_idx: int, helper_idx: int):
+        h = self.data_manager.plots[plot_idx].helpers[helper_idx]
         max_val = float('-inf')
         
         for p in self.data_manager.plots:
@@ -260,18 +341,22 @@ class AppController:
             h.label_pos = round(max_val + padding, 2)
             
             dx, dy = self._get_steps()
-            self.control_panel.tab_helpers.update_list(self.data_manager.helpers, dx, dy)
+            self.control_panel.tab_helpers.update_list(self.data_manager.plots, dx, dy)
             self.request_refresh(force=True)
 
     # --- Утилиты ---
-    def show_color_picker(self, idx: int, is_helper: bool):
-        current = self.data_manager.helpers[idx].color if is_helper else self.data_manager.plots[idx].color
+    def show_color_picker(self, idx: int, is_helper: bool, helper_idx: int = -1):
+        if is_helper:
+            current = self.data_manager.plots[idx].helpers[helper_idx].color
+        else:
+            current = self.data_manager.plots[idx].color
+            
         new_c = colorchooser.askcolor(initialcolor=current)[1]
         if new_c:
             if is_helper:
-                self.data_manager.helpers[idx].color = new_c
+                self.data_manager.plots[idx].helpers[helper_idx].color = new_c
                 dx, dy = self._get_steps()
-                self.control_panel.tab_helpers.update_list(self.data_manager.helpers, dx, dy)
+                self.control_panel.tab_helpers.update_list(self.data_manager.plots, dx, dy)
             else:
                 self.data_manager.plots[idx].color = new_c
                 self.control_panel.tab_files.update_list(self.data_manager.plots)
@@ -302,27 +387,6 @@ class AppController:
                 self._sync_x_bounds()
                 self.request_refresh(force=True)
             except Exception as e: print(f"Error importing style: {e}")
-
-    def on_export_helpers(self):
-        path = filedialog.asksaveasfilename(defaultextension=".json", filetypes=[("JSON", "*.json")])
-        if path:
-            data = [h.__dict__ for h in self.data_manager.helpers]
-            with open(path, 'w', encoding='utf-8') as f: json.dump(data, f, indent=4, ensure_ascii=False)
-
-    def on_import_helpers(self):
-        path = filedialog.askopenfilename(filetypes=[("JSON", "*.json")])
-        if path:
-            try:
-                with open(path, 'r', encoding='utf-8') as f: data = json.load(f)
-                self.data_manager.helpers.clear()
-                for h_dict in data:
-                    h = HelperLine(line_type=h_dict['line_type'], pos=h_dict['pos'], start=h_dict['start'], end=h_dict['end'], label_pos=h_dict['label_pos'])
-                    for k, v in h_dict.items(): setattr(h, k, v)
-                    self.data_manager.helpers.append(h)
-                dx, dy = self._get_steps()
-                self.control_panel.tab_helpers.update_list(self.data_manager.helpers, dx, dy)
-                self.request_refresh(force=True)
-            except Exception as e: print(f"Error importing helpers: {e}")
 
     def on_save_plot(self):
         path = filedialog.asksaveasfilename(defaultextension=".png", filetypes=[("PNG", "*.png"), ("SVG", "*.svg")])

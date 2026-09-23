@@ -17,6 +17,8 @@ class TabFiles(ttk.Frame):
         
         ttk.Button(f_btns, text="➕ Добавить файлы", command=self.controller.on_add_files).pack(side="left", padx=5)
         ttk.Button(f_btns, text="🗑️ Очистить всё", command=self.controller.on_clear_all).pack(side="left", padx=5)
+        ttk.Button(f_btns, text="💾 Экспорт настроек", command=self.controller.on_export_file_settings).pack(side="left", padx=5)
+        ttk.Button(f_btns, text="📂 Импорт настроек", command=self.controller.on_import_file_settings).pack(side="left", padx=5)
         
         h_header = ttk.Frame(self, padding=(15, 0))
         h_header.pack(fill="x")

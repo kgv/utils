@@ -79,6 +79,7 @@ class PlotItem:
     y_orig: np.ndarray
     color: str
     label: str
+    filepath: str = ""
     id: str = field(default_factory=lambda: str(uuid.uuid4()))
     t: np.ndarray = field(init=False)
     linestyle: str = '-'
@@ -87,6 +88,7 @@ class PlotItem:
     x_offset: float = 0.0
     y_offset: float = 0.0
     visible: bool = True
+    helpers: List['HelperLine'] = field(default_factory=list)
 
     def __post_init__(self) -> None:
         """Инициализация массива времени после создания объекта."""
