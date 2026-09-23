@@ -42,6 +42,9 @@ class TabFiles(ttk.Frame):
         for w in self.f_frame.winfo_children():
             w.destroy()
             
+        # Создаем список для хранения переменных, чтобы их не удалил сборщик мусора
+        self.plot_vars = []
+            
         for i, item in enumerate(reversed(plots)):
             idx = len(plots) - 1 - i
             f = ttk.Frame(self.f_frame)
@@ -52,7 +55,8 @@ class TabFiles(ttk.Frame):
             ttk.Button(f, text="↓", width=2, command=lambda ix=idx: self.controller.on_move_plot(ix, -1)).pack(side="left", padx=(0,5))
             
             # 2. Видимость
-            vis_v = tk.BooleanVar(value=item.visible)
+            vis_v = tk.BooleanVar(self, value=item.visible)
+            self.plot_vars.append(vis_v)
             ttk.Checkbutton(f, variable=vis_v, command=lambda ix=idx, v=vis_v: self.controller.update_plot(ix, 'visible', v.get())).pack(side="left", padx=7)
             
             # 3. Цвет
@@ -91,7 +95,8 @@ class TabFiles(ttk.Frame):
             sp_y.bind("<FocusOut>", lambda e, ix=idx, s=sp_y: self.controller.update_plot(ix, 'y_offset', s.get()))
             
             # 8. Легенда
-            leg_v = tk.BooleanVar(value=item.show_in_legend)
+            leg_v = tk.BooleanVar(self, value=item.show_in_legend)
+            self.plot_vars.append(leg_v)
             ttk.Checkbutton(f, variable=leg_v, command=lambda ix=idx, v=leg_v: self.controller.update_plot(ix, 'show_in_legend', v.get())).pack(side="left", padx=5)
             
             # 9. Удаление

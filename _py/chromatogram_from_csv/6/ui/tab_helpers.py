@@ -9,7 +9,7 @@ class TabHelpers(ttk.Frame):
     def __init__(self, parent: ttk.Notebook, controller):
         super().__init__(parent)
         self.controller = controller
-        self.h_type = tk.StringVar(value="V")
+        self.h_type = tk.StringVar(self, value="V")
         self.setup_ui()
 
     def setup_ui(self) -> None:

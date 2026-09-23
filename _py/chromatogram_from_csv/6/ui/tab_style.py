@@ -9,8 +9,8 @@ class TabStyle(ttk.Frame):
         self.font_vars = {}
         self.style_widgets = {}
         
-        self.fig_w_var = tk.DoubleVar(value=10.0)
-        self.fig_h_var = tk.DoubleVar(value=6.0)
+        self.fig_w_var = tk.DoubleVar(self, value=10.0)
+        self.fig_h_var = tk.DoubleVar(self, value=6.0)
         
         self.setup_ui()
 
@@ -120,7 +120,7 @@ class TabStyle(ttk.Frame):
             styles = ["Inherit"] + styles
             
         for prop, vals, w in [('font', families, 15), ('weight', weights, 10), ('style', styles, 10)]:
-            var = tk.StringVar()
+            var = tk.StringVar(self)
             cb = ttk.Combobox(f_frame, textvariable=var, values=vals, width=w, state="readonly")
             cb.pack(side="left", padx=2)
             self.font_vars[f'{prefix}_{prop}'] = var

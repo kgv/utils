@@ -7,7 +7,7 @@ class TabLabels(ttk.Frame):
         super().__init__(parent)
         self.controller = controller
         self.label_entries = {}
-        self.legend_var = tk.BooleanVar(value=True)
+        self.legend_var = tk.BooleanVar(self, value=True)
         self.setup_ui()
 
     def setup_ui(self) -> None:

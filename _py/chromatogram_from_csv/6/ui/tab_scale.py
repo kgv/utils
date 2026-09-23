@@ -8,14 +8,14 @@ class TabScale(ttk.Frame):
         self.controller = controller
         
         # Переменные состояния UI
-        self.mode_var = tk.StringVar(value="Абсолютный")
-        self.convert_sec_to_min_var = tk.BooleanVar(value=False)
-        self.reverse_x_var = tk.BooleanVar(value=False)
-        self.time_offset_var = tk.DoubleVar(value=0.0)
+        self.mode_var = tk.StringVar(self, value="Абсолютный")
+        self.convert_sec_to_min_var = tk.BooleanVar(self, value=False)
+        self.reverse_x_var = tk.BooleanVar(self, value=False)
+        self.time_offset_var = tk.DoubleVar(self, value=0.0)
         
-        self.auto_y_var = tk.BooleanVar(value=True)
-        self.y_min_var = tk.DoubleVar(value=0.0)
-        self.y_max_var = tk.DoubleVar(value=100.0)
+        self.auto_y_var = tk.BooleanVar(self, value=True)
+        self.y_min_var = tk.DoubleVar(self, value=0.0)
+        self.y_max_var = tk.DoubleVar(self, value=100.0)
         
         self.setup_ui()
 

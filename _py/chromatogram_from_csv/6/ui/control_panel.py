@@ -14,8 +14,8 @@ class ControlPanel(tk.Toplevel):
         self.title("Панель управления")
         self.geometry("1150x950")
         self.protocol("WM_DELETE_WINDOW", self.controller.on_close)
-        
-        self.auto_update_var = tk.BooleanVar(value=True)
+
+        self.auto_update_var = tk.BooleanVar(self, value=True)
         
         self.notebook = ttk.Notebook(self)
         self.notebook.pack(fill="both", expand=True, padx=5, pady=5)
