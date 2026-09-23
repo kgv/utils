@@ -8,6 +8,51 @@ import os
 import numpy as np
 import json
 
+class ToolTip:
+    def __init__(self, widget, text):
+        self.widget = widget
+        self.text = text
+        self.tipwindow = None
+        self.id = None
+        self.widget.bind("<Enter>", self.enter)
+        self.widget.bind("<Leave>", self.leave)
+
+    def enter(self, event=None):
+        self.schedule()
+
+    def leave(self, event=None):
+        self.unschedule()
+        self.hidetip()
+
+    def schedule(self):
+        self.unschedule()
+        # Задержка перед появлением подсказки (в миллисекундах)
+        self.id = self.widget.after(500, self.showtip)
+
+    def unschedule(self):
+        id = self.id
+        self.id = None
+        if id:
+            self.widget.after_cancel(id)
+
+    def showtip(self, event=None):
+        x = self.widget.winfo_rootx() + 20
+        y = self.widget.winfo_rooty() + self.widget.winfo_height() + 1
+        self.tipwindow = tw = tk.Toplevel(self.widget)
+        tw.wm_overrideredirect(True) # Убираем рамки окна
+        tw.wm_geometry(f"+{x}+{y}")
+        
+        label = tk.Label(tw, text=self.text, justify=tk.LEFT,
+                         background="#ffffe0", relief=tk.SOLID, borderwidth=1,
+                         font=("Arial", "8", "normal"))
+        label.pack(ipadx=3, ipady=1)
+
+    def hidetip(self):
+        tw = self.tipwindow
+        self.tipwindow = None
+        if tw:
+            tw.destroy()
+
 class ChromatogramApp:
     def __init__(self, root):
         self.root = root
@@ -118,11 +163,13 @@ class ChromatogramApp:
         for i, color in enumerate(self.palette):
             btn = tk.Button(frame, bg=color, width=2, height=1, 
                             command=lambda c=color: self.apply_color(idx, c, is_helper, picker))
-            btn.grid(row=i//5, column=i%5, padx=2, pady=2)
-        
+            btn.grid(row=i//3, column=i%3, padx=2, pady=2)
+
+        # Вычисляем следующую свободную строку после палитры
+        next_row = (len(self.palette) - 1) // 3 + 1
+
         # Кнопка выбора произвольного цвета
-        ttk.Button(frame, text="Свой цвет...", 
-                   command=lambda: self.apply_custom_color(idx, is_helper, picker)).grid(row=2, column=0, columnspan=5, sticky="ew", pady=(5,0))
+        ttk.Button(frame, text="Свой цвет...", command=lambda: self.apply_custom_color(idx, is_helper, picker)).grid(row=next_row, column=0, columnspan=5, sticky="ew", pady=(5,0))
 
     def apply_color(self, idx, color, is_helper, window):
         if is_helper:
@@ -678,9 +725,17 @@ class ChromatogramApp:
         for w in self.h_frame.winfo_children(): w.destroy()
         for i, h in enumerate(self.helper_lines):
             f_row = ttk.Frame(self.h_frame); f_row.pack(fill="x", pady=2)
-            ttk.Label(f_row, text=h['type'], width=3).pack(side="left")
+            
+            lbl_type = ttk.Label(f_row, text=h['type'], width=3)
+            lbl_type.pack(side="left")
+            ToolTip(lbl_type, "Тип линии (V - вертикальная, H - горизонтальная)")
             
             # Координаты: Позиция, Начало, Конец
+            tooltips_coords = {
+                'pos': "Позиция линии (ось X для верт., Y для гориз.)",
+                'start': "Начало линии",
+                'end': "Конец линии"
+            }
             for k, w in [('pos', 7), ('start', 7), ('end', 7)]:
                 sp = tk.Spinbox(f_row, from_=-1e9, to=1e9, width=w, 
                                 command=lambda ix=i, key=k: self.edit_helper_spin(ix, key))
@@ -688,50 +743,62 @@ class ChromatogramApp:
                 h[f'{k}_spin'] = sp
                 sp.bind("<Return>", lambda ev, ix=i, key=k: [self.edit_helper_spin(ix, key), self.root.focus_set()])
                 sp.bind("<FocusOut>", lambda ev, ix=i, key=k: self.edit_helper_spin(ix, key))
+                ToolTip(sp, tooltips_coords[k]) # Добавляем подсказку
 
             # Текст метки
             e_txt = ttk.Entry(f_row, width=10); e_txt.insert(0, h['text']); e_txt.pack(side="left", padx=1)
             e_txt.bind("<KeyRelease>", lambda ev, ix=i, en=e_txt: self.edit_helper(ix, 'text', en.get()))
             e_txt.bind("<Return>", lambda ev: self.root.focus_set())
+            ToolTip(e_txt, "Текст подписи")
             
             # Позиция вдоль линии (%)
             sp_p = tk.Spinbox(f_row, from_=0, to=100, width=4, command=lambda ix=i: self.edit_helper_spin(ix, 'label_pos'))
             sp_p.delete(0, "end"); sp_p.insert(0, str(int(h['label_pos']*100))); sp_p.pack(side="left", padx=1)
             h['label_pos_spin'] = sp_p
             sp_p.bind("<Return>", lambda ev, ix=i: [self.edit_helper_spin(ix, 'label_pos'), self.root.focus_set()])
+            ToolTip(sp_p, "Позиция текста вдоль линии (0-100%)")
 
             # Смещение метки (перпендикулярно)
             sp_o = tk.Spinbox(f_row, from_=-1e9, to=1e9, width=5, command=lambda ix=i: self.edit_helper_spin(ix, 'label_offset'))
             sp_o.delete(0, "end"); sp_o.insert(0, str(h.get('label_offset', 0))); sp_o.pack(side="left", padx=1)
             h['label_offset_spin'] = sp_o
             sp_o.bind("<Return>", lambda ev, ix=i: [self.edit_helper_spin(ix, 'label_offset'), self.root.focus_set()])
+            ToolTip(sp_o, "Смещение текста от линии")
 
-            # ДОБАВЛЕНО: Поворот метки (градусы)
+            # Поворот метки (градусы)
             sp_r = tk.Spinbox(f_row, from_=-360, to=360, width=4, command=lambda ix=i: self.edit_helper_spin(ix, 'label_rotation'))
             sp_r.delete(0, "end"); sp_r.insert(0, str(h.get('label_rotation', 0))); sp_r.pack(side="left", padx=1)
             h['label_rotation_spin'] = sp_r
             sp_r.bind("<Return>", lambda ev, ix=i: [self.edit_helper_spin(ix, 'label_rotation'), self.root.focus_set()])
             sp_r.bind("<FocusOut>", lambda ev, ix=i: self.edit_helper_spin(ix, 'label_rotation'))
+            ToolTip(sp_r, "Угол поворота текста (в градусах)")
 
             # Размер шрифта
             sp_f = tk.Spinbox(f_row, from_=5, to=30, width=3, command=lambda ix=i: self.edit_helper_spin(ix, 'font_size'))
             sp_f.delete(0, "end"); sp_f.insert(0, str(h['font_size'])); sp_f.pack(side="left", padx=1)
             h['font_size_spin'] = sp_f
+            ToolTip(sp_f, "Размер шрифта")
 
             # Слой
             cb_l = ttk.Combobox(f_row, values=["Задний", "Передний"], width=8, state="readonly"); cb_l.set(h['layer']); cb_l.pack(side="left", padx=1)
             cb_l.bind("<<ComboboxSelected>>", lambda e, ix=i, c=cb_l: self.edit_helper(ix, 'layer', c.get()))
+            ToolTip(cb_l, "Слой (на заднем или переднем плане)")
             
             # Толщина линии
-            sp_w = tk.Spinbox(f_row, from_=0.1, to=10.0, increment=0.1, width=4, command=lambda ix=i: self.edit_helper_spin(ix, 'width'))
+            sp_w = tk.Spinbox(f_row, from_=0.0, to=10.0, increment=0.1, width=4, command=lambda ix=i: self.edit_helper_spin(ix, 'width'))
             sp_w.delete(0, "end"); sp_w.insert(0, str(h['width'])); sp_w.pack(side="left", padx=1)
             h['width_spin'] = sp_w
+            ToolTip(sp_w, "Толщина линии")
             
             # Цвет и удаление
             btn_c = tk.Button(f_row, bg=h['color'], width=2, relief="flat",
                              command=lambda ix=i: self.show_color_picker(ix, is_helper=True))
             btn_c.pack(side="left", padx=2)
-            ttk.Button(f_row, text="🗑️", width=3, command=lambda idx=i: self.remove_helper(idx)).pack(side="right")
+            ToolTip(btn_c, "Цвет линии и текста")
+            
+            btn_del = ttk.Button(f_row, text="🗑️", width=3, command=lambda idx=i: self.remove_helper(idx))
+            btn_del.pack(side="right")
+            ToolTip(btn_del, "Удалить линию")
         
         self.update_helper_increments()
 
