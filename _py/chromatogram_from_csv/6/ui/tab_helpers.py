@@ -59,6 +59,7 @@ class TabHelpers(ttk.Frame):
                 ('end', 7, step_range, "Конец линии")
             ]:
                 sp = tk.Spinbox(f_row, from_=-1e9, to=1e9, increment=step, width=w)
+                sp.delete(0, tk.END)
                 sp.insert(0, str(getattr(h, k)))
                 sp.pack(side="left", padx=1)
                 sp.bind("<Return>", lambda ev, ix=i, key=k, s=sp: [self.controller.update_helper(ix, key, s.get()), self.focus_set()])
@@ -74,6 +75,7 @@ class TabHelpers(ttk.Frame):
             
             # Позиция текста
             sp_p = tk.Spinbox(f_row, from_=-1e12, to=1e12, increment=step_range, width=7)
+            sp_p.delete(0, tk.END)
             sp_p.insert(0, str(h.label_pos))
             sp_p.pack(side="left", padx=1)
             sp_p.bind("<Return>", lambda ev, ix=i, s=sp_p: [self.controller.update_helper(ix, 'label_pos', s.get()), self.focus_set()])
@@ -91,6 +93,7 @@ class TabHelpers(ttk.Frame):
                 ('font_size', 3, 1, "Размер шрифта")
             ]:
                 sp_o = tk.Spinbox(f_row, from_=-1e9, to=1e9, increment=step, width=w)
+                sp_o.delete(0, tk.END)
                 sp_o.insert(0, str(getattr(h, k)))
                 sp_o.pack(side="left", padx=1)
                 sp_o.bind("<Return>", lambda ev, ix=i, key=k, s=sp_o: [self.controller.update_helper(ix, key, s.get()), self.focus_set()])
@@ -105,6 +108,7 @@ class TabHelpers(ttk.Frame):
             
             # Толщина
             sp_w = tk.Spinbox(f_row, from_=0.0, to=10.0, increment=0.1, width=4)
+            sp_w.delete(0, tk.END)
             sp_w.insert(0, str(h.width))
             sp_w.pack(side="left", padx=1)
             sp_w.bind("<Return>", lambda ev, ix=i, s=sp_w: [self.controller.update_helper(ix, 'width', s.get()), self.focus_set()])

@@ -68,6 +68,7 @@ class TabFiles(ttk.Frame):
             
             # 5. Толщина линии
             sp = tk.Spinbox(f, from_=0.1, to=10, increment=0.1, width=4)
+            sp.delete(0, tk.END)
             sp.insert(0, f"{item.line_width:.1f}")
             sp.pack(side="left", padx=2)
             sp.bind("<Return>", lambda e, ix=idx, s=sp: [self.controller.update_plot(ix, 'line_width', s.get()), self.focus_set()])
@@ -75,6 +76,7 @@ class TabFiles(ttk.Frame):
             
             # 6. Смещение по X
             sp_x = tk.Spinbox(f, from_=-1e9, to=1e9, increment=0.1, width=5)
+            sp_x.delete(0, tk.END)
             sp_x.insert(0, f"{item.x_offset:.2f}")
             sp_x.pack(side="left", padx=2)
             sp_x.bind("<Return>", lambda e, ix=idx, s=sp_x: [self.controller.update_plot(ix, 'x_offset', s.get()), self.focus_set()])
@@ -82,6 +84,7 @@ class TabFiles(ttk.Frame):
             
             # 7. Смещение по Y
             sp_y = tk.Spinbox(f, from_=-1e12, to=1e12, increment=10, width=6)
+            sp_y.delete(0, tk.END)
             sp_y.insert(0, f"{item.y_offset:.2f}")
             sp_y.pack(side="left", padx=2)
             sp_y.bind("<Return>", lambda e, ix=idx, s=sp_y: [self.controller.update_plot(ix, 'y_offset', s.get()), self.focus_set()])
