@@ -151,10 +151,15 @@ class ChromatogramPlotter:
                 ty = h.pos + h.label_offset
                 tx = h.label_pos
                 
+            # text_artist = self.ax.text(
+            #     tx, ty, txt, color=h.color, fontsize=h.font_size,
+            #     va='center', ha='center', fontweight='bold', zorder=z+1,
+            #     rotation=h.label_rotation, rotation_mode='anchor'
+            # )
             text_artist = self.ax.text(
                 tx, ty, txt, color=h.color, fontsize=h.font_size,
-                va='center', ha='center', fontweight='bold', zorder=z+1,
-                rotation=h.label_rotation, rotation_mode='anchor'
+                va='bottom', ha='center', fontweight='bold', zorder=z+1,
+                rotation=h.label_rotation,
             )
             self.helper_artists.extend([line, text_artist])
 
