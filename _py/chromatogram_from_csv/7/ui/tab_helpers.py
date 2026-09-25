@@ -122,6 +122,7 @@ class TabHelpers(ttk.Frame):
                 cb_l.set(h.layer)
                 cb_l.pack(side="left", padx=1)
                 cb_l.bind("<<ComboboxSelected>>", lambda e, p_ix=p_idx, h_ix=h_idx, c=cb_l: self.controller.update_helper(p_ix, h_ix, 'layer', c.get()))
+                ToolTip(cb_l, "Слой")
                 
                 # Толщина
                 sp_w = tk.Spinbox(f_row, from_=0.0, to=10.0, increment=0.1, width=4)
@@ -131,9 +132,12 @@ class TabHelpers(ttk.Frame):
                 sp_w.pack(side="left", padx=1)
                 sp_w.bind("<Return>", lambda ev, p_ix=p_idx, h_ix=h_idx, s=sp_w: [self.controller.update_helper(p_ix, h_ix, 'width', s.get()), self.focus_set()])
                 sp_w.bind("<FocusOut>", lambda ev, p_ix=p_idx, h_ix=h_idx, s=sp_w: self.controller.update_helper(p_ix, h_ix, 'width', s.get()))
+                ToolTip(sp_w, "Толщина")
                 
-                # Цвет и удаление
+                # Цвет
                 btn_c = tk.Button(f_row, bg=h.color, width=2, relief="flat", command=lambda p_ix=p_idx, h_ix=h_idx: self.controller.show_color_picker(p_ix, is_helper=True, helper_idx=h_ix))
                 btn_c.pack(side="left", padx=2)
-                
+                ToolTip(btn_c, "Цвет")
+
+                # Удаление
                 ttk.Button(f_row, text="🗑️", width=3, command=lambda p_ix=p_idx, h_ix=h_idx: self.controller.on_remove_helper(p_ix, h_ix)).pack(side="right")
