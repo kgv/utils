@@ -442,6 +442,34 @@ class AppController:
         self.control_panel.tab_helpers.update_list(self.data_manager.plots, dx, dy)
         self.request_refresh(force=True)
 
+    def on_auto_label_pos_all(self, plot_idx: int):
+        p = self.data_manager.plots[plot_idx]
+        
+        if len(p.t) == 0 or p.id not in self.plotter.plot_lines: 
+            return
+            
+        y_data = self.plotter.plot_lines[p.id].get_ydata()
+        lim_x = self.plotter.ax.get_xlim()
+        lim_y = self.plotter.ax.get_ylim()
+        
+        for h in p.helpers:
+            if h.line_type == 'V':
+                # Ищем ближайшую точку по оси X (времени)
+                idx_closest = np.argmin(np.abs(p.t - h.pos))
+                val = y_data[idx_closest]
+                padding = abs(lim_y[1] - lim_y[0]) * 0.02
+            else:
+                # Ищем ближайшую точку по оси Y (интенсивности)
+                idx_closest = np.argmin(np.abs(y_data - h.pos))
+                val = p.t[idx_closest]
+                padding = abs(lim_x[1] - lim_x[0]) * 0.02
+                
+            h.label_pos = round(val + padding, 2)
+            
+        dx, dy = self._get_steps()
+        self.control_panel.tab_helpers.update_list(self.data_manager.plots, dx, dy)
+        self.request_refresh(force=True)
+
     # --- Утилиты ---
     def show_color_picker(self, idx: int, is_helper: bool, helper_idx: int = -1):
         if is_helper:

@@ -51,8 +51,15 @@ class TabHelpers(ttk.Frame):
         for p_idx, p in enumerate(plots):
             if not p.helpers: continue
             
-            lbl = ttk.Label(self.h_frame, text=f"Файл: {p.label}", font="Arial 9 bold", foreground="#0055A4")
-            lbl.pack(fill="x", pady=(10, 2), padx=5)
+            f_header = ttk.Frame(self.h_frame)
+            f_header.pack(fill="x", pady=(10, 2), padx=5)
+            
+            lbl = ttk.Label(f_header, text=f"Файл: {p.label}", font="Arial 9 bold", foreground="#0055A4")
+            lbl.pack(side="left")
+            
+            btn_auto_all = ttk.Button(f_header, text="Авто для всех", command=lambda p_ix=p_idx: self.controller.on_auto_label_pos_all(p_ix))
+            btn_auto_all.pack(side="left", padx=15)
+            ToolTip(btn_auto_all, "Установить позиции всех подписей этого файла по графику")
             
             for h_idx, h in enumerate(p.helpers):
                 f_row = ttk.Frame(self.h_frame)
