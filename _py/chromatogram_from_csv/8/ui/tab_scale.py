@@ -11,9 +11,7 @@ class TabScale(ttk.Frame):
         self.mode_var = tk.StringVar(self, value="Абсолютный")
         self.convert_sec_to_min_var = tk.BooleanVar(self, value=False)
         self.reverse_x_var = tk.BooleanVar(self, value=False)
-        self.time_offset_var = tk.DoubleVar(self, value=0.0)
         
-        self.auto_y_var = tk.BooleanVar(self, value=True)
         self.y_min_var = tk.DoubleVar(self, value=0.0)
         self.y_max_var = tk.DoubleVar(self, value=100.0)
         
@@ -37,14 +35,6 @@ class TabScale(ttk.Frame):
                         variable=self.reverse_x_var, 
                         command=self.controller.on_reverse_x_change).pack(anchor="w", pady=(5, 0))
         
-        offset_frame = ttk.Frame(frame)
-        offset_frame.pack(fill="x", pady=(10, 5))
-        ttk.Label(offset_frame, text="Смещение по X:").pack(side="left")
-        self.offset_entry = ttk.Entry(offset_frame, width=10, textvariable=self.time_offset_var)
-        self.offset_entry.pack(side="left", padx=5)
-        self.offset_entry.bind("<Return>", lambda e: [self.controller.on_global_x_offset_change(), self.focus_set()])
-        self.offset_entry.bind("<FocusOut>", lambda e: self.controller.on_global_x_offset_change())
-        
         # Настройки оси X
         ttk.Label(frame, text="Ось X (Время):", font='Arial 10 bold').pack(anchor="w", pady=(10, 5))
         
@@ -65,9 +55,6 @@ class TabScale(ttk.Frame):
         # Настройки оси Y
         ttk.Separator(frame, orient="horizontal").pack(fill="x", pady=15)
         ttk.Label(frame, text="Ось Y (Интенсивность):", font='Arial 10 bold').pack(anchor="w")
-        
-        ttk.Checkbutton(frame, text="Автомасштаб Y", variable=self.auto_y_var, 
-                        command=self.controller.request_refresh).pack(anchor="w", pady=(5, 5))
         
         y_frame = ttk.Frame(frame)
         y_frame.pack(fill="x")

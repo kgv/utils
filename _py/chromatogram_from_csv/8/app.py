@@ -46,23 +46,13 @@ class AppController:
         x_min = self.control_panel.tab_scale.scale_min.get()
         x_max = self.control_panel.tab_scale.scale_max.get()
         y_mode = self.control_panel.tab_scale.mode_var.get()
-        auto_y = self.control_panel.tab_scale.auto_y_var.get()
         y_min = self.control_panel.tab_scale.y_min_var.get()
         y_max = self.control_panel.tab_scale.y_max_var.get()
 
         # Отрисовка
-        new_y_min, new_y_max = self.plotter.refresh(
-            self.data_manager, x_min, x_max, y_mode, auto_y, y_min, y_max
+        self.plotter.refresh(
+            self.data_manager, x_min, x_max, y_mode, y_min, y_max
         )
-
-        # Обновление UI (если был автомасштаб Y)
-        if auto_y:
-            self.control_panel.tab_scale.y_min_var.set(new_y_min)
-            self.control_panel.tab_scale.y_max_var.set(new_y_max)
-            self.control_panel.tab_scale.ent_y_min.delete(0, tk.END)
-            self.control_panel.tab_scale.ent_y_min.insert(0, f"{new_y_min:.2f}")
-            self.control_panel.tab_scale.ent_y_max.delete(0, tk.END)
-            self.control_panel.tab_scale.ent_y_max.insert(0, f"{new_y_max:.2f}")
 
         self.main_window.redraw_canvas()
 
@@ -250,44 +240,50 @@ class AppController:
             v_max = float(self.control_panel.tab_scale.ent_y_max.get().replace(',', '.'))
             self.control_panel.tab_scale.y_min_var.set(v_min)
             self.control_panel.tab_scale.y_max_var.set(v_max)
-            self.control_panel.tab_scale.auto_y_var.set(False)
             self.request_refresh(force=True)
         except ValueError: pass
 
     def on_fit_y_to_visible(self):
-        if self.control_panel.tab_scale.mode_var.get() == "Абсолютный":
-            s = self.control_panel.tab_scale.scale_min.get()
-            e = self.control_panel.tab_scale.scale_max.get()
-            m_min, m_max = float('inf'), float('-inf')
+        s = self.control_panel.tab_scale.scale_min.get()
+        e = self.control_panel.tab_scale.scale_max.get()
+        y_mode = self.control_panel.tab_scale.mode_var.get()
+        m_min, m_max = float('inf'), float('-inf')
+        
+        for item in self.data_manager.plots:
+            if not item.visible: continue
+            mask = (item.t >= s) & (item.t <= e)
             
-            for item in self.data_manager.plots:
-                if not item.visible: continue
-                mask = (item.t >= s) & (item.t <= e)
+            if y_mode == "Нормированный":
+                v_y = item.y_orig[mask]
+                max_y = v_y.max() if v_y.size and v_y.max() > 0 else 1.0
+                v = (v_y / max_y) * 100 + item.y_offset if v_y.size else np.array([])
+            else:
                 v = item.y_orig[mask] + item.y_offset
-                if v.size:
-                    m_min, m_max = min(m_min, v.min()), max(m_max, v.max())
-                    
-            if m_max != float('-inf'):
-                yr = m_max - m_min if m_max > m_min else (m_max if m_max > 0 else 1)
-                self.control_panel.tab_scale.y_min_var.set(m_min - yr * 0.02)
-                self.control_panel.tab_scale.y_max_var.set(m_max + yr * 0.05)
-                self.control_panel.tab_scale.auto_y_var.set(False)
-                self.request_refresh(force=True)
+                
+            if v.size:
+                m_min, m_max = min(m_min, v.min()), max(m_max, v.max())
+                
+        if m_max != float('-inf'):
+            yr = m_max - m_min if m_max > m_min else (m_max if m_max > 0 else 1)
+            new_y_min = m_min - yr * 0.02
+            new_y_max = m_max + yr * 0.05
+            
+            self.control_panel.tab_scale.y_min_var.set(new_y_min)
+            self.control_panel.tab_scale.y_max_var.set(new_y_max)
+            
+            # Обновляем текстовые поля
+            self.control_panel.tab_scale.ent_y_min.delete(0, tk.END)
+            self.control_panel.tab_scale.ent_y_min.insert(0, f"{new_y_min:.2f}")
+            self.control_panel.tab_scale.ent_y_max.delete(0, tk.END)
+            self.control_panel.tab_scale.ent_y_max.insert(0, f"{new_y_max:.2f}")
+            
+            self.request_refresh(force=True)
 
     def on_time_unit_change(self):
         self.data_manager.config.convert_sec_to_min = self.control_panel.tab_scale.convert_sec_to_min_var.get()
         self.data_manager.recalculate_time_data()
         self._sync_x_bounds()
         self.request_refresh(force=True)
-
-    def on_global_x_offset_change(self):
-        try:
-            val = float(self.control_panel.tab_scale.offset_entry.get().replace(',', '.'))
-            self.data_manager.config.time_offset = val
-            self.data_manager.recalculate_time_data()
-            self._sync_x_bounds()
-            self.request_refresh(force=True)
-        except ValueError: pass
 
     def on_reverse_x_change(self):
         self.data_manager.config.reverse_x = self.control_panel.tab_scale.reverse_x_var.get()
@@ -425,8 +421,6 @@ class AppController:
                 self.control_panel.tab_style.set_values(self.data_manager.config)
                 self.control_panel.tab_scale.convert_sec_to_min_var.set(self.data_manager.config.convert_sec_to_min)
                 self.control_panel.tab_scale.reverse_x_var.set(self.data_manager.config.reverse_x)
-                self.control_panel.tab_scale.time_offset_var.set(self.data_manager.config.time_offset)
-                
                 self.on_apply_figure_size(self.data_manager.config.fig_width, self.data_manager.config.fig_height, custom=True)
                 self.data_manager.recalculate_time_data()
                 self._sync_x_bounds()

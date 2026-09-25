@@ -39,10 +39,9 @@ class ChromatogramPlotter:
         return val
 
     def refresh(self, data_manager: DataManager, x_min: float, x_max: float, 
-                y_mode: str, auto_y: bool, y_min: float, y_max: float) -> Tuple[float, float]:
+                y_mode: str, y_min: float, y_max: float) -> None:
         """
         Основной метод обновления графика.
-        Возвращает новые границы Y (y_min, y_max), если был включен авто-масштаб.
         """
         config = data_manager.config
         
@@ -92,38 +91,14 @@ class ChromatogramPlotter:
         else:
             self.ax.set_xlim(x_min, safe_x_max)
 
-        # 4. Настройка оси Y (Автомасштаб)
-        new_y_min, new_y_max = y_min, y_max
-        if auto_y:
-            calc_y_min, calc_y_max = float('inf'), float('-inf')
-            
-            if data_manager.plots:
-                for item in data_manager.plots:
-                    if item.visible and len(item.y_orig) > 0:
-                        y_data = self.plot_lines[item.id].get_ydata()
-                        calc_y_min = min(calc_y_min, y_data.min())
-                        calc_y_max = max(calc_y_max, y_data.max())
-                
-                if calc_y_max != float('-inf'):
-                    yr = calc_y_max - calc_y_min if calc_y_max > calc_y_min else (calc_y_max if calc_y_max > 0 else 1)
-                    new_y_min = calc_y_min - yr * 0.02
-                    new_y_max = calc_y_max - yr * 0.05
-                else:
-                    new_y_min, new_y_max = (0, 105) if y_mode == "Нормированный" else (0, 1)
-            else:
-                new_y_min, new_y_max = (0, 105) if y_mode == "Нормированный" else (0, 1)
-            
-            self.ax.set_ylim(new_y_min, new_y_max)
-        else:
-            self.ax.set_ylim(y_min, y_max)
+        # 4. Настройка оси Y
+        self.ax.set_ylim(y_min, y_max)
 
         # 5. Отрисовка вспомогательных линий
         self._draw_helper_lines(data_manager.plots)
 
         # 6. Применение глобальных стилей (шрифты, сетка, тики)
         self._apply_style(config, y_mode)
-        
-        return new_y_min, new_y_max
 
     def _draw_helper_lines(self, plots: List[PlotItem]) -> None:
         """Отрисовывает вспомогательные линии и текст."""

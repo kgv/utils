@@ -111,7 +111,7 @@ class DataManager:
         factor = 60.0 if self.config.convert_sec_to_min else 1.0
         
         for item in self.plots:
-            item.t = (item.t_raw / factor) + self.config.time_offset + item.x_offset
+            item.t = (item.t_raw / factor) + item.x_offset
             
         self.recalculate_bounds()
 

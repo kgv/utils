@@ -67,7 +67,6 @@ class StyleConfig:
     fig_height: float = 6.0
     
     # Глобальные настройки данных (сохраняются вместе со стилем)
-    time_offset: float = 0.0
     convert_sec_to_min: bool = False
     reverse_x: bool = False
 
