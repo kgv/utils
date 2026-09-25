@@ -61,6 +61,7 @@ class StyleConfig:
     
     # Состояние отображения
     show_legend: bool = True
+    legend_position: str = 'best'
     
     # Размеры графика
     fig_width: float = 10.0

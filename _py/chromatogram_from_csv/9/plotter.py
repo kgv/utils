@@ -178,7 +178,7 @@ class ChromatogramPlotter:
             self.ax.get_legend().remove()
             
         if config.show_legend and self.plot_lines:
-            leg = self.ax.legend(fontsize=config.legend_size)
+            leg = self.ax.legend(fontsize=config.legend_size, loc=config.legend_position)
             if leg:
                 plt.setp(
                     leg.get_texts(),
