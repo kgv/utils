@@ -98,7 +98,7 @@ class AppController:
         
         for p in paths:
             color = self.palette[len(self.data_manager.plots) % len(self.palette)]
-            self.data_manager.add_plot(p, color, self.data_manager.config.line_width)
+            self.data_manager.add_plot(p, color, 1.5)
             
         self._sync_x_bounds()
         self.control_panel.tab_files.update_list(self.data_manager.plots)
@@ -349,9 +349,6 @@ class AppController:
     # --- Обработчики стилей ---
     def update_style(self, key: str, val: any):
         setattr(self.data_manager.config, key, val)
-        if key == 'line_width':
-            for item in self.data_manager.plots: item.line_width = val
-            self.control_panel.tab_files.update_list(self.data_manager.plots)
         self.request_refresh()
 
     def on_apply_figure_size(self, w: float, h: float, custom: bool = False):

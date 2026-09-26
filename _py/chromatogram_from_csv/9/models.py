@@ -38,7 +38,6 @@ class StyleConfig:
     legend_size: float = 10.0
     
     # Линии и сетка
-    line_width: float = 1.5
     grid_alpha: float = 0.3
     grid_width: float = 0.8
     spine_width: float = 1.0

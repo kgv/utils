@@ -62,10 +62,13 @@ class TabStyle(ttk.Frame):
 
         # Ползунки стилей
         style_rows = [
-            ("Линии графиков", 'line_width', 0.5, 5), ("Толщина рамки", 'spine_width', 0.1, 3),
-            ("Осн. деления (толщ)", 'major_tick_width', 0.1, 3), ("Осн. деления (длина)", 'major_tick_length', 0, 15),
-            ("Пром. деления (толщ)", 'minor_tick_width', 0.1, 3), ("Пром. деления (длина)", 'minor_tick_length', 0, 15),
-            ("Сетка (толщина)", 'grid_width', 0.1, 2), ("Сетка (прозрачность)", 'grid_alpha', 0, 1)
+            ("Толщина рамки", 'spine_width', 0.1, 3),
+            ("Осн. деления (толщ)", 'major_tick_width', 0.1, 3),
+            ("Осн. деления (длина)", 'major_tick_length', 0, 15),
+            ("Пром. деления (толщ)", 'minor_tick_width', 0.1, 3),
+            ("Пром. деления (длина)", 'minor_tick_length', 0, 15),
+            ("Сетка (толщина)", 'grid_width', 0.1, 2),
+            ("Сетка (прозрачность)", 'grid_alpha', 0, 1)
         ]
         r_idx = 14
         for lbl, p, f_val, t_val in style_rows:
