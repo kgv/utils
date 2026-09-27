@@ -218,30 +218,44 @@ class ChromatogramPlotter:
     
     def update_hover(self, event_x: float, event_y: float, event_xdata: float, event_ydata: float):
         """Ищет ближайшую точку к курсору и обновляет маркер."""
-        closest_dist = float('inf')
-        closest_data = None
+        candidates = []
 
-        # Ищем ближайшую точку среди всех видимых графиков
+        # Ищем кандидатов среди всех видимых графиков
         for line in self.plot_lines.values():
             if not line.get_visible(): continue
             x_data = line.get_xdata()
             y_data = line.get_ydata()
             if len(x_data) == 0: continue
 
-            # Находим ближайший X в данных
-            idx = np.argmin(np.abs(x_data - event_xdata))
-            px, py = x_data[idx], y_data[idx]
+            # 1. Собираем все точки линии в один массив
+            xy_data = np.column_stack((x_data, y_data))
+            
+            # 2. Разом переводим все координаты данных в пиксели экрана (это работает быстро)
+            xy_pixels = self.ax.transData.transform(xy_data)
+            
+            # 3. Разом считаем расстояние от курсора до ВСЕХ точек в пикселях
+            dists = np.hypot(xy_pixels[:, 0] - event_x, xy_pixels[:, 1] - event_y)
+            
+            # 4. Находим индексы только тех точек, которые попали в радиус 5 пикселей
+            valid_indices = np.where(dists < 5)[0]
+            
+            # 5. Добавляем найденные точки в общий список кандидатов
+            for idx in valid_indices:
+                candidates.append({
+                    'px': x_data[idx],
+                    'py': y_data[idx],
+                    'dist': dists[idx]
+                })
 
-            # Переводим координаты данных в пиксели экрана для точного расчета расстояния
-            disp_pt = self.ax.transData.transform((px, py))
-            dist = np.hypot(disp_pt[0] - event_x, disp_pt[1] - event_y)
+        if candidates:
+            # Сортируем кандидатов:
+            # Главный критерий: -c['py'] (по убыванию Y). 
+            # Теперь из всех точек в радиусе 30 пикселей ВСЕГДА будет выбираться самая высокая (макушка).
+            # Если высоты равны, выберется та, что физически ближе к курсору (c['dist']).
+            candidates.sort(key=lambda c: (-c['py'], c['dist']))
+            
+            closest_data = (candidates[0]['px'], candidates[0]['py'])
 
-            # Порог срабатывания - 30 пикселей
-            if dist < closest_dist and dist < 30:
-                closest_dist = dist
-                closest_data = (px, py)
-
-        if closest_data:
             self.hover_point.set_data([closest_data[0]], [closest_data[1]])
             self.hover_text.set_text(f"X: {closest_data[0]:.3f}\nY: {closest_data[1]:.2f}")
             self.hover_text.xy = (closest_data[0], closest_data[1])
@@ -252,3 +266,5 @@ class ChromatogramPlotter:
             self.hover_point.set_visible(False)
             self.hover_text.set_visible(False)
             return None
+
+# теперь если под курсором есть пик и рядом есть пик больше - то вывобится точуа 
