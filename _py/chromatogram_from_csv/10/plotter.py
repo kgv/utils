@@ -217,8 +217,18 @@ class ChromatogramPlotter:
         self.ax.set_ylim(0, 1)
     
     def update_hover(self, event_x: float, event_y: float, event_xdata: float, event_ydata: float):
-        """Ищет ближайшую точку к курсору и обновляет маркер."""
+        """Ищет самую высокую точку в заданном радиусе от курсора и обновляет маркер."""
         candidates = []
+        RADIUS_PX = 5  # Радиус захвата в пикселях
+
+        # 1. ОПТИМИЗАЦИЯ: Вычисляем границы поиска в координатах данных.
+        # Переводим квадрат вокруг курсора (±5 пикселей) обратно в координаты графика.
+        inv_trans = self.ax.transData.inverted()
+        p1 = inv_trans.transform((event_x - RADIUS_PX, event_y - RADIUS_PX))
+        p2 = inv_trans.transform((event_x + RADIUS_PX, event_y + RADIUS_PX))
+        
+        x_min, x_max = min(p1[0], p2[0]), max(p1[0], p2[0])
+        y_min, y_max = min(p1[1], p2[1]), max(p1[1], p2[1])
 
         # Ищем кандидатов среди всех видимых графиков
         for line in self.plot_lines.values():
@@ -227,38 +237,41 @@ class ChromatogramPlotter:
             y_data = line.get_ydata()
             if len(x_data) == 0: continue
 
-            # 1. Собираем все точки линии в один массив
-            xy_data = np.column_stack((x_data, y_data))
+            # 2. Быстрая фильтрация: оставляем только точки внутри квадрата захвата.
+            # Это работает в сотни раз быстрее, чем трансформация всех точек в пиксели.
+            mask = (x_data >= x_min) & (x_data <= x_max) & (y_data >= y_min) & (y_data <= y_max)
             
-            # 2. Разом переводим все координаты данных в пиксели экрана (это работает быстро)
+            if not np.any(mask):
+                continue  # Если рядом с курсором нет точек этой линии, пропускаем её
+                
+            f_x = x_data[mask]
+            f_y = y_data[mask]
+
+            # 3. Переводим в пиксели ТОЛЬКО отфильтрованные точки (их будет буквально несколько штук)
+            xy_data = np.column_stack((f_x, f_y))
             xy_pixels = self.ax.transData.transform(xy_data)
             
-            # 3. Разом считаем расстояние от курсора до ВСЕХ точек в пикселях
+            # 4. Считаем точное расстояние в пикселях (чтобы отсечь углы квадрата и оставить круг)
             dists = np.hypot(xy_pixels[:, 0] - event_x, xy_pixels[:, 1] - event_y)
+            valid_indices = np.where(dists <= RADIUS_PX)[0]
             
-            # 4. Находим индексы только тех точек, которые попали в радиус 5 пикселей
-            valid_indices = np.where(dists < 5)[0]
-            
-            # 5. Добавляем найденные точки в общий список кандидатов
             for idx in valid_indices:
                 candidates.append({
-                    'px': x_data[idx],
-                    'py': y_data[idx],
+                    'px': f_x[idx],
+                    'py': f_y[idx],
                     'dist': dists[idx]
                 })
 
         if candidates:
-            # Сортируем кандидатов:
-            # Главный критерий: -c['py'] (по убыванию Y). 
-            # Теперь из всех точек в радиусе 30 пикселей ВСЕГДА будет выбираться самая высокая (макушка).
-            # Если высоты равны, выберется та, что физически ближе к курсору (c['dist']).
-            candidates.sort(key=lambda c: (-c['py'], c['dist']))
+            # 5. Находим ЛУЧШУЮ точку за один проход (без полной сортировки списка).
+            # Ищем минимум: сначала по -py (самый высокий Y), затем по dist (самый близкий к центру).
+            best = min(candidates, key=lambda c: (-c['py'], c['dist']))
             
-            closest_data = (candidates[0]['px'], candidates[0]['py'])
+            closest_data = (best['px'], best['py'])
 
             self.hover_point.set_data([closest_data[0]], [closest_data[1]])
             self.hover_text.set_text(f"X: {closest_data[0]:.3f}\nY: {closest_data[1]:.2f}")
-            self.hover_text.xy = (closest_data[0], closest_data[1])
+            self.hover_text.xy = closest_data
             self.hover_point.set_visible(True)
             self.hover_text.set_visible(True)
             return closest_data
@@ -266,5 +279,3 @@ class ChromatogramPlotter:
             self.hover_point.set_visible(False)
             self.hover_text.set_visible(False)
             return None
-
-# теперь если под курсором есть пик и рядом есть пик больше - то вывобится точуа 
