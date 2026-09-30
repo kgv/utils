@@ -107,7 +107,7 @@ for i, day in enumerate(days):
                 linewidths=1, linecolor='white')
     
     axes[i].set_title(f'Day {day}', fontsize=14)
-    # axes[i].set_xlabel('Line', fontsize=14)
+    axes[i].set_xlabel('', fontsize=14)
     if i == 0: axes[i].set_ylabel('Fatty acid', fontsize=14)
     else: axes[i].set_ylabel('')
 
