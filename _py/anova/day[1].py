@@ -7,7 +7,8 @@ import seaborn as sns
 # ==========================================
 # 1. ЧТЕНИЕ CSV
 # ==========================================
-df = pd.read_csv('_py/anova/Table1.csv', 
+# df = pd.read_csv('_py/anova/Table1.csv', 
+df = pd.read_csv('_py/anova/Table2.csv', 
                  sep=',', 
                  header=0, 
                  names=['Line', 'Day', 'Fatty acid', 'Value'], 
@@ -93,7 +94,8 @@ for i, day in enumerate(target_days):
     # Используем колонку Annotation для текста
     pivot_annot = day_data.pivot(index='Fatty acid', columns='Line', values='Annotation')
     
-    sns.heatmap(pivot_color, annot=pivot_annot, fmt='', cmap='Blues', 
+    # sns.heatmap(pivot_color, annot=pivot_annot, fmt='', cmap='Greens', 
+    sns.heatmap(pivot_color, annot=pivot_annot, fmt='', cmap='Purples', 
                 ax=axes[i], cbar=(i == len(target_days)-1), vmin=0, vmax=3, 
                 cbar_kws={'label': '-log(p-value)'} if i == len(target_days)-1 else None,
                 linewidths=1, linecolor='white',
@@ -102,7 +104,8 @@ for i, day in enumerate(target_days):
     axes[i].set_title(f'Day {day}', fontsize=14)
     axes[i].set_xlabel('', fontsize=14)
     if i == 0: 
-        axes[i].set_ylabel('Fatty acid', fontsize=14)
+        # axes[i].set_ylabel('Fatty acid', fontsize=14)
+        axes[i].set_ylabel('Compound', fontsize=14)
     else: 
         axes[i].set_ylabel('')
 

@@ -9,7 +9,8 @@ import seaborn as sns
 # ==========================================
 # header=0 - выкидывает первую строку файла с кривыми заголовками
 # names=[...] - принудительно ставит наши чистые названия
-df = pd.read_csv('_py/anova/Table1.csv', 
+# df = pd.read_csv('_py/anova/Table1.csv', 
+df = pd.read_csv('_py/anova/Table2.csv', 
                  sep=',', 
                  header=0, 
                  names=['Line', 'Day', 'Fatty acid', 'Value'], 
@@ -30,7 +31,7 @@ df[['Mean', 'SD']] = df['Value'].str.split('±', expand=True).astype(float)
 # ДАЛЬШЕ ИДЕТ КОД СО СТАТИСТИКОЙ
 # ==========================================
 N_SAMPLES = 3  # Укажите реальное количество повторностей (n)
-CONTROL_LINE = '54WT'
+CONTROL_LINE = '54 WT'
 
 results = []
 exp_lines = [line for line in df['Line'].unique() if line != CONTROL_LINE]
@@ -101,14 +102,16 @@ for i, day in enumerate(days):
     pivot_color = day_data.pivot(index='Fatty acid', columns='Line', values='Log_P')
     pivot_annot = day_data.pivot(index='Fatty acid', columns='Line', values='Significance')
     
-    sns.heatmap(pivot_color, annot=pivot_annot, fmt='', cmap='Reds', 
+    # sns.heatmap(pivot_color, annot=pivot_annot, fmt='', cmap='Reds', 
+    sns.heatmap(pivot_color, annot=pivot_annot, fmt='', cmap='Greens', 
                 ax=axes[i], cbar=(i==2), vmin=0, vmax=3, 
                 cbar_kws={'label': '-log(p-value)'} if i==2 else None,
                 linewidths=1, linecolor='white')
     
     axes[i].set_title(f'Day {day}', fontsize=14)
     axes[i].set_xlabel('', fontsize=14)
-    if i == 0: axes[i].set_ylabel('Fatty acid', fontsize=14)
+    # if i == 0: axes[i].set_ylabel('Fatty acid', fontsize=14)
+    if i == 0: axes[i].set_ylabel('Compound', fontsize=14)
     else: axes[i].set_ylabel('')
 
 plt.tight_layout()
