@@ -101,19 +101,19 @@ class PlotItem:
         self.t = self.t_raw.copy()
 
 
-@dataclass
+@dataclass(kw_only=True)
 class HelperLine:
     """Модель данных вспомогательной линии (вертикальной или горизонтальной)."""
-    line_type: str  # 'V' или 'H'
-    pos: float
-    start: float
-    end: float
-    label_pos: float
-    id: str = field(default_factory=lambda: str(uuid.uuid4()))
-    color: str = '#000000'
-    width: float = 0.5
     text: str = ''
+    pos: float
+    color: str = '#000000'
+    end: float
+    font_size: int = 9
     label_offset: float = 0.0
+    label_pos: float
     label_rotation: int = 0
     layer: str = 'Задний'
-    font_size: int = 9
+    line_type: str  # 'V' или 'H'
+    start: float
+    width: float = 0.5
+    id: str = field(default_factory=lambda: str(uuid.uuid4()))
