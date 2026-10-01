@@ -27,7 +27,7 @@ df = df[df['Fatty acid'] == TARGET_FA].copy()
 # 2. РАСЧЕТ СТАТИСТИКИ
 # ==========================================
 N_SAMPLES = 3  
-CONTROL_LINE = '54WT'
+CONTROL_LINE = '54 WT'
 BASE_DAY = '0' 
 
 days = sorted(df['Day'].unique(), key=int)

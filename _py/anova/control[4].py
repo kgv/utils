@@ -7,7 +7,8 @@ import seaborn as sns
 # ==========================================
 # 1. ЯДЕРНЫЙ ВАРИАНТ ЧТЕНИЯ CSV
 # ==========================================
-df = pd.read_csv('_py/anova/Table2.csv', 
+df = pd.read_csv('_py/anova/Table1.csv', 
+# df = pd.read_csv('_py/anova/Table2.csv', 
                  sep=',', 
                  header=0, 
                  names=['Line', 'Day', 'Fatty acid', 'Value'], 
@@ -94,7 +95,7 @@ res_df['Significance'] = res_df.apply(get_annotation, axis=1)
 res_df['Log_P'] = -np.log10(res_df['p_value'])
 
 # Увеличил высоту графика (с 6 до 8), чтобы 3 строки текста влезли без наложения
-fig, axes = plt.subplots(1, 3, figsize=(16, 8), sharey=True)
+fig, axes = plt.subplots(1, 3, figsize=(16, 6), sharey=True)
 
 for i, day in enumerate(days):
     day_data = res_df[res_df['Day'] == day]
@@ -102,15 +103,17 @@ for i, day in enumerate(days):
         
     pivot_color = day_data.pivot(index='Fatty acid', columns='Line', values='Log_P')
     pivot_annot = day_data.pivot(index='Fatty acid', columns='Line', values='Significance')
-    
-    sns.heatmap(pivot_color, annot=pivot_annot, fmt='', cmap='Greens', 
+
+    sns.heatmap(pivot_color, annot=pivot_annot, fmt='', cmap='Reds', 
+    # sns.heatmap(pivot_color, annot=pivot_annot, fmt='', cmap='Greens', 
                 ax=axes[i], cbar=(i==2), vmin=0, vmax=3, 
                 cbar_kws={'label': '-log(p-value)'} if i==2 else None,
                 linewidths=1, linecolor='white')
     
     axes[i].set_title(f'Day {day}', fontsize=14)
     axes[i].set_xlabel('', fontsize=14)
-    if i == 0: axes[i].set_ylabel('Compound', fontsize=14)
+    if i == 0: axes[i].set_ylabel('Fatty acid', fontsize=14)
+    # if i == 0: axes[i].set_ylabel('Compound', fontsize=14)
     else: axes[i].set_ylabel('')
 
 plt.tight_layout()

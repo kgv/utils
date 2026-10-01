@@ -27,7 +27,7 @@ df = df[df['Fatty acid'] == TARGET_FA].copy()
 # 2. РАСЧЕТ СТАТИСТИКИ
 # ==========================================
 N_SAMPLES = 3  
-CONTROL_LINE = '54WT'
+CONTROL_LINE = '54 WT'
 BASE_DAY = '0' 
 
 days = sorted(df['Day'].unique(), key=int)
@@ -51,7 +51,9 @@ for day in days:
         
         t_stat, p_val = ttest_ind_from_stats(mean1=mean_c, std1=sd_c, nobs1=N_SAMPLES,
                                              mean2=mean_e, std2=sd_e, nobs2=N_SAMPLES)
-        results_wt.append({'Line': exp, 'Comparison': f'Day {day}', 'p_value': p_val})
+        
+        f_stat = t_stat ** 2 # Вычисляем F-критерий
+        results_wt.append({'Line': exp, 'Comparison': f'Day {day}', 'p_value': p_val, 'f_stat': f_stat})
 
 # Б) Сравнение с Day 0 (для каждой линии, включая 54WT)
 for line in lines:
@@ -66,7 +68,9 @@ for line in lines:
         
         t_stat, p_val = ttest_ind_from_stats(mean1=mean_c, std1=sd_c, nobs1=N_SAMPLES,
                                              mean2=mean_e, std2=sd_e, nobs2=N_SAMPLES)
-        results_day0.append({'Line': line, 'Comparison': f'Day {day}', 'p_value': p_val})
+        
+        f_stat = t_stat ** 2 # Вычисляем F-критерий
+        results_day0.append({'Line': line, 'Comparison': f'Day {day}', 'p_value': p_val, 'f_stat': f_stat})
 
 df_wt = pd.DataFrame(results_wt)
 df_day0 = pd.DataFrame(results_day0)
@@ -74,19 +78,26 @@ df_day0 = pd.DataFrame(results_day0)
 # ==========================================
 # 3. ФУНКЦИЯ АННОТАЦИИ И ПОДГОТОВКА МАТРИЦ
 # ==========================================
-def get_annotation(p):
+# Функция теперь принимает строку датафрейма (row)
+def get_annotation(row):
+    p = row['p_value']
+    f = row['f_stat']
+    
     if pd.isna(p): return ''
+    
     if p < 0.001: stars = '***'
     elif p < 0.01: stars = '**'
     elif p < 0.05: stars = '*'
     else: stars = 'ns'
     
-    p_text = '<0.001' if p < 0.001 else f"{p:.3f}"
-    return f"{p_text}\n({stars})"
+    p_text = 'p<0.001' if p < 0.001 else f"p={p:.3f}"
+    f_text = f"F={f:.2f}"
+    
+    return f"{f_text}\n{p_text}\n({stars})"
 
 # Обработка датафрейма vs 54WT
 if not df_wt.empty:
-    df_wt['Annotation'] = df_wt['p_value'].apply(get_annotation)
+    df_wt['Annotation'] = df_wt.apply(get_annotation, axis=1) # Добавлен axis=1
     df_wt['Log_P'] = -np.log10(df_wt['p_value'])
     pivot_color_wt = df_wt.pivot(index='Line', columns='Comparison', values='Log_P')
     pivot_annot_wt = df_wt.pivot(index='Line', columns='Comparison', values='Annotation')
@@ -95,7 +106,7 @@ else:
 
 # Обработка датафрейма vs Day 0
 if not df_day0.empty:
-    df_day0['Annotation'] = df_day0['p_value'].apply(get_annotation)
+    df_day0['Annotation'] = df_day0.apply(get_annotation, axis=1) # Добавлен axis=1
     df_day0['Log_P'] = -np.log10(df_day0['p_value'])
     pivot_color_day0 = df_day0.pivot(index='Line', columns='Comparison', values='Log_P')
     pivot_annot_day0 = df_day0.pivot(index='Line', columns='Comparison', values='Annotation')
@@ -112,14 +123,13 @@ pivot_annot_day0 = pivot_annot_day0.reindex(index=all_lines).dropna(how='all', a
 # ==========================================
 # 4. ВИЗУАЛИЗАЦИЯ
 # ==========================================
+# Увеличил высоту графика с 6 до 8, чтобы 3 строки текста помещались комфортно
 fig, axes = plt.subplots(1, 2, figsize=(12, 6), sharey=True, gridspec_kw={'width_ratios': [len(days), len(target_days)]})
-# fig.suptitle(f'Statistical Analysis for {TARGET_FA}', fontsize=14, y=1.02)
 
 # Левый хитмап: Сравнение с 54WT (Красный)
 if not pivot_color_wt.empty:
     sns.heatmap(pivot_color_wt, annot=pivot_annot_wt, fmt='', cmap='Reds', 
                 ax=axes[0], cbar=True, vmin=0, vmax=3,
-                # cbar_kws={'label': '-log(p-value)'},
                 linewidths=1, linecolor='white', annot_kws={"size": 9})
     axes[0].set_title(f'vs {CONTROL_LINE}', fontsize=14, pad=10)
     axes[0].set_xlabel('', fontsize=14)
@@ -133,7 +143,7 @@ if not pivot_color_day0.empty:
                 linewidths=1, linecolor='white', annot_kws={"size": 9})
     axes[1].set_title('vs Day 0', fontsize=14, pad=10)
     axes[1].set_xlabel('', fontsize=14)
-    axes[1].set_ylabel('') # Убираем подпись оси Y, так как она общая
+    axes[1].set_ylabel('') 
 
 plt.tight_layout()
 plt.show()

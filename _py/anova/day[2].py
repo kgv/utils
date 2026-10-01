@@ -91,7 +91,7 @@ res_df['Annotation'] = res_df.apply(get_annotation, axis=1)
 res_df['Log_P'] = -np.log10(res_df['p_value'])
 
 # Немного увеличил высоту графика (с 7 до 8), чтобы 3 строки текста хорошо помещались
-fig, axes = plt.subplots(1, len(target_days), figsize=(14, 8), sharey=True)
+fig, axes = plt.subplots(1, len(target_days), figsize=(14, 6), sharey=True)
 if len(target_days) == 1: axes = [axes]
 
 for i, day in enumerate(target_days):
