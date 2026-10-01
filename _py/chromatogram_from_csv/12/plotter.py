@@ -125,13 +125,14 @@ class ChromatogramPlotter:
                 z = 1 if m.layer == 'Задний' else 50
                 txt = m.text if m.text.strip() else f"{m.anchor_x:.2f}"
                 
-                # Динамическое выравнивание и точка привязки линии:
+                # Динамическое выравнивание и привязка линии связи:
+                # Если текст выше пика, выравниваем по нижнему краю и привязываем линию к низу текста
                 if m.label_y >= m.anchor_y:
                     va_val = 'bottom'
-                    rel_pos = (0.5, 0.0)  # Линия исходит из центра нижнего края текста
+                    rel_pos = (0.5, 0.0)  # (X, Y) рамки текста: центр по горизонтали, низ по вертикали
                 else:
                     va_val = 'top'
-                    rel_pos = (0.5, 1.0)  # Линия исходит из центра верхнего края текста
+                    rel_pos = (0.5, 1.0)  # центр по горизонтали, верх по вертикали
                 
                 arrowprops = None
                 if m.show_connector:
@@ -141,13 +142,13 @@ class ChromatogramPlotter:
                         lw=m.width, 
                         shrinkA=0, 
                         shrinkB=0,
-                        relpos=rel_pos  # Указываем точную точку привязки к тексту
+                        relpos=rel_pos  # Указываем точную точку привязки линии к тексту
                     )
                 
                 text_artist = self.ax.annotate(
                     txt,
-                    xy=(m.anchor_x, m.anchor_y),
-                    xytext=(m.label_x, m.label_y),
+                    xy=(m.anchor_x, m.anchor_y),  # Точка на графике (вершина пика)
+                    xytext=(m.label_x, m.label_y), # Позиция текста
                     textcoords="data",
                     color=m.color, fontsize=m.font_size,
                     va=va_val, ha='center', fontweight='bold', zorder=z+1,
