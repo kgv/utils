@@ -125,24 +125,14 @@ class ChromatogramPlotter:
                 z = 1 if m.layer == 'Задний' else 50
                 txt = m.text if m.text.strip() else f"{m.anchor_x:.2f}"
                 
-                # Динамическое выравнивание и точка привязки линии:
-                if m.label_y >= m.anchor_y:
-                    va_val = 'bottom'
-                    rel_pos = (0.5, 0.0)  # Линия исходит из центра нижнего края текста
-                else:
-                    va_val = 'top'
-                    rel_pos = (0.5, 1.0)  # Линия исходит из центра верхнего края текста
-                
                 arrowprops = None
                 if m.show_connector:
-                    arrowprops = dict(
-                        arrowstyle='-', 
-                        color=m.color, 
-                        lw=m.width, 
-                        shrinkA=0, 
-                        shrinkB=0,
-                        relpos=rel_pos  # Указываем точную точку привязки к тексту
-                    )
+                    arrowprops = dict(arrowstyle='-', color=m.color, lw=m.width, shrinkA=0, shrinkB=0)
+                
+                # Динамическое выравнивание: 
+                # Если текст выше точки привязки, выравниваем по нижнему краю (чтобы не наезжать на пик)
+                # Если ниже - по верхнему краю
+                va_val = 'bottom' if m.label_y >= m.anchor_y else 'top'
                 
                 text_artist = self.ax.annotate(
                     txt,
