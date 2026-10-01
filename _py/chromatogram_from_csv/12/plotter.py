@@ -5,7 +5,7 @@ from matplotlib.lines import Line2D
 import numpy as np
 from typing import Dict, List, Tuple
 
-from models import StyleConfig, PlotItem, HelperLine
+from models import StyleConfig, PlotItem, PlotMarker
 from data_manager import DataManager
 
 
@@ -15,16 +15,22 @@ class ChromatogramPlotter:
     def __init__(self) -> None:
         self.fig, self.ax = plt.subplots(figsize=(10, 6))
         self.fig.subplots_adjust(bottom=0.2, left=0.12, top=0.9, right=0.95)
-        
+
         self.plot_lines: Dict[str, Line2D] = {}
         self.helper_artists: List[plt.Artist] = []
 
         # --- Объекты для наведения (hover) ---
-        self.hover_point, = self.ax.plot([], [], 'ro', markersize=6, zorder=100, visible=False)
+        (self.hover_point,) = self.ax.plot(
+            [], [], "ro", markersize=6, zorder=100, visible=False
+        )
         self.hover_text = self.ax.annotate(
-            "", xy=(0, 0), xytext=(10, 10), textcoords="offset points",
+            "",
+            xy=(0, 0),
+            xytext=(10, 10),
+            textcoords="offset points",
             bbox=dict(boxstyle="round,pad=0.3", fc="white", ec="gray", alpha=0.9),
-            zorder=101, visible=False
+            zorder=101,
+            visible=False,
         )
 
     def get_figure(self) -> plt.Figure:
@@ -38,13 +44,20 @@ class ChromatogramPlotter:
             return getattr(config, f"gen_{prop}")
         return val
 
-    def refresh(self, data_manager: DataManager, x_min: float, x_max: float, 
-                y_mode: str, y_min: float, y_max: float) -> None:
+    def refresh(
+        self,
+        data_manager: DataManager,
+        x_min: float,
+        x_max: float,
+        y_mode: str,
+        y_min: float,
+        y_max: float,
+    ) -> None:
         """
         Основной метод обновления графика.
         """
         config = data_manager.config
-        
+
         # 1. Синхронизация линий (создание новых, удаление старых)
         current_ids = {item.id for item in data_manager.plots}
         for plot_id in list(self.plot_lines.keys()):
@@ -55,14 +68,14 @@ class ChromatogramPlotter:
         # 2. Обновление данных и стилей графиков
         for i, item in enumerate(data_manager.plots):
             if item.id not in self.plot_lines:
-                line, = self.ax.plot([], [])
+                (line,) = self.ax.plot([], [])
                 self.plot_lines[item.id] = line
-            
+
             line = self.plot_lines[item.id]
-            
+
             # Применение данных по X
             line.set_xdata(item.t)
-            
+
             # Применение данных по Y (с учетом нормализации)
             if y_mode == "Нормированный":
                 mask = (item.t >= x_min) & (item.t <= x_max)
@@ -72,14 +85,14 @@ class ChromatogramPlotter:
                 line.set_ydata(base_y + item.y_offset)
             else:
                 line.set_ydata(item.y_orig + item.y_offset)
-            
+
             # Применение стилей линии
             line.set_color(item.color)
             line.set_linestyle(item.linestyle)
             line.set_linewidth(item.line_width)
             line.set_visible(item.visible)
             line.set_zorder(i + 10)  # Базовый z-order для графиков
-            
+
             # Легенда
             show_leg = item.show_in_legend and item.visible
             line.set_label(item.label if show_leg else "_nolegend_")
@@ -94,104 +107,137 @@ class ChromatogramPlotter:
         # 4. Настройка оси Y
         self.ax.set_ylim(y_min, y_max)
 
-        # 5. Отрисовка вспомогательных линий
-        self._draw_helper_lines(data_manager.plots)
+        # 5. Отрисовка меток
+        self._draw_markers(data_manager.plots)
 
         # 6. Применение глобальных стилей (шрифты, сетка, тики)
         self._apply_style(config, y_mode)
 
-    def _draw_helper_lines(self, plots: List[PlotItem]) -> None:
-        """Отрисовывает вспомогательные линии и текст."""
+    def _draw_markers(self, plots: List[PlotItem]) -> None:
+        """Отрисовывает метки и линии связи."""
         for artist in self.helper_artists:
             artist.remove()
         self.helper_artists.clear()
 
         for p in plots:
-            if not p.visible: continue  # Скрываем линии, если скрыт сам график
-            for h in p.helpers:
-                z = 1 if h.layer == 'Задний' else 50
-                txt = h.text if h.text.strip() else str(h.pos)
-                
-                if h.line_type == 'V':
-                    line, = self.ax.plot([h.pos, h.pos], [h.start, h.end], color=h.color, lw=h.width, zorder=z)
-                    anchor_x, anchor_y = h.pos, h.label_pos
-                    offset_x, offset_y = h.label_offset, 0
-                else:
-                    line, = self.ax.plot([h.start, h.end], [h.pos, h.pos], color=h.color, lw=h.width, zorder=z)
-                    anchor_x, anchor_y = h.label_pos, h.pos
-                    offset_x, offset_y = 0, h.label_offset
-                    
-                arrowprops = dict(arrowstyle='-', color=h.color, lw=h.width, shrinkA=0, shrinkB=0) if getattr(h, 'show_connector', False) else None
-                
+            if not p.visible:
+                continue  # Скрываем метки, если скрыт сам график
+            for m in p.markers:
+                z = 1 if m.layer == "Задний" else 50
+                txt = m.text if m.text.strip() else f"{m.anchor_x:.2f}"
+
+                arrowprops = None
+                if m.show_connector:
+                    arrowprops = dict(
+                        arrowstyle="-", color=m.color, lw=m.width, shrinkA=0, shrinkB=0
+                    )
+
                 text_artist = self.ax.annotate(
                     txt,
-                    xy=(anchor_x, anchor_y),
-                    xytext=(offset_x, offset_y),
-                    textcoords="offset points",
-                    color=h.color, fontsize=h.font_size,
-                    va='bottom', ha='center', fontweight='bold', zorder=z+1,
-                    rotation=h.label_rotation,
-                    arrowprops=arrowprops
+                    xy=(m.anchor_x, m.anchor_y),
+                    xytext=(m.label_x, m.label_y),
+                    textcoords="data",  # Координаты текста задаются в координатах осей
+                    color=m.color,
+                    fontsize=m.font_size,
+                    va="center",
+                    ha="center",
+                    fontweight="bold",
+                    zorder=z + 1,
+                    rotation=m.label_rotation,
+                    arrowprops=arrowprops,
                 )
-                self.helper_artists.extend([line, text_artist])
+                self.helper_artists.append(text_artist)
 
     def _apply_style(self, config: StyleConfig, y_mode: str) -> None:
         """Применяет настройки оформления к осям, сетке и легенде."""
         # Заголовки
         self.ax.set_title(
             config.title_text,
-            fontfamily=self._resolve_font(config, 'title', 'font'),
-            fontweight=self._resolve_font(config, 'title', 'weight'),
-            fontstyle=self._resolve_font(config, 'title', 'style'),
-            fontsize=config.title_size
+            fontfamily=self._resolve_font(config, "title", "font"),
+            fontweight=self._resolve_font(config, "title", "weight"),
+            fontstyle=self._resolve_font(config, "title", "style"),
+            fontsize=config.title_size,
         )
-        
-        y_label_text = config.y_label_norm if y_mode == "Нормированный" else config.y_label_abs
-        
-        for axis, label in [(self.ax.xaxis, config.x_label), (self.ax.yaxis, y_label_text)]:
+
+        y_label_text = (
+            config.y_label_norm if y_mode == "Нормированный" else config.y_label_abs
+        )
+
+        for axis, label in [
+            (self.ax.xaxis, config.x_label),
+            (self.ax.yaxis, y_label_text),
+        ]:
             axis.set_label_text(
                 label,
-                fontfamily=self._resolve_font(config, 'label', 'font'),
-                fontweight=self._resolve_font(config, 'label', 'weight'),
-                fontstyle=self._resolve_font(config, 'label', 'style'),
-                fontsize=config.label_size
+                fontfamily=self._resolve_font(config, "label", "font"),
+                fontweight=self._resolve_font(config, "label", "weight"),
+                fontstyle=self._resolve_font(config, "label", "style"),
+                fontsize=config.label_size,
             )
 
         # Тики (деления)
         for ax_obj in [self.ax.xaxis, self.ax.yaxis]:
             for tick in ax_obj.get_ticklabels():
-                tick.set_fontfamily(self._resolve_font(config, 'tick', 'font'))
-                tick.set_fontweight(self._resolve_font(config, 'tick', 'weight'))
-                tick.set_fontstyle(self._resolve_font(config, 'tick', 'style'))
+                tick.set_fontfamily(self._resolve_font(config, "tick", "font"))
+                tick.set_fontweight(self._resolve_font(config, "tick", "weight"))
+                tick.set_fontstyle(self._resolve_font(config, "tick", "style"))
                 tick.set_fontsize(config.tick_size)
 
-        self.ax.tick_params(which='major', width=config.major_tick_width, length=config.major_tick_length)
-        self.ax.tick_params(which='minor', width=config.minor_tick_width, length=config.minor_tick_length)
-        
-        self.ax.xaxis.set_major_locator(MultipleLocator(config.x_major_step) if config.x_major_step > 0 else AutoLocator())
-        self.ax.xaxis.set_minor_locator(MultipleLocator(config.x_minor_step) if config.x_minor_step > 0 else NullLocator())
-        self.ax.yaxis.set_major_locator(MultipleLocator(config.y_major_step) if config.y_major_step > 0 else AutoLocator())
-        self.ax.yaxis.set_minor_locator(MultipleLocator(config.y_minor_step) if config.y_minor_step > 0 else NullLocator())
+        self.ax.tick_params(
+            which="major",
+            width=config.major_tick_width,
+            length=config.major_tick_length,
+        )
+        self.ax.tick_params(
+            which="minor",
+            width=config.minor_tick_width,
+            length=config.minor_tick_length,
+        )
+
+        self.ax.xaxis.set_major_locator(
+            MultipleLocator(config.x_major_step)
+            if config.x_major_step > 0
+            else AutoLocator()
+        )
+        self.ax.xaxis.set_minor_locator(
+            MultipleLocator(config.x_minor_step)
+            if config.x_minor_step > 0
+            else NullLocator()
+        )
+        self.ax.yaxis.set_major_locator(
+            MultipleLocator(config.y_major_step)
+            if config.y_major_step > 0
+            else AutoLocator()
+        )
+        self.ax.yaxis.set_minor_locator(
+            MultipleLocator(config.y_minor_step)
+            if config.y_minor_step > 0
+            else NullLocator()
+        )
 
         # Рамка и сетка
         for spine in self.ax.spines.values():
             spine.set_linewidth(config.spine_width)
-            
+
         self.ax.grid(False)
-        self.ax.grid(visible=True, which='major', alpha=config.grid_alpha, lw=config.grid_width)
+        self.ax.grid(
+            visible=True, which="major", alpha=config.grid_alpha, lw=config.grid_width
+        )
 
         # Легенда
         if self.ax.get_legend():
             self.ax.get_legend().remove()
-            
+
         if config.show_legend and self.plot_lines:
-            leg = self.ax.legend(fontsize=config.legend_size, loc=config.legend_position)
+            leg = self.ax.legend(
+                fontsize=config.legend_size, loc=config.legend_position
+            )
             if leg:
                 plt.setp(
                     leg.get_texts(),
-                    fontfamily=self._resolve_font(config, 'legend', 'font'),
-                    fontweight=self._resolve_font(config, 'legend', 'weight'),
-                    fontstyle=self._resolve_font(config, 'legend', 'style')
+                    fontfamily=self._resolve_font(config, "legend", "font"),
+                    fontweight=self._resolve_font(config, "legend", "weight"),
+                    fontstyle=self._resolve_font(config, "legend", "style"),
                 )
 
     def resize_figure(self, width: float, height: float) -> None:
@@ -200,30 +246,32 @@ class ChromatogramPlotter:
 
     def save_figure(self, filepath: str) -> None:
         """Сохраняет график в файл."""
-        ext = filepath.split('.')[-1].lower()
-        if ext == 'png':
-            self.fig.savefig(filepath, format='png', bbox_inches='tight', dpi=300)
+        ext = filepath.split(".")[-1].lower()
+        if ext == "png":
+            self.fig.savefig(filepath, format="png", bbox_inches="tight", dpi=300)
         else:
-            self.fig.savefig(filepath, format='svg', bbox_inches='tight')
+            self.fig.savefig(filepath, format="svg", bbox_inches="tight")
 
     def clear(self) -> None:
         """Полностью очищает график."""
         for line in self.plot_lines.values():
             line.remove()
         self.plot_lines.clear()
-        
+
         for artist in self.helper_artists:
             artist.remove()
         self.helper_artists.clear()
-        
+
         # --- Скрываем hover ---
         self.hover_point.set_visible(False)
         self.hover_text.set_visible(False)
-        
+
         self.ax.set_xlim(0, 1)
         self.ax.set_ylim(0, 1)
-    
-    def update_hover(self, event_x: float, event_y: float, event_xdata: float, event_ydata: float):
+
+    def update_hover(
+        self, event_x: float, event_y: float, event_xdata: float, event_ydata: float
+    ):
         """Ищет самую высокую точку в заданном радиусе от курсора и обновляет маркер."""
         candidates = []
         RADIUS_PX = 5  # Радиус захвата в пикселях
@@ -233,51 +281,56 @@ class ChromatogramPlotter:
         inv_trans = self.ax.transData.inverted()
         p1 = inv_trans.transform((event_x - RADIUS_PX, event_y - RADIUS_PX))
         p2 = inv_trans.transform((event_x + RADIUS_PX, event_y + RADIUS_PX))
-        
+
         x_min, x_max = min(p1[0], p2[0]), max(p1[0], p2[0])
         y_min, y_max = min(p1[1], p2[1]), max(p1[1], p2[1])
 
         # Ищем кандидатов среди всех видимых графиков
         for line in self.plot_lines.values():
-            if not line.get_visible(): continue
+            if not line.get_visible():
+                continue
             x_data = line.get_xdata()
             y_data = line.get_ydata()
-            if len(x_data) == 0: continue
+            if len(x_data) == 0:
+                continue
 
             # 2. Быстрая фильтрация: оставляем только точки внутри квадрата захвата.
             # Это работает в сотни раз быстрее, чем трансформация всех точек в пиксели.
-            mask = (x_data >= x_min) & (x_data <= x_max) & (y_data >= y_min) & (y_data <= y_max)
-            
+            mask = (
+                (x_data >= x_min)
+                & (x_data <= x_max)
+                & (y_data >= y_min)
+                & (y_data <= y_max)
+            )
+
             if not np.any(mask):
                 continue  # Если рядом с курсором нет точек этой линии, пропускаем её
-                
+
             f_x = x_data[mask]
             f_y = y_data[mask]
 
             # 3. Переводим в пиксели ТОЛЬКО отфильтрованные точки (их будет буквально несколько штук)
             xy_data = np.column_stack((f_x, f_y))
             xy_pixels = self.ax.transData.transform(xy_data)
-            
+
             # 4. Считаем точное расстояние в пикселях (чтобы отсечь углы квадрата и оставить круг)
             dists = np.hypot(xy_pixels[:, 0] - event_x, xy_pixels[:, 1] - event_y)
             valid_indices = np.where(dists <= RADIUS_PX)[0]
-            
+
             for idx in valid_indices:
-                candidates.append({
-                    'px': f_x[idx],
-                    'py': f_y[idx],
-                    'dist': dists[idx]
-                })
+                candidates.append({"px": f_x[idx], "py": f_y[idx], "dist": dists[idx]})
 
         if candidates:
             # 5. Находим ЛУЧШУЮ точку за один проход (без полной сортировки списка).
             # Ищем минимум: сначала по -py (самый высокий Y), затем по dist (самый близкий к центру).
-            best = min(candidates, key=lambda c: (-c['py'], c['dist']))
-            
-            closest_data = (best['px'], best['py'])
+            best = min(candidates, key=lambda c: (-c["py"], c["dist"]))
+
+            closest_data = (best["px"], best["py"])
 
             self.hover_point.set_data([closest_data[0]], [closest_data[1]])
-            self.hover_text.set_text(f"X: {closest_data[0]:.3f}\nY: {closest_data[1]:.2f}")
+            self.hover_text.set_text(
+                f"X: {closest_data[0]:.3f}\nY: {closest_data[1]:.2f}"
+            )
             self.hover_text.xy = closest_data
             self.hover_point.set_visible(True)
             self.hover_text.set_visible(True)
