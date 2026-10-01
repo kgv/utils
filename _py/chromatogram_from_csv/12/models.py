@@ -94,7 +94,7 @@ class PlotItem:
     x_offset: float = 0.0
     y_offset: float = 0.0
     visible: bool = True
-    helpers: List['HelperLine'] = field(default_factory=list)
+    markers: List['PlotMarker'] = field(default_factory=list)
 
     def __post_init__(self) -> None:
         """Инициализация массива времени после создания объекта."""
@@ -102,19 +102,17 @@ class PlotItem:
 
 
 @dataclass(kw_only=True)
-class HelperLine:
-    """Модель данных вспомогательной линии (вертикальной или горизонтальной)."""
+class PlotMarker:
+    """Модель данных метки (маркера) на графике."""
     text: str = ''
-    pos: float
+    anchor_x: float
+    anchor_y: float
+    label_x: float
+    label_y: float
     color: str = '#000000'
-    end: float
     font_size: int = 9
-    label_offset: float = 0.0
-    label_pos: float
     label_rotation: int = 0
     layer: str = 'Задний'
-    line_type: str  # 'V' или 'H'
-    start: float
     width: float = 0.5
     show_connector: bool = False
     id: str = field(default_factory=lambda: str(uuid.uuid4()))
