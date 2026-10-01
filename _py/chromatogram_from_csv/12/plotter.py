@@ -120,31 +120,29 @@ class ChromatogramPlotter:
         self.helper_artists.clear()
 
         for p in plots:
-            if not p.visible:
-                continue  # Скрываем метки, если скрыт сам график
+            if not p.visible: continue  # Скрываем метки, если скрыт сам график
             for m in p.markers:
-                z = 1 if m.layer == "Задний" else 50
+                z = 1 if m.layer == 'Задний' else 50
                 txt = m.text if m.text.strip() else f"{m.anchor_x:.2f}"
-
+                
                 arrowprops = None
                 if m.show_connector:
-                    arrowprops = dict(
-                        arrowstyle="-", color=m.color, lw=m.width, shrinkA=0, shrinkB=0
-                    )
-
+                    arrowprops = dict(arrowstyle='-', color=m.color, lw=m.width, shrinkA=0, shrinkB=0)
+                
+                # Динамическое выравнивание: 
+                # Если текст выше точки привязки, выравниваем по нижнему краю (чтобы не наезжать на пик)
+                # Если ниже - по верхнему краю
+                va_val = 'bottom' if m.label_y >= m.anchor_y else 'top'
+                
                 text_artist = self.ax.annotate(
                     txt,
                     xy=(m.anchor_x, m.anchor_y),
                     xytext=(m.label_x, m.label_y),
-                    textcoords="data",  # Координаты текста задаются в координатах осей
-                    color=m.color,
-                    fontsize=m.font_size,
-                    va="center",
-                    ha="center",
-                    fontweight="bold",
-                    zorder=z + 1,
+                    textcoords="data",
+                    color=m.color, fontsize=m.font_size,
+                    va=va_val, ha='center', fontweight='bold', zorder=z+1,
                     rotation=m.label_rotation,
-                    arrowprops=arrowprops,
+                    arrowprops=arrowprops
                 )
                 self.helper_artists.append(text_artist)
 
