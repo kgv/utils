@@ -6,8 +6,11 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolb
 from matplotlib.figure import Figure
 
 # 1. Загрузка и подготовка данных
-df = pd.read_csv('Cypresses/csv/Absoute.csv', index_col=[0, 1, 2])
-# df = pd.read_csv('Cypresses/csv/Percent.csv', index_col=[0, 1, 2])
+file = 'Absoute'
+# file = 'Percent'
+path = f"Cypresses/csv/{file}.csv"
+df = pd.read_csv(path, index_col=[0, 1, 2])
+# df = pd.read_csv(path, index_col=[0, 1, 2])
 df.columns = df.columns.str.strip()
 df = df.apply(pd.to_numeric, errors='coerce').fillna(0)
 
@@ -65,7 +68,7 @@ def update_plot(event=None):
     Z = linkage(df_samples, method=method, metric=metric)
     dendrogram(Z, labels=labels, orientation='right', leaf_rotation=0, leaf_font_size=10, color_threshold=0, ax=ax)
     
-    ax.set_title(f'Кластерное дерево (Метод: {method} | Метрика: {metric})', fontsize=16)
+    ax.set_title(f"{method.capitalize()} & {metric.capitalize()} & {file}", fontsize=16)
     # ax.set_ylabel('Расстояние', fontsize=14)
     ax.grid(axis='x', linestyle='--', alpha=0.7) 
     
