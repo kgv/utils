@@ -7,9 +7,6 @@ import seaborn as sns
 # ==========================================
 # 1. ЯДЕРНЫЙ ВАРИАНТ ЧТЕНИЯ CSV
 # ==========================================
-# header=0 - выкидывает первую строку файла с кривыми заголовками
-# names=[...] - принудительно ставит наши чистые названия
-# df = pd.read_csv('_py/anova/Table1.csv', 
 df = pd.read_csv('_py/anova/Table2.csv', 
                  sep=',', 
                  header=0, 
@@ -21,7 +18,6 @@ df = pd.read_csv('_py/anova/Table2.csv',
 for col in df.columns:
     df[col] = df[col].astype(str).str.strip(' "')
 
-# Проверяем, что теперь всё идеально:
 print("Колонки, которые теперь видит Питон:", df.columns.tolist())
 
 # 3. Разделяем "Mean±SD" на две числовые колонки
@@ -51,25 +47,28 @@ for day in days:
                 continue
             mean_e, sd_e = treat.iloc[0]['Mean'], treat.iloc[0]['SD']
             
+            # Считаем t-статистику и p-value
             t_stat, p_val = ttest_ind_from_stats(mean1=mean_c, std1=sd_c, nobs1=N_SAMPLES,
                                                  mean2=mean_e, std2=sd_e, nobs2=N_SAMPLES)
+            
+            # Для двух групп F-критерий (ANOVA) равен квадрату t-критерия
+            f_stat = t_stat ** 2 
             
             results.append({
                 'Day': day,
                 'Fatty acid': fa,
                 'Line': exp,
-                'p_value': p_val
+                'p_value': p_val,
+                'f_stat': f_stat # Добавляем F-статистику в результаты
             })
 
 res_df = pd.DataFrame(results)
 
-# def get_significance_stars(p):
-#     if pd.isna(p): return ''
-#     if p < 0.001: return '***'
-#     elif p < 0.01: return '**'
-#     elif p < 0.05: return '*'
-#     else: return 'ns'
-def get_annotation(p):
+# Обновленная функция теперь принимает всю строку датафрейма (row)
+def get_annotation(row):
+    p = row['p_value']
+    f = row['f_stat']
+    
     if pd.isna(p): return ''
     
     # Определяем звездочки
@@ -80,20 +79,22 @@ def get_annotation(p):
     
     # Форматируем p-value до 3 знаков после запятой
     if p < 0.001:
-        p_text = '<0.001'
+        p_text = 'p<0.001'
     else:
-        p_text = f"{p:.3f}" # Округление до 3 знаков
+        p_text = f"p={p:.3f}"
         
-    # Возвращаем p-value и звездочки на новой строке
-    return f"{p_text}\n({stars})"
+    # Форматируем F-статистику (округляем до 2 знаков)
+    f_text = f"F={f:.2f}"
+        
+    # Возвращаем F, p-value и звездочки на разных строках
+    return f"{f_text}\n{p_text}\n({stars})"
 
-res_df['Significance'] = res_df['p_value'].apply(get_annotation)
+# Применяем функцию ко всем строкам (axis=1)
+res_df['Significance'] = res_df.apply(get_annotation, axis=1)
 res_df['Log_P'] = -np.log10(res_df['p_value'])
 
-fig, axes = plt.subplots(1, 3, figsize=(16, 6), sharey=True)
-# fig.suptitle(f'Статистическая значимость отличий от контроля ({CONTROL_LINE})\n'
-#              f'Тест Стьюдента (n={N_SAMPLES}). ns: p>0.05, *: p<0.05, **: p<0.01, ***: p<0.001', 
-#              fontsize=14, y=1.05)
+# Увеличил высоту графика (с 6 до 8), чтобы 3 строки текста влезли без наложения
+fig, axes = plt.subplots(1, 3, figsize=(16, 8), sharey=True)
 
 for i, day in enumerate(days):
     day_data = res_df[res_df['Day'] == day]
@@ -102,7 +103,6 @@ for i, day in enumerate(days):
     pivot_color = day_data.pivot(index='Fatty acid', columns='Line', values='Log_P')
     pivot_annot = day_data.pivot(index='Fatty acid', columns='Line', values='Significance')
     
-    # sns.heatmap(pivot_color, annot=pivot_annot, fmt='', cmap='Reds', 
     sns.heatmap(pivot_color, annot=pivot_annot, fmt='', cmap='Greens', 
                 ax=axes[i], cbar=(i==2), vmin=0, vmax=3, 
                 cbar_kws={'label': '-log(p-value)'} if i==2 else None,
@@ -110,7 +110,6 @@ for i, day in enumerate(days):
     
     axes[i].set_title(f'Day {day}', fontsize=14)
     axes[i].set_xlabel('', fontsize=14)
-    # if i == 0: axes[i].set_ylabel('Fatty acid', fontsize=14)
     if i == 0: axes[i].set_ylabel('Compound', fontsize=14)
     else: axes[i].set_ylabel('')
 
