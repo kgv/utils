@@ -34,7 +34,7 @@ class DataManager:
 
             # Ищем начало данных (строка начинается с цифры)
             for i, line in enumerate(lines):
-                if line.strip() and line[0].isdigit():
+                if line.strip() == '0;0':
                     start_row = i
                     break
 
