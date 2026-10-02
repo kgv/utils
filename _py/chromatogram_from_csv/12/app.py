@@ -212,7 +212,8 @@ class AppController:
         self.data_manager.config.y_max = self.control_panel.tab_scale.y_max_var.get()
 
         plots_data = []
-        for p in self.data_manager.plots:
+        # Сохраняем в обратном порядке
+        for p in reversed(self.data_manager.plots):
             plot_dict = {
                 "filepath": p.filepath,
                 "color": p.color,
@@ -272,8 +273,8 @@ class AppController:
             else:
                 plots_data = data
 
-            # Загружаем графики
-            for p_dict in plots_data:
+            # Загружаем в обратном порядке
+            for p_dict in reversed(plots_data):
                 filepath = p_dict.get("filepath")
                 if not filepath or not os.path.exists(filepath):
                     print(f"Файл не найден: {filepath}")
