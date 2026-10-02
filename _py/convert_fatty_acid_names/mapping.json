@@ -1,9 +1,10 @@
 {
   "14:0"    : ["Methyl tetradecanoate"                                                                                  ],
   "16:0"    : ["Hexadecanoic acid, methyl ester"                                                                        ],
-  "16:1ω-14": ["2-Hexadecenoic acid, methyl ester, (E)-"                                                                ],
   "16:1ω-7" : ["9-Hexadecenoic acid, methyl ester, (Z)-",               "Methyl hexadec-9-enoate"                       ],
   "16:1ω-9" : ["7-Hexadecenoic acid, methyl ester, (Z)-"                                                                ],
+  "16:1ω-14": ["2-Hexadecenoic acid, methyl ester, (E)-"                                                                ],
+  "16:2ω-4" : ["9,12-Hexadecadienoic acid, methyl ester"                                                                ],
   "16:2ω-6" : ["7,10-Hexadecadienoic acid, methyl ester"                                                                ],
   "16:3ω-3" : ["7,10,13-Hexadecatrienoic acid, methyl ester"                                                            ],
   "16:3ω-6" : ["4,7,10-Hexadecatrienoic acid, methyl ester"                                                             ],
@@ -21,11 +22,12 @@
   "20:2ω-6" : ["11,14-Eicosadienoic acid, methyl ester"                                                                 ],
   "20:2ω-7" : ["11,13-Eicosadienoic acid, methyl ester"                                                                 ],
   "22:0"    : ["Docosanedioic acid, dimethyl ester",                    "Docosanoic acid, methyl ester"                 ],
-  "22:1ω-11": ["Methyl 11-docosenoate"                                                                                  ],
   "22:1ω-9" : ["13-Docosenoic acid, methyl ester, (Z)-"                                                                 ],
+  "22:1ω-11": ["Methyl 11-docosenoate"                                                                                  ],
   "23:0"    : ["Tricosanoic acid, methyl ester"                                                                         ],
   "24:0"    : ["Tetracosanoic acid, methyl ester"                                                                       ],
   "24:1ω-9" : ["15-Tetracosenoic acid, methyl ester"                                                                    ],
   "26:0"    : ["Hexacosanoic acid, methyl ester"                                                                        ],
   "28:0"    : ["Octacosanoic acid, methyl ester"                                                                        ]
 }
+
