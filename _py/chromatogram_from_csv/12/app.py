@@ -11,7 +11,6 @@ from plotter import ChromatogramPlotter
 from ui.main_window import MainWindow
 from ui.control_panel import ControlPanel
 
-
 class AppController:
     def __init__(self):
         self.data_manager = DataManager()
@@ -494,8 +493,8 @@ class AppController:
         m.anchor_y = round(y_data[idx_closest], 3)
         
         lim = self.plotter.ax.get_ylim()
-        # Отступ в 3% от видимой высоты графика, чтобы текст не прилипал к линии графика
-        padding = abs(lim[1] - lim[0]) * 0.03
+        # Отступ в 2% от видимой высоты графика, чтобы текст не прилипал к линии графика
+        padding = abs(lim[1] - lim[0]) * 0.02
         
         m.label_x = m.anchor_x
         m.label_y = round(m.anchor_y + padding, 3)
@@ -512,7 +511,7 @@ class AppController:
             
         y_data = self.plotter.plot_lines[p.id].get_ydata()
         lim_y = self.plotter.ax.get_ylim()
-        padding = abs(lim_y[1] - lim_y[0]) * 0.03
+        padding = abs(lim_y[1] - lim_y[0]) * 0.02
         
         for m in p.markers:
             idx_closest = np.argmin(np.abs(p.t - m.anchor_x))
