@@ -11,10 +11,54 @@ from plotter import ChromatogramPlotter
 from ui.main_window import MainWindow
 from ui.control_panel import ControlPanel
 
+
 class AppController:
     def __init__(self):
         self.data_manager = DataManager()
         self.plotter = ChromatogramPlotter()
+
+        [
+            # Красный
+            "#d62728",
+            "#ff9896",
+            "#9c1c1d",
+            # Коричневый
+            "#8c564b",
+            "#c49c94",
+            "#5e3a32",
+            # Оранжевый
+            "#ff7f0e",
+            "#ffbb78",
+            "#cc660b",
+            # Оливковый
+            "#bcbd22",
+            "#dbdb8d",
+            "#8c8d19",
+            # Зеленый
+            "#2ca02c",
+            "#98df8a",
+            "#1f7a1f",
+            # Бирюзовый
+            "#17becf",
+            "#9edae5",
+            "#118d99",
+            # Синий
+            "#1f77b4",
+            "#aec7e8",
+            "#165785",
+            # Фиолетовый
+            "#9467bd",
+            "#c5b0d5",
+            "#6b4a8a",
+            # Розовый
+            "#e377c2",
+            "#f7b6d2",
+            "#a6578d",
+            # Серый
+            "#7f7f7f",
+            "#c7c7c7",
+            "#5c5c5c",
+        ]
 
         # Палитра цветов
         self.palette = [
@@ -480,46 +524,46 @@ class AppController:
     def on_auto_marker_pos(self, plot_idx: int, marker_idx: int):
         p = self.data_manager.plots[plot_idx]
         m = p.markers[marker_idx]
-        
-        if len(p.t) == 0 or p.id not in self.plotter.plot_lines: 
+
+        if len(p.t) == 0 or p.id not in self.plotter.plot_lines:
             return
-            
+
         y_data = self.plotter.plot_lines[p.id].get_ydata()
-        
+
         # Ищем ближайшую точку по оси X (времени) к заданному anchor_x
         idx_closest = np.argmin(np.abs(p.t - m.anchor_x))
-        
+
         m.anchor_x = round(p.t[idx_closest], 3)
         m.anchor_y = round(y_data[idx_closest], 3)
-        
+
         lim = self.plotter.ax.get_ylim()
         # Отступ в 2% от видимой высоты графика, чтобы текст не прилипал к линии графика
         padding = abs(lim[1] - lim[0]) * 0.02
-        
+
         m.label_x = m.anchor_x
         m.label_y = round(m.anchor_y + padding, 3)
-        
+
         dx, dy = self._get_steps()
         self.control_panel.tab_helpers.update_list(self.data_manager.plots, dx, dy)
         self.request_refresh(force=True)
 
     def on_auto_marker_pos_all(self, plot_idx: int):
         p = self.data_manager.plots[plot_idx]
-        
-        if len(p.t) == 0 or p.id not in self.plotter.plot_lines: 
+
+        if len(p.t) == 0 or p.id not in self.plotter.plot_lines:
             return
-            
+
         y_data = self.plotter.plot_lines[p.id].get_ydata()
         lim_y = self.plotter.ax.get_ylim()
         padding = abs(lim_y[1] - lim_y[0]) * 0.02
-        
+
         for m in p.markers:
             idx_closest = np.argmin(np.abs(p.t - m.anchor_x))
             m.anchor_x = round(p.t[idx_closest], 3)
             m.anchor_y = round(y_data[idx_closest], 3)
             m.label_x = m.anchor_x
             m.label_y = round(m.anchor_y + padding, 3)
-            
+
         dx, dy = self._get_steps()
         self.control_panel.tab_helpers.update_list(self.data_manager.plots, dx, dy)
         self.request_refresh(force=True)
@@ -530,13 +574,15 @@ class AppController:
             current = self.data_manager.plots[idx].markers[marker_idx].color
         else:
             current = self.data_manager.plots[idx].color
-            
+
         new_c = colorchooser.askcolor(initialcolor=current)[1]
         if new_c:
             if is_marker:
                 self.data_manager.plots[idx].markers[marker_idx].color = new_c
                 dx, dy = self._get_steps()
-                self.control_panel.tab_helpers.update_list(self.data_manager.plots, dx, dy)
+                self.control_panel.tab_helpers.update_list(
+                    self.data_manager.plots, dx, dy
+                )
             else:
                 self.data_manager.plots[idx].color = new_c
                 self.control_panel.tab_files.update_list(self.data_manager.plots)
