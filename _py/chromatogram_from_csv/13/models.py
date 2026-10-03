@@ -17,25 +17,25 @@ class StyleConfig:
     title_font: str = 'Inherit'
     title_weight: str = 'Inherit'
     title_style: str = 'Inherit'
-    title_size: float = 14.0
+    title_size: float = 28.0
     
     # Шрифты подписей осей
     label_font: str = 'Inherit'
     label_weight: str = 'Inherit'
     label_style: str = 'Inherit'
-    label_size: float = 12.0
+    label_size: float = 24.0
     
     # Шрифты делений (тиков)
     tick_font: str = 'Inherit'
     tick_weight: str = 'Inherit'
     tick_style: str = 'Inherit'
-    tick_size: float = 10.0
+    tick_size: float = 20.0
     
     # Шрифты легенды
     legend_font: str = 'Inherit'
     legend_weight: str = 'Inherit'
     legend_style: str = 'Inherit'
-    legend_size: float = 10.0
+    legend_size: float = 20.0
     
     # Линии и сетка
     grid_alpha: float = 0.3
@@ -53,10 +53,10 @@ class StyleConfig:
     y_minor_step: float = 0.0
     
     # Тексты
-    title_text: str = 'EIC Chromatograms'
-    x_label: str = 'Время (мин)'
-    y_label_abs: str = 'Интенсивность (Counts)'
-    y_label_norm: str = 'Относительная интенсивность (%)'
+    title_text: str = ''
+    x_label: str = 'Retention time (min)'
+    y_label_abs: str = 'Detector response (Counts)'
+    y_label_norm: str = 'Relative detector response (%)'
     
     # Состояние отображения
     show_legend: bool = True
