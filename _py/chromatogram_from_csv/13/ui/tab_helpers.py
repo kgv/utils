@@ -176,10 +176,10 @@ class TabHelpers(ttk.Frame):
             btn_auto.pack(side="left", padx=(1, 5))
             ToolTip(btn_auto, "Найти Y на графике по заданному X привязки")
 
-            # 2. Координаты текста (Label)
+            # 2. Смещение текста (Offset)
             for k, w, step, tip in [
-                ("label_x", 7, self.x_step, "X текста"),
-                ("label_y", 7, self.y_step, "Y текста"),
+                ("offset_x", 7, self.x_step, "Смещение текста по X (в ед. оси)"),
+                ("offset_y", 7, self.y_step, "Смещение текста по Y (в ед. оси)"),
             ]:
                 sp = tk.Spinbox(f_row, from_=-1e9, to=1e9, increment=step, width=w)
                 sp.config(

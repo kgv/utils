@@ -107,8 +107,8 @@ class PlotMarker:
     text: str = ''
     anchor_x: float
     anchor_y: float
-    label_x: float
-    label_y: float
+    offset_x: float = 0.0
+    offset_y: float = 0.0
     color: str = '#000000'
     font_size: int = 9
     label_rotation: int = 0

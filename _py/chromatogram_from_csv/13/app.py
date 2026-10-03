@@ -295,14 +295,28 @@ class AppController:
 
                 # Загрузка markers
                 for m_dict in p_dict.get("markers", []):
+                    ax = m_dict.get("anchor_x", 0.0)
+                    ay = m_dict.get("anchor_y", 0.0)
+                    
+                    # Поддержка старых файлов (пересчет абсолютных координат в смещение)
+                    if "label_x" in m_dict and "offset_x" not in m_dict:
+                        ox = m_dict["label_x"] - ax
+                    else:
+                        ox = m_dict.get("offset_x", 0.0)
+                        
+                    if "label_y" in m_dict and "offset_y" not in m_dict:
+                        oy = m_dict["label_y"] - ay
+                    else:
+                        oy = m_dict.get("offset_y", 0.0)
+
                     m = PlotMarker(
-                        anchor_x=m_dict.get("anchor_x", 0.0),
-                        anchor_y=m_dict.get("anchor_y", 0.0),
-                        label_x=m_dict.get("label_x", 0.0),
-                        label_y=m_dict.get("label_y", 0.0),
+                        anchor_x=ax,
+                        anchor_y=ay,
+                        offset_x=ox,
+                        offset_y=oy,
                     )
                     for k, v in m_dict.items():
-                        if hasattr(m, k) and k != "id":
+                        if hasattr(m, k) and k not in ["id", "label_x", "label_y"]:
                             setattr(m, k, v)
                     plot_item.markers.append(m)
 
@@ -487,11 +501,11 @@ class AppController:
         # По умолчанию ставим метку по центру видимой области
         anchor_x = round(np.mean(xlim), 2)
         anchor_y = round(np.mean(ylim), 2)
-        label_x = anchor_x
-        # Текст чуть выше точки привязки (на 5% от высоты графика)
-        label_y = round(anchor_y + abs(ylim[1] - ylim[0]) * 0.05, 2)
+        offset_x = 0.0
+        # Смещение чуть выше точки привязки (на 5% от высоты графика)
+        offset_y = round(abs(ylim[1] - ylim[0]) * 0.05, 2)
 
-        self.data_manager.add_marker(plot_idx, anchor_x, anchor_y, label_x, label_y)
+        self.data_manager.add_marker(plot_idx, anchor_x, anchor_y, offset_x, offset_y)
         dx, dy = self._get_steps()
         self.control_panel.tab_helpers.update_list(self.data_manager.plots, dx, dy)
         self.request_refresh(force=True)
@@ -501,8 +515,8 @@ class AppController:
             if key in [
                 "anchor_x",
                 "anchor_y",
-                "label_x",
-                "label_y",
+                "offset_x",
+                "offset_y",
                 "label_rotation",
                 "width",
             ]:
@@ -536,11 +550,10 @@ class AppController:
         m.anchor_y = round(y_data[idx_closest], 3)
 
         lim = self.plotter.ax.get_ylim()
-        # Отступ в 2% от видимой высоты графика, чтобы текст не прилипал к линии графика
         padding = abs(lim[1] - lim[0]) * 0.02
 
-        m.label_x = m.anchor_x
-        m.label_y = round(m.anchor_y + padding, 3)
+        m.offset_x = 0.0
+        m.offset_y = round(padding, 3)
 
         dx, dy = self._get_steps()
         self.control_panel.tab_helpers.update_list(self.data_manager.plots, dx, dy)
@@ -560,8 +573,8 @@ class AppController:
             idx_closest = np.argmin(np.abs(p.t - m.anchor_x))
             m.anchor_x = round(p.t[idx_closest], 3)
             m.anchor_y = round(y_data[idx_closest], 3)
-            m.label_x = m.anchor_x
-            m.label_y = round(m.anchor_y + padding, 3)
+            m.offset_x = 0.0
+            m.offset_y = round(padding, 3)
 
         dx, dy = self._get_steps()
         self.control_panel.tab_helpers.update_list(self.data_manager.plots, dx, dy)

@@ -34,7 +34,7 @@ class DataManager:
 
             # Ищем начало данных (строка начинается с цифры)
             for i, line in enumerate(lines):
-                if line.strip() == '0;0':
+                if line.strip() == "0;0":
                     start_row = i
                     break
 
@@ -97,13 +97,16 @@ class DataManager:
         plot_idx: int,
         anchor_x: float,
         anchor_y: float,
-        label_x: float,
-        label_y: float,
+        offset_x: float,
+        offset_y: float,
     ) -> Optional[PlotMarker]:
         """Добавляет метку к конкретному графику."""
         if 0 <= plot_idx < len(self.plots):
             marker = PlotMarker(
-                anchor_x=anchor_x, anchor_y=anchor_y, label_x=label_x, label_y=label_y
+                anchor_x=anchor_x,
+                anchor_y=anchor_y,
+                offset_x=offset_x,
+                offset_y=offset_y,
             )
             self.plots[plot_idx].markers.append(marker)
             return marker
