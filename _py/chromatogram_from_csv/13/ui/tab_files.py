@@ -47,14 +47,13 @@ class TabFiles(ttk.Frame):
         # Создаем список для хранения переменных, чтобы их не удалил сборщик мусора
         self.plot_vars = []
             
-        for i, item in enumerate(reversed(plots)):
-            idx = len(plots) - 1 - i
+        for idx, item in enumerate(plots):
             f = ttk.Frame(self.f_frame)
             f.pack(fill="x", pady=2, padx=5)
             
             # 1. Слой (перемещение)
-            ttk.Button(f, text="↑", width=2, command=lambda ix=idx: self.controller.on_move_plot(ix, 1)).pack(side="left")
-            ttk.Button(f, text="↓", width=2, command=lambda ix=idx: self.controller.on_move_plot(ix, -1)).pack(side="left", padx=(0,5))
+            ttk.Button(f, text="↑", width=2, command=lambda ix=idx: self.controller.on_move_plot(ix, -1)).pack(side="left")
+            ttk.Button(f, text="↓", width=2, command=lambda ix=idx: self.controller.on_move_plot(ix, 1)).pack(side="left", padx=(0,5))
             
             # 2. Видимость
             vis_v = tk.BooleanVar(self, value=item.visible)
