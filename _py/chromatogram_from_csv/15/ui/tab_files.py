@@ -34,17 +34,17 @@ class TabFiles(ttk.Frame):
             command=self.controller.on_import_file_settings,
         ).pack(side="left", padx=5)
 
-        # Разделитель на две панели (Левая - Файлы, Правая - Метки)
-        self.paned = ttk.PanedWindow(self, orient="horizontal")
+        # Разделитель на две панели
+        self.paned = ttk.PanedWindow(self, orient="vertical")
         self.paned.pack(fill="both", expand=True, padx=5, pady=5)
 
-        # --- Левая панель (Файлы) ---
+        # --- Панель (Файлы) ---
         self.f_container = ttk.Frame(self.paned)
         self.paned.add(self.f_container, weight=3)
 
         ttk.Label(
             self.f_container,
-            text="Список файлов и настройки масштаба",
+            text="Файлы и настройки",
             font="Arial 10 bold",
         ).pack(anchor="w", pady=(0, 5))
 
@@ -70,7 +70,7 @@ class TabFiles(ttk.Frame):
         self.f_scroll_x.pack(side="bottom", fill="x")
         self.f_canvas.pack(side="left", fill="both", expand=True)
 
-        # --- Правая панель (Метки) ---
+        # --- Панель (Метки) ---
         self.m_container = ttk.Frame(self.paned)
         self.paned.add(self.m_container, weight=2)
 
@@ -144,6 +144,18 @@ class TabFiles(ttk.Frame):
             )
             cb_vis.pack(side="left", padx=2)
             ToolTip(cb_vis, "Отображать график (Вид)")
+
+            leg_v = tk.BooleanVar(value=item.show_in_legend)
+            self.plot_vars.append(leg_v)
+            cb_leg = ttk.Checkbutton(
+                row,
+                variable=leg_v,
+                command=lambda ix=idx, v=leg_v: self.controller.update_plot(
+                    ix, "show_in_legend", v.get()
+                ),
+            )
+            cb_leg.pack(side="left", padx=2)
+            ToolTip(cb_leg, "Показывать в легенде")
 
             btn_color = tk.Button(
                 row,
@@ -226,18 +238,6 @@ class TabFiles(ttk.Frame):
                 ),
             )
             ToolTip(sp_y, "Смещение по оси Y")
-
-            leg_v = tk.BooleanVar(value=item.show_in_legend)
-            self.plot_vars.append(leg_v)
-            cb_leg = ttk.Checkbutton(
-                row,
-                variable=leg_v,
-                command=lambda ix=idx, v=leg_v: self.controller.update_plot(
-                    ix, "show_in_legend", v.get()
-                ),
-            )
-            cb_leg.pack(side="left", padx=2)
-            ToolTip(cb_leg, "Показывать в легенде")
 
             ent = ttk.Entry(row, width=15)
             ent.insert(0, item.label)

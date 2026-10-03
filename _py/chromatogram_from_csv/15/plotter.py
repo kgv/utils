@@ -258,7 +258,9 @@ class ChromatogramPlotter:
 
         if config.show_legend and self.plot_lines:
             leg = self.ax.legend(
-                fontsize=config.legend_size, loc=config.legend_position
+                fontsize=config.legend_size,
+                loc=config.legend_position,
+                handlelength=1.0,
             )
             if leg:
                 plt.setp(
