@@ -120,40 +120,45 @@ class ChromatogramPlotter:
         self.helper_artists.clear()
 
         for p in plots:
-            if not p.visible: continue
+            if not p.visible:
+                continue
             for m in p.markers:
-                z = 1 if m.layer == 'Задний' else 50
+                z = 1 if m.layer == "Задний" else 50
                 txt = m.text if m.text.strip() else f"{m.anchor_x:.2f}"
-                
+
                 # Если смещение по Y положительное (текст выше пика)
                 if m.offset_y >= 0:
-                    va_val = 'bottom'
+                    va_val = "bottom"
                     rel_pos = (0.5, 0.0)
                 else:
-                    va_val = 'top'
+                    va_val = "top"
                     rel_pos = (0.5, 1.0)
-                
+
                 arrowprops = None
                 if m.show_connector:
                     arrowprops = dict(
-                        arrowstyle='-', 
-                        color=m.color, 
-                        lw=m.width, 
-                        shrinkA=0, 
+                        arrowstyle="-",
+                        color=m.color,
+                        lw=m.width,
+                        shrinkA=0,
                         shrinkB=0,
-                        relpos=rel_pos
+                        relpos=rel_pos,
                     )
-                
+
                 text_artist = self.ax.annotate(
                     txt,
                     xy=(m.anchor_x, m.anchor_y),
                     # Позиция текста = точка привязки + смещение
                     xytext=(m.anchor_x + m.offset_x, m.anchor_y + m.offset_y),
                     textcoords="data",
-                    color=m.color, fontsize=m.font_size,
-                    va=va_val, ha='center', fontweight='bold', zorder=z+1,
+                    color=m.color,
+                    fontsize=m.font_size,
+                    va=va_val,
+                    ha="center",
+                    fontweight="bold",
+                    zorder=z + 1,
                     rotation=m.label_rotation,
-                    arrowprops=arrowprops
+                    arrowprops=arrowprops,
                 )
                 self.helper_artists.append(text_artist)
 

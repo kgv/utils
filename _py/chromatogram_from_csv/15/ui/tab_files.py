@@ -49,8 +49,11 @@ class TabFiles(ttk.Frame):
         ).pack(anchor="w", pady=(0, 5))
 
         self.f_canvas = tk.Canvas(self.f_container)
-        self.f_scroll = ttk.Scrollbar(
+        self.f_scroll_y = ttk.Scrollbar(
             self.f_container, orient="vertical", command=self.f_canvas.yview
+        )
+        self.f_scroll_x = ttk.Scrollbar(
+            self.f_container, orient="horizontal", command=self.f_canvas.xview
         )
         self.f_frame = ttk.Frame(self.f_canvas)
 
@@ -59,10 +62,13 @@ class TabFiles(ttk.Frame):
             lambda e: self.f_canvas.configure(scrollregion=self.f_canvas.bbox("all")),
         )
         self.f_canvas.create_window((0, 0), window=self.f_frame, anchor="nw")
-        self.f_canvas.configure(yscrollcommand=self.f_scroll.set)
+        self.f_canvas.configure(
+            yscrollcommand=self.f_scroll_y.set, xscrollcommand=self.f_scroll_x.set
+        )
 
+        self.f_scroll_y.pack(side="right", fill="y")
+        self.f_scroll_x.pack(side="bottom", fill="x")
         self.f_canvas.pack(side="left", fill="both", expand=True)
-        self.f_scroll.pack(side="right", fill="y")
 
         # --- Правая панель (Метки) ---
         self.m_container = ttk.Frame(self.paned)
@@ -73,8 +79,11 @@ class TabFiles(ttk.Frame):
         ).pack(anchor="w", pady=(0, 5))
 
         self.m_canvas = tk.Canvas(self.m_container)
-        self.m_scroll = ttk.Scrollbar(
+        self.m_scroll_y = ttk.Scrollbar(
             self.m_container, orient="vertical", command=self.m_canvas.yview
+        )
+        self.m_scroll_x = ttk.Scrollbar(
+            self.m_container, orient="horizontal", command=self.m_canvas.xview
         )
         self.m_frame = ttk.Frame(self.m_canvas)
 
@@ -83,10 +92,13 @@ class TabFiles(ttk.Frame):
             lambda e: self.m_canvas.configure(scrollregion=self.m_canvas.bbox("all")),
         )
         self.m_canvas.create_window((0, 0), window=self.m_frame, anchor="nw")
-        self.m_canvas.configure(yscrollcommand=self.m_scroll.set)
+        self.m_canvas.configure(
+            yscrollcommand=self.m_scroll_y.set, xscrollcommand=self.m_scroll_x.set
+        )
 
+        self.m_scroll_y.pack(side="right", fill="y")
+        self.m_scroll_x.pack(side="bottom", fill="x")
         self.m_canvas.pack(side="left", fill="both", expand=True)
-        self.m_scroll.pack(side="right", fill="y")
 
     def update_list(self, plots: List[PlotItem]) -> None:
         """Перерисовывает список файлов на основе актуальных данных."""
@@ -96,49 +108,57 @@ class TabFiles(ttk.Frame):
         self.plot_vars = []
 
         for idx, item in enumerate(plots):
-            f_main = ttk.LabelFrame(self.f_frame, text=f"Файл {idx+1}: {item.label}")
-            f_main.pack(fill="x", pady=4, padx=5)
+            f_main = ttk.Frame(self.f_frame)
+            f_main.pack(fill="x", pady=2, padx=5)
 
-            # --- Ряд 1: Базовые настройки ---
-            r1 = ttk.Frame(f_main)
-            r1.pack(fill="x", pady=2, padx=2)
+            row = ttk.Frame(f_main)
+            row.pack(fill="x", pady=2)
 
-            ttk.Button(
-                r1,
+            # 1. Базовые настройки
+            btn_up = ttk.Button(
+                row,
                 text="↑",
                 width=2,
                 command=lambda ix=idx: self.controller.on_move_plot(ix, -1),
-            ).pack(side="left")
-            ttk.Button(
-                r1,
+            )
+            btn_up.pack(side="left")
+            ToolTip(btn_up, "Переместить выше (на задний план)")
+
+            btn_down = ttk.Button(
+                row,
                 text="↓",
                 width=2,
                 command=lambda ix=idx: self.controller.on_move_plot(ix, 1),
-            ).pack(side="left", padx=(0, 5))
+            )
+            btn_down.pack(side="left", padx=(0, 5))
+            ToolTip(btn_down, "Переместить ниже (на передний план)")
 
             vis_v = tk.BooleanVar(value=item.visible)
             self.plot_vars.append(vis_v)
-            ttk.Checkbutton(
-                r1,
-                text="Вид",
+            cb_vis = ttk.Checkbutton(
+                row,
                 variable=vis_v,
                 command=lambda ix=idx, v=vis_v: self.controller.update_plot(
                     ix, "visible", v.get()
                 ),
-            ).pack(side="left", padx=2)
+            )
+            cb_vis.pack(side="left", padx=2)
+            ToolTip(cb_vis, "Отображать график (Вид)")
 
-            tk.Button(
-                r1,
+            btn_color = tk.Button(
+                row,
                 bg=item.color,
                 width=2,
                 relief="flat",
                 command=lambda ix=idx: self.controller.show_color_picker(
                     ix, is_marker=False
                 ),
-            ).pack(side="left", padx=2)
+            )
+            btn_color.pack(side="left", padx=2)
+            ToolTip(btn_color, "Цвет графика")
 
             cb_style = ttk.Combobox(
-                r1, values=["-", "--", ":", "-."], width=3, state="readonly"
+                row, values=["-", "--", ":", "-."], width=3, state="readonly"
             )
             cb_style.set(item.linestyle)
             cb_style.pack(side="left", padx=2)
@@ -148,8 +168,9 @@ class TabFiles(ttk.Frame):
                     ix, "linestyle", c.get()
                 ),
             )
+            ToolTip(cb_style, "Стиль линии")
 
-            sp_w = tk.Spinbox(r1, from_=0.1, to=10, increment=0.1, width=4)
+            sp_w = tk.Spinbox(row, from_=0.1, to=10, increment=0.1, width=4)
             sp_w.delete(0, tk.END)
             sp_w.insert(0, f"{item.line_width:.1f}")
             sp_w.pack(side="left", padx=2)
@@ -168,7 +189,7 @@ class TabFiles(ttk.Frame):
             )
             ToolTip(sp_w, "Толщина линии")
 
-            sp_x = tk.Spinbox(r1, from_=-1e9, to=1e9, increment=0.1, width=5)
+            sp_x = tk.Spinbox(row, from_=-1e9, to=1e9, increment=0.1, width=5)
             sp_x.delete(0, tk.END)
             sp_x.insert(0, f"{item.x_offset:.2f}")
             sp_x.pack(side="left", padx=2)
@@ -185,9 +206,9 @@ class TabFiles(ttk.Frame):
                     ix, "x_offset", s.get()
                 ),
             )
-            ToolTip(sp_x, "Смещение по X")
+            ToolTip(sp_x, "Смещение по оси X")
 
-            sp_y = tk.Spinbox(r1, from_=-1e12, to=1e12, increment=10, width=6)
+            sp_y = tk.Spinbox(row, from_=-1e12, to=1e12, increment=10, width=6)
             sp_y.delete(0, tk.END)
             sp_y.insert(0, f"{item.y_offset:.2f}")
             sp_y.pack(side="left", padx=2)
@@ -204,42 +225,37 @@ class TabFiles(ttk.Frame):
                     ix, "y_offset", s.get()
                 ),
             )
-            ToolTip(sp_y, "Смещение по Y")
+            ToolTip(sp_y, "Смещение по оси Y")
 
             leg_v = tk.BooleanVar(value=item.show_in_legend)
             self.plot_vars.append(leg_v)
-            ttk.Checkbutton(
-                r1,
-                text="Легенда",
+            cb_leg = ttk.Checkbutton(
+                row,
                 variable=leg_v,
                 command=lambda ix=idx, v=leg_v: self.controller.update_plot(
                     ix, "show_in_legend", v.get()
                 ),
-            ).pack(side="left", padx=5)
+            )
+            cb_leg.pack(side="left", padx=2)
+            ToolTip(cb_leg, "Показывать в легенде")
 
-            ttk.Button(
-                r1,
-                text="🗑️",
-                width=3,
-                command=lambda ix=idx: self.controller.on_remove_plot(ix),
-            ).pack(side="right", padx=2)
-
-            ent = ttk.Entry(r1)
+            ent = ttk.Entry(row, width=15)
             ent.insert(0, item.label)
-            ent.pack(side="left", fill="x", expand=True, padx=2)
+            ent.pack(side="left", padx=2)
             ent.bind(
                 "<KeyRelease>",
                 lambda e, ix=idx, en=ent: self.controller.update_plot(
                     ix, "label", en.get()
                 ),
             )
+            ToolTip(ent, "Имя графика")
 
-            # --- Ряд 2: Настройки масштаба и метки ---
-            r2 = ttk.Frame(f_main)
-            r2.pack(fill="x", pady=2, padx=2)
+            # Вертикальный разделитель
+            ttk.Separator(row, orient="vertical").pack(side="left", fill="y", padx=5)
 
+            # 2. Настройки масштаба и метки
             cb_mode = ttk.Combobox(
-                r2, values=["Абсолютный", "Нормированный"], width=13, state="readonly"
+                row, values=["Абсолютный", "Нормированный"], width=13, state="readonly"
             )
             cb_mode.set(item.y_mode)
             cb_mode.pack(side="left", padx=2)
@@ -249,33 +265,35 @@ class TabFiles(ttk.Frame):
                     ix, "y_mode", c.get()
                 ),
             )
+            ToolTip(cb_mode, "Режим оси Y")
 
             sec_v = tk.BooleanVar(value=item.convert_sec_to_min)
             self.plot_vars.append(sec_v)
-            ttk.Checkbutton(
-                r2,
-                text="Сек->Мин",
+            cb_sec = ttk.Checkbutton(
+                row,
                 variable=sec_v,
                 command=lambda ix=idx, v=sec_v: self.controller.update_plot(
                     ix, "convert_sec_to_min", v.get()
                 ),
-            ).pack(side="left", padx=2)
+            )
+            cb_sec.pack(side="left", padx=2)
+            ToolTip(cb_sec, "Переводить время (X) из секунд в минуты")
 
             rev_v = tk.BooleanVar(value=item.reverse_x)
             self.plot_vars.append(rev_v)
-            ttk.Checkbutton(
-                r2,
-                text="Инверс X",
+            cb_rev = ttk.Checkbutton(
+                row,
                 variable=rev_v,
                 command=lambda ix=idx, v=rev_v: self.controller.update_plot(
                     ix, "reverse_x", v.get()
                 ),
-            ).pack(side="left", padx=2)
+            )
+            cb_rev.pack(side="left", padx=2)
+            ToolTip(cb_rev, "Инвертировать ось X (справа налево)")
 
-            ttk.Label(r2, text="X:").pack(side="left", padx=(5, 1))
-            e_xmin = ttk.Entry(r2, width=6)
+            e_xmin = ttk.Entry(row, width=6)
             e_xmin.insert(0, f"{item.x_min:.3f}")
-            e_xmin.pack(side="left")
+            e_xmin.pack(side="left", padx=(5, 1))
             e_xmin.bind(
                 "<Return>",
                 lambda e, ix=idx, en=e_xmin: [
@@ -289,8 +307,9 @@ class TabFiles(ttk.Frame):
                     ix, "x_min", en.get()
                 ),
             )
+            ToolTip(e_xmin, "Минимум по оси X")
 
-            e_xmax = ttk.Entry(r2, width=6)
+            e_xmax = ttk.Entry(row, width=6)
             e_xmax.insert(0, f"{item.x_max:.3f}")
             e_xmax.pack(side="left", padx=(1, 5))
             e_xmax.bind(
@@ -306,11 +325,11 @@ class TabFiles(ttk.Frame):
                     ix, "x_max", en.get()
                 ),
             )
+            ToolTip(e_xmax, "Максимум по оси X")
 
-            ttk.Label(r2, text="Y:").pack(side="left", padx=(5, 1))
-            e_ymin = ttk.Entry(r2, width=7)
+            e_ymin = ttk.Entry(row, width=7)
             e_ymin.insert(0, f"{item.y_min:.2f}")
-            e_ymin.pack(side="left")
+            e_ymin.pack(side="left", padx=(5, 1))
             e_ymin.bind(
                 "<Return>",
                 lambda e, ix=idx, en=e_ymin: [
@@ -324,8 +343,9 @@ class TabFiles(ttk.Frame):
                     ix, "y_min", en.get()
                 ),
             )
+            ToolTip(e_ymin, "Минимум по оси Y")
 
-            e_ymax = ttk.Entry(r2, width=7)
+            e_ymax = ttk.Entry(row, width=7)
             e_ymax.insert(0, f"{item.y_max:.2f}")
             e_ymax.pack(side="left", padx=(1, 5))
             e_ymax.bind(
@@ -341,26 +361,46 @@ class TabFiles(ttk.Frame):
                     ix, "y_max", en.get()
                 ),
             )
+            ToolTip(e_ymax, "Максимум по оси Y")
 
-            ttk.Button(
-                r2,
-                text="Авто Y",
-                width=6,
+            btn_auto_y = ttk.Button(
+                row,
+                text="Y",
+                width=3,
                 command=lambda ix=idx: self.controller.on_fit_y_to_visible(ix),
-            ).pack(side="left", padx=2)
+            )
+            btn_auto_y.pack(side="left", padx=2)
+            ToolTip(btn_auto_y, "Подогнать Y по видимому X")
 
-            ttk.Button(
-                r2,
-                text="➕ Метка",
-                width=8,
-                command=lambda ix=idx: self.controller.on_add_marker(ix),
-            ).pack(side="right", padx=2)
-            ttk.Button(
-                r2,
-                text="Авто метки",
-                width=10,
+            btn_auto_m = ttk.Button(
+                row,
+                text="📍",
+                width=3,
                 command=lambda ix=idx: self.controller.on_auto_marker_pos_all(ix),
-            ).pack(side="right", padx=2)
+            )
+            btn_auto_m.pack(side="left", padx=2)
+            ToolTip(btn_auto_m, "Авто-позиция всех меток по графику")
+
+            btn_add_m = ttk.Button(
+                row,
+                text="➕",
+                width=3,
+                command=lambda ix=idx: self.controller.on_add_marker(ix),
+            )
+            btn_add_m.pack(side="left", padx=2)
+            ToolTip(btn_add_m, "Добавить новую метку")
+
+            btn_del = ttk.Button(
+                row,
+                text="🗑️",
+                width=3,
+                command=lambda ix=idx: self.controller.on_remove_plot(ix),
+            )
+            btn_del.pack(side="left", padx=(10, 2))
+            ToolTip(btn_del, "Удалить файл")
+
+            # Горизонтальный разделитель между файлами
+            ttk.Separator(self.f_frame, orient="horizontal").pack(fill="x", pady=2)
 
     def update_markers(
         self, plots: List[PlotItem], x_step: float, y_step: float
@@ -375,34 +415,35 @@ class TabFiles(ttk.Frame):
             if not p.visible or not p.markers:
                 continue
 
-            f_group = ttk.LabelFrame(self.m_frame, text=f"{p.label}", labelanchor="n")
+            f_group = ttk.Frame(self.m_frame)
             f_group.pack(fill="x", pady=5, padx=5)
 
+            # Имя файла как заголовок группы меток
+            ttk.Label(f_group, text=f"Файл: {p.label}", font="Arial 9 bold").pack(
+                anchor="w", pady=(0, 2)
+            )
+
             for m_idx, m in enumerate(p.markers):
-                f_m = ttk.Frame(f_group)
-                f_m.pack(fill="x", pady=4, padx=2)
+                row = ttk.Frame(f_group)
+                row.pack(fill="x", pady=2, padx=2)
 
-                # Ряд 1 метки
-                r1 = ttk.Frame(f_m)
-                r1.pack(fill="x")
-
-                # Чекбокс видимости метки
                 vis_m_var = tk.BooleanVar(value=getattr(m, "visible", True))
                 self.marker_vars.append(vis_m_var)
-                ttk.Checkbutton(
-                    r1,
-                    text="Вид",
+                cb_vis_m = ttk.Checkbutton(
+                    row,
                     variable=vis_m_var,
                     command=lambda p_ix=p_idx, m_ix=m_idx, v=vis_m_var: self.controller.update_marker(
                         p_ix, m_ix, "visible", v.get()
                     ),
-                ).pack(side="left", padx=2)
+                )
+                cb_vis_m.pack(side="left", padx=2)
+                ToolTip(cb_vis_m, "Отображать метку")
 
                 for k, w, step, tip in [
                     ("anchor_x", 6, x_step, "X привязки"),
                     ("anchor_y", 6, y_step, "Y привязки"),
                 ]:
-                    sp = tk.Spinbox(r1, from_=-1e9, to=1e9, increment=step, width=w)
+                    sp = tk.Spinbox(row, from_=-1e9, to=1e9, increment=step, width=w)
                     sp.delete(0, tk.END)
                     sp.insert(0, str(getattr(m, k)))
                     sp.pack(side="left", padx=1)
@@ -421,66 +462,61 @@ class TabFiles(ttk.Frame):
                     )
                     ToolTip(sp, tip)
 
-                ttk.Button(
-                    r1,
-                    text="Авто",
-                    width=4,
+                for k, w, step, tip in [
+                    ("offset_x", 5, x_step, "Смещение текста по X"),
+                    ("offset_y", 5, y_step, "Смещение текста по Y"),
+                ]:
+                    sp = tk.Spinbox(row, from_=-1e9, to=1e9, increment=step, width=w)
+                    sp.delete(0, tk.END)
+                    sp.insert(0, str(getattr(m, k)))
+                    sp.pack(side="left", padx=1)
+                    sp.bind(
+                        "<Return>",
+                        lambda ev, p_ix=p_idx, m_ix=m_idx, key=k, s=sp: [
+                            self.controller.update_marker(p_ix, m_ix, key, s.get()),
+                            self.focus_set(),
+                        ],
+                    )
+                    sp.bind(
+                        "<FocusOut>",
+                        lambda ev, p_ix=p_idx, m_ix=m_idx, key=k, s=sp: self.controller.update_marker(
+                            p_ix, m_ix, key, s.get()
+                        ),
+                    )
+                    ToolTip(sp, tip)
+
+                btn_auto = ttk.Button(
+                    row,
+                    text="⟳",
+                    width=3,
                     command=lambda p_ix=p_idx, m_ix=m_idx: self.controller.on_auto_marker_pos(
                         p_ix, m_ix
                     ),
-                ).pack(side="left", padx=2)
+                )
+                btn_auto.pack(side="left", padx=2)
+                ToolTip(btn_auto, "Найти Y на графике по заданному X")
 
-                for k, w, step, tip in [
-                    ("offset_x", 5, x_step, "Смещение X"),
-                    ("offset_y", 5, y_step, "Смещение Y"),
-                ]:
-                    sp = tk.Spinbox(r1, from_=-1e9, to=1e9, increment=step, width=w)
-                    sp.delete(0, tk.END)
-                    sp.insert(0, str(getattr(m, k)))
-                    sp.pack(side="left", padx=1)
-                    sp.bind(
-                        "<Return>",
-                        lambda ev, p_ix=p_idx, m_ix=m_idx, key=k, s=sp: [
-                            self.controller.update_marker(p_ix, m_ix, key, s.get()),
-                            self.focus_set(),
-                        ],
-                    )
-                    sp.bind(
-                        "<FocusOut>",
-                        lambda ev, p_ix=p_idx, m_ix=m_idx, key=k, s=sp: self.controller.update_marker(
-                            p_ix, m_ix, key, s.get()
-                        ),
-                    )
-                    ToolTip(sp, tip)
-
-                e_txt = ttk.Entry(r1, width=10)
+                e_txt = ttk.Entry(row, width=15)
                 e_txt.insert(0, m.text)
-                e_txt.pack(side="left", fill="x", expand=True, padx=2)
+                e_txt.pack(side="left", padx=2)
                 e_txt.bind(
                     "<KeyRelease>",
                     lambda ev, p_ix=p_idx, m_ix=m_idx, en=e_txt: self.controller.update_marker(
                         p_ix, m_ix, "text", en.get()
                     ),
                 )
+                ToolTip(e_txt, "Текст метки")
 
-                ttk.Button(
-                    r1,
-                    text="🗑️",
-                    width=3,
-                    command=lambda p_ix=p_idx, m_ix=m_idx: self.controller.on_remove_marker(
-                        p_ix, m_ix
-                    ),
-                ).pack(side="right")
-
-                # Ряд 2 метки
-                r2 = ttk.Frame(f_m)
-                r2.pack(fill="x", pady=(2, 0))
+                # Вертикальный разделитель
+                ttk.Separator(row, orient="vertical").pack(
+                    side="left", fill="y", padx=5
+                )
 
                 for k, w, step, tip in [
                     ("font_size", 3, 1, "Размер шрифта"),
                     ("label_rotation", 4, 15, "Угол поворота"),
                 ]:
-                    sp_o = tk.Spinbox(r2, from_=-1e9, to=1e9, increment=step, width=w)
+                    sp_o = tk.Spinbox(row, from_=-1e9, to=1e9, increment=step, width=w)
                     sp_o.delete(0, tk.END)
                     sp_o.insert(0, str(getattr(m, k)))
                     sp_o.pack(side="left", padx=1)
@@ -501,16 +537,17 @@ class TabFiles(ttk.Frame):
 
                 cb_conn_var = tk.BooleanVar(value=getattr(m, "show_connector", False))
                 self.marker_vars.append(cb_conn_var)
-                ttk.Checkbutton(
-                    r2,
-                    text="Связь",
+                cb_conn = ttk.Checkbutton(
+                    row,
                     variable=cb_conn_var,
                     command=lambda p_ix=p_idx, m_ix=m_idx, v=cb_conn_var: self.controller.update_marker(
                         p_ix, m_ix, "show_connector", v.get()
                     ),
-                ).pack(side="left", padx=2)
+                )
+                cb_conn.pack(side="left", padx=2)
+                ToolTip(cb_conn, "Показывать линию связи")
 
-                sp_w = tk.Spinbox(r2, from_=0.0, to=10.0, increment=0.1, width=4)
+                sp_w = tk.Spinbox(row, from_=0.0, to=10.0, increment=0.1, width=4)
                 sp_w.delete(0, tk.END)
                 sp_w.insert(0, str(m.width))
                 sp_w.pack(side="left", padx=1)
@@ -530,7 +567,7 @@ class TabFiles(ttk.Frame):
                 ToolTip(sp_w, "Толщина линии связи")
 
                 cb_l = ttk.Combobox(
-                    r2, values=["Задний", "Передний"], width=8, state="readonly"
+                    row, values=["Задний", "Передний"], width=8, state="readonly"
                 )
                 cb_l.set(m.layer)
                 cb_l.pack(side="left", padx=2)
@@ -540,13 +577,30 @@ class TabFiles(ttk.Frame):
                         p_ix, m_ix, "layer", c.get()
                     ),
                 )
+                ToolTip(cb_l, "Слой отрисовки")
 
-                tk.Button(
-                    r2,
+                btn_color = tk.Button(
+                    row,
                     bg=m.color,
                     width=2,
                     relief="flat",
                     command=lambda p_ix=p_idx, m_ix=m_idx: self.controller.show_color_picker(
                         p_ix, is_marker=True, marker_idx=m_ix
                     ),
-                ).pack(side="left", padx=2)
+                )
+                btn_color.pack(side="left", padx=2)
+                ToolTip(btn_color, "Цвет метки")
+
+                btn_del = ttk.Button(
+                    row,
+                    text="🗑️",
+                    width=3,
+                    command=lambda p_ix=p_idx, m_ix=m_idx: self.controller.on_remove_marker(
+                        p_ix, m_ix
+                    ),
+                )
+                btn_del.pack(side="left", padx=(10, 2))
+                ToolTip(btn_del, "Удалить метку")
+
+            # Горизонтальный разделитель между группами меток
+            ttk.Separator(self.m_frame, orient="horizontal").pack(fill="x", pady=2)

@@ -35,7 +35,7 @@ class StyleConfig:
     legend_font: str = 'Inherit'
     legend_weight: str = 'Inherit'
     legend_style: str = 'Inherit'
-    legend_size: float = 20.0
+    legend_size: float = 16.0
     
     # Линии и сетка
     grid_alpha: float = 0.3

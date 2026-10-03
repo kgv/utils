@@ -12,7 +12,7 @@
   "17:0"    : ["Heptadecanoic acid, methyl ester"                                                                       ],
   "18:0"    : ["Methyl stearate"                                                                                        ],
   "18:1ω-7" : ["11-Octadecenoic acid, methyl ester",                    "11-Octadecenoic acid, methyl ester, (Z)-"      ],
-  "18:1ω-9" : ["9-Octadecenoic acid (Z)-, methyl ester"                                                                 ],
+  "18:1ω-9" : ["9-Octadecenoic acid (Z)-, methyl ester",                "9-Octadecenoic acid, methyl ester"             ],
   "18:2ω-6" : ["9,12-Octadecadienoic acid, methyl ester",               "9,12-Octadecadienoic acid (Z,Z)-, methyl ester"],
   "18:3ω-3" : ["9,12,15-Octadecatrienoic acid, methyl ester, (Z,Z,Z)-"                                                  ],
   "18:3ω-6" : ["6,9,12-Octadecatrienoic acid, methyl ester",            "Methyl γ-linolenate"                           ],
@@ -30,4 +30,3 @@
   "26:0"    : ["Hexacosanoic acid, methyl ester"                                                                        ],
   "28:0"    : ["Octacosanoic acid, methyl ester"                                                                        ]
 }
-

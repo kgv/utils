@@ -12,7 +12,8 @@ class ConverterApp:
         self.mapping_dict = {}
         
         # Пытаемся загрузить JSON по умолчанию при старте
-        self.default_json = 'mapping.json'
+        # self.default_json = 'mapping.json'
+        self.default_json = '_py/convert_fatty_acid_names/mapping.json'
         self.load_json(self.default_json, show_info=False)
 
         self.setup_ui()
