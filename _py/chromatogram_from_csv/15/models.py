@@ -8,40 +8,41 @@ import numpy as np
 @dataclass
 class StyleConfig:
     """Хранит все настройки оформления графика и приложения."""
+
     # Общие шрифты
-    gen_font: str = 'Arial'
-    gen_weight: str = 'normal'
-    gen_style: str = 'normal'
-    
+    gen_font: str = "Arial"
+    gen_weight: str = "normal"
+    gen_style: str = "normal"
+
     # Шрифты заголовка
-    title_font: str = 'Inherit'
-    title_weight: str = 'Inherit'
-    title_style: str = 'Inherit'
+    title_font: str = "Inherit"
+    title_weight: str = "Inherit"
+    title_style: str = "Inherit"
     title_size: float = 28.0
-    
+
     # Шрифты подписей осей
-    label_font: str = 'Inherit'
-    label_weight: str = 'Inherit'
-    label_style: str = 'Inherit'
+    label_font: str = "Inherit"
+    label_weight: str = "Inherit"
+    label_style: str = "Inherit"
     label_size: float = 24.0
-    
+
     # Шрифты делений (тиков)
-    tick_font: str = 'Inherit'
-    tick_weight: str = 'Inherit'
-    tick_style: str = 'Inherit'
+    tick_font: str = "Inherit"
+    tick_weight: str = "Inherit"
+    tick_style: str = "Inherit"
     tick_size: float = 20.0
-    
+
     # Шрифты легенды
-    legend_font: str = 'Inherit'
-    legend_weight: str = 'Inherit'
-    legend_style: str = 'Inherit'
+    legend_font: str = "Inherit"
+    legend_weight: str = "Inherit"
+    legend_style: str = "Inherit"
     legend_size: float = 20.0
-    
+
     # Линии и сетка
     grid_alpha: float = 0.3
     grid_width: float = 0.8
     spine_width: float = 1.0
-    
+
     # Деления (тики)
     major_tick_width: float = 1.2
     major_tick_length: float = 5.0
@@ -51,36 +52,26 @@ class StyleConfig:
     y_major_step: float = 0.0
     x_minor_step: float = 0.0
     y_minor_step: float = 0.0
-    
+
     # Тексты
-    title_text: str = ''
-    x_label: str = 'Retention time (min)'
-    y_label_abs: str = 'Detector response (Counts)'
-    y_label_norm: str = 'Relative detector response (%)'
-    
+    title_text: str = ""
+    x_label: str = "Retention time (min)"
+    y_label_abs: str = "Detector response (Counts)"
+    y_label_norm: str = "Relative detector response (%)"
+
     # Состояние отображения
     show_legend: bool = True
-    legend_position: str = 'best'
-    
+    legend_position: str = "best"
+
     # Размеры графика
     fig_width: float = 10.0
     fig_height: float = 6.0
-    
-    # Глобальные настройки данных (сохраняются вместе со стилем)
-    convert_sec_to_min: bool = False
-    reverse_x: bool = False
-
-    # Настройки масштаба
-    y_mode: str = "Абсолютный"
-    x_min: float = 0.0
-    x_max: float = 1.0
-    y_min: float = 0.0
-    y_max: float = 100.0
 
 
 @dataclass
 class PlotItem:
     """Модель данных одного графика (хроматограммы)."""
+
     t_raw: np.ndarray
     y_orig: np.ndarray
     color: str
@@ -88,31 +79,46 @@ class PlotItem:
     filepath: str = ""
     id: str = field(default_factory=lambda: str(uuid.uuid4()))
     t: np.ndarray = field(init=False)
-    linestyle: str = '-'
+    linestyle: str = "-"
     line_width: float = 1.5
     show_in_legend: bool = True
     x_offset: float = 0.0
     y_offset: float = 0.0
     visible: bool = True
-    markers: List['PlotMarker'] = field(default_factory=list)
+    markers: List["PlotMarker"] = field(default_factory=list)
+
+    # Индивидуальные настройки масштаба
+    y_mode: str = "Абсолютный"
+    convert_sec_to_min: bool = False
+    reverse_x: bool = False
+    x_min: float = 0.0
+    x_max: float = 1.0
+    y_min: float = 0.0
+    y_max: float = 100.0
 
     def __post_init__(self) -> None:
-        """Инициализация массива времени после создания объекта."""
+        """Инициализация массива времени и границ после создания объекта."""
         self.t = self.t_raw.copy()
+        if len(self.t) > 0:
+            self.x_min = float(self.t.min())
+            self.x_max = float(self.t.max())
+            self.y_min = float(self.y_orig.min())
+            self.y_max = float(self.y_orig.max())
 
 
 @dataclass(kw_only=True)
 class PlotMarker:
     """Модель данных метки (маркера) на графике."""
-    text: str = ''
+
+    text: str = ""
     anchor_x: float
     anchor_y: float
     offset_x: float = 0.0
     offset_y: float = 0.0
-    color: str = '#000000'
+    color: str = "#000000"
     font_size: int = 9
     label_rotation: int = 0
-    layer: str = 'Задний'
+    layer: str = "Задний"
     width: float = 0.5
     show_connector: bool = False
     id: str = field(default_factory=lambda: str(uuid.uuid4()))

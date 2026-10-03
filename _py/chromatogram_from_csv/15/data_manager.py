@@ -22,17 +22,12 @@ class DataManager:
     ) -> Tuple[Optional[np.ndarray], Optional[np.ndarray]]:
         """
         Загружает данные времени и интенсивности из CSV/TXT файла.
-
-        :param filepath: Путь к файлу.
-        :return: Кортеж (массив_времени, массив_интенсивности) или (None, None) при ошибке.
         """
         try:
             with open(filepath, "r", encoding="utf-8", errors="ignore") as f:
                 lines = f.readlines()
 
             start_row = 0
-
-            # Ищем начало данных (строка начинается с цифры)
             for i, line in enumerate(lines):
                 if line.strip() == "0;0":
                     start_row = i
@@ -44,7 +39,6 @@ class DataManager:
             time_data = pd.to_numeric(df.iloc[:, 0], errors="coerce").values
             intensity_data = pd.to_numeric(df.iloc[:, 1], errors="coerce").values
 
-            # Отфильтровываем NaN значения
             mask = ~np.isnan(intensity_data)
             return time_data[mask], intensity_data[mask]
 
@@ -118,15 +112,25 @@ class DataManager:
             if 0 <= marker_idx < len(self.plots[plot_idx].markers):
                 self.plots[plot_idx].markers.pop(marker_idx)
 
-    def recalculate_time_data(self) -> None:
+    def recalculate_time_data(self, reset_bounds: bool = False) -> None:
         """
         Пересчитывает массив времени `t` для всех графиков с учетом
-        глобального смещения, индивидуального смещения и перевода в минуты.
+        индивидуальных настроек (перевод в минуты, инверсия, смещение).
         """
-        factor = 60.0 if self.config.convert_sec_to_min else 1.0
-
         for item in self.plots:
-            item.t = (item.t_raw / factor) + item.x_offset
+            factor = 60.0 if item.convert_sec_to_min else 1.0
+            t_temp = item.t_raw / factor
+
+            # Инверсия данных по оси X для конкретного графика
+            if item.reverse_x and len(t_temp) > 0:
+                t_temp = t_temp.max() - t_temp + t_temp.min()
+
+            item.t = t_temp + item.x_offset
+
+            # Если изменились единицы измерения или инверсия, сбрасываем границы
+            if reset_bounds and len(item.t) > 0:
+                item.x_min = float(item.t.min())
+                item.x_max = float(item.t.max())
 
         self.recalculate_bounds()
 

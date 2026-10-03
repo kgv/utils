@@ -17,50 +17,6 @@ class AppController:
         self.data_manager = DataManager()
         self.plotter = ChromatogramPlotter()
 
-        [
-            # Красный
-            "#d62728",
-            "#ff9896",
-            "#9c1c1d",
-            # Коричневый
-            "#8c564b",
-            "#c49c94",
-            "#5e3a32",
-            # Оранжевый
-            "#ff7f0e",
-            "#ffbb78",
-            "#cc660b",
-            # Оливковый
-            "#bcbd22",
-            "#dbdb8d",
-            "#8c8d19",
-            # Зеленый
-            "#2ca02c",
-            "#98df8a",
-            "#1f7a1f",
-            # Бирюзовый
-            "#17becf",
-            "#9edae5",
-            "#118d99",
-            # Синий
-            "#1f77b4",
-            "#aec7e8",
-            "#165785",
-            # Фиолетовый
-            "#9467bd",
-            "#c5b0d5",
-            "#6b4a8a",
-            # Розовый
-            "#e377c2",
-            "#f7b6d2",
-            "#a6578d",
-            # Серый
-            "#7f7f7f",
-            "#c7c7c7",
-            "#5c5c5c",
-        ]
-
-        # Палитра цветов
         self.palette = [
             "#1f77b4",
             "#ff7f0e",
@@ -98,16 +54,8 @@ class AppController:
         if not getattr(self, "ui_ready", False):
             return
 
-        # Сбор параметров из UI
-        x_min = self.control_panel.tab_scale.scale_min.get()
-        x_max = self.control_panel.tab_scale.scale_max.get()
-        y_mode = self.control_panel.tab_scale.mode_var.get()
-        y_min = self.control_panel.tab_scale.y_min_var.get()
-        y_max = self.control_panel.tab_scale.y_max_var.get()
-
-        # Отрисовка
-        self.plotter.refresh(self.data_manager, x_min, x_max, y_mode, y_min, y_max)
-
+        # Отрисовка (теперь plotter сам берет все нужные данные из data_manager)
+        self.plotter.refresh(self.data_manager)
         self.main_window.redraw_canvas()
 
     # --- Обработчики событий мыши (Hover и Клик) ---
@@ -115,7 +63,6 @@ class AppController:
         if not getattr(self, "ui_ready", False):
             return
 
-        # Если мышь ушла за пределы осей
         if not event.inaxes:
             if self.current_hover_data is not None:
                 self.current_hover_data = None
@@ -124,25 +71,20 @@ class AppController:
                 self.main_window.redraw_canvas()
             return
 
-        # Обновляем позицию маркера
         result = self.plotter.update_hover(event.x, event.y, event.xdata, event.ydata)
 
-        # Перерисовываем только если точка изменилась (оптимизация производительности)
         if result != self.current_hover_data:
             self.current_hover_data = result
             self.main_window.redraw_canvas()
 
     def on_mouse_click(self, event):
-        # Копируем в буфер обмена при клике левой кнопкой (event.button == 1)
         if event.inaxes and event.button == 1 and self.current_hover_data:
             x, y = self.current_hover_data
-            # Формат с табуляцией позволяет вставить данные сразу в две ячейки Excel
             clipboard_text = f"{x}\t{y}".replace(".", ",")
 
             self.main_window.clipboard_clear()
             self.main_window.clipboard_append(clipboard_text)
 
-            # Визуальный отклик
             self.plotter.hover_text.set_text("Скопировано!")
             self.main_window.redraw_canvas()
 
@@ -158,8 +100,8 @@ class AppController:
             color = self.palette[len(self.data_manager.plots) % len(self.palette)]
             self.data_manager.add_plot(p, color, 1.5)
 
-        self._sync_x_bounds()
         self.control_panel.tab_files.update_list(self.data_manager.plots)
+        self.control_panel.tab_scale.update_list(self.data_manager.plots)
         dx, dy = self._get_steps()
         self.control_panel.tab_helpers.update_list(self.data_manager.plots, dx, dy)
         self.request_refresh(force=True)
@@ -168,8 +110,8 @@ class AppController:
         self.data_manager.clear_all()
         self.plotter.clear()
         self.control_panel.tab_files.update_list(self.data_manager.plots)
+        self.control_panel.tab_scale.update_list(self.data_manager.plots)
         self.control_panel.tab_helpers.update_list(self.data_manager.plots, 0.1, 0.1)
-        self._sync_x_bounds()
         self.request_refresh(force=True)
 
     def update_plot(self, idx: int, key: str, val: any):
@@ -178,7 +120,7 @@ class AppController:
                 val = float(str(val).replace(",", "."))
             setattr(self.data_manager.plots[idx], key, val)
             if key == "x_offset":
-                self.data_manager.recalculate_time_data()
+                self.data_manager.recalculate_time_data(reset_bounds=False)
             self.request_refresh()
         except ValueError:
             pass
@@ -186,14 +128,15 @@ class AppController:
     def on_move_plot(self, idx: int, direction: int):
         self.data_manager.move_plot(idx, direction)
         self.control_panel.tab_files.update_list(self.data_manager.plots)
+        self.control_panel.tab_scale.update_list(self.data_manager.plots)
         dx, dy = self._get_steps()
         self.control_panel.tab_helpers.update_list(self.data_manager.plots, dx, dy)
         self.request_refresh(force=True)
 
     def on_remove_plot(self, idx: int):
         self.data_manager.remove_plot(idx)
-        self._sync_x_bounds()
         self.control_panel.tab_files.update_list(self.data_manager.plots)
+        self.control_panel.tab_scale.update_list(self.data_manager.plots)
         dx, dy = self._get_steps()
         self.control_panel.tab_helpers.update_list(self.data_manager.plots, dx, dy)
         self.request_refresh(force=True)
@@ -204,12 +147,6 @@ class AppController:
         )
         if not path:
             return
-
-        self.data_manager.config.y_mode = self.control_panel.tab_scale.mode_var.get()
-        self.data_manager.config.x_min = self.control_panel.tab_scale.scale_min.get()
-        self.data_manager.config.x_max = self.control_panel.tab_scale.scale_max.get()
-        self.data_manager.config.y_min = self.control_panel.tab_scale.y_min_var.get()
-        self.data_manager.config.y_max = self.control_panel.tab_scale.y_max_var.get()
 
         plots_data = []
         for p in self.data_manager.plots:
@@ -223,11 +160,17 @@ class AppController:
                 "x_offset": p.x_offset,
                 "y_offset": p.y_offset,
                 "visible": p.visible,
+                "y_mode": p.y_mode,
+                "convert_sec_to_min": p.convert_sec_to_min,
+                "reverse_x": p.reverse_x,
+                "x_min": p.x_min,
+                "x_max": p.x_max,
+                "y_min": p.y_min,
+                "y_max": p.y_max,
                 "markers": [m.__dict__ for m in p.markers],
             }
             plots_data.append(plot_dict)
 
-        # Сохраняем и стили, и настройки файлов
         export_data = {
             "style_config": self.data_manager.config.__dict__,
             "plots": plots_data,
@@ -245,25 +188,16 @@ class AppController:
             with open(path, "r", encoding="utf-8") as f:
                 data = json.load(f)
 
-            # Поддержка нового формата (словарь со стилями и графиками) и старого (только список графиков)
             if isinstance(data, dict):
                 style_data = data.get("style_config", {})
                 plots_data = data.get("plots", [])
 
-                # Применяем глобальные стили
                 for k, v in style_data.items():
                     if hasattr(self.data_manager.config, k):
                         setattr(self.data_manager.config, k, v)
 
-                # Обновляем UI для стилей
                 self.control_panel.tab_labels.set_values(self.data_manager.config)
                 self.control_panel.tab_style.set_values(self.data_manager.config)
-                self.control_panel.tab_scale.convert_sec_to_min_var.set(
-                    self.data_manager.config.convert_sec_to_min
-                )
-                self.control_panel.tab_scale.reverse_x_var.set(
-                    self.data_manager.config.reverse_x
-                )
                 self.on_apply_figure_size(
                     self.data_manager.config.fig_width,
                     self.data_manager.config.fig_height,
@@ -293,17 +227,29 @@ class AppController:
                 plot_item.y_offset = p_dict.get("y_offset", 0.0)
                 plot_item.visible = p_dict.get("visible", True)
 
-                # Загрузка markers
+                # Индивидуальные настройки масштаба
+                plot_item.y_mode = p_dict.get("y_mode", "Абсолютный")
+                plot_item.convert_sec_to_min = p_dict.get("convert_sec_to_min", False)
+                plot_item.reverse_x = p_dict.get("reverse_x", False)
+
+                if "x_min" in p_dict:
+                    plot_item.x_min = p_dict["x_min"]
+                if "x_max" in p_dict:
+                    plot_item.x_max = p_dict["x_max"]
+                if "y_min" in p_dict:
+                    plot_item.y_min = p_dict["y_min"]
+                if "y_max" in p_dict:
+                    plot_item.y_max = p_dict["y_max"]
+
                 for m_dict in p_dict.get("markers", []):
                     ax = m_dict.get("anchor_x", 0.0)
                     ay = m_dict.get("anchor_y", 0.0)
-                    
-                    # Поддержка старых файлов (пересчет абсолютных координат в смещение)
+
                     if "label_x" in m_dict and "offset_x" not in m_dict:
                         ox = m_dict["label_x"] - ax
                     else:
                         ox = m_dict.get("offset_x", 0.0)
-                        
+
                     if "label_y" in m_dict and "offset_y" not in m_dict:
                         oy = m_dict["label_y"] - ay
                     else:
@@ -320,138 +266,16 @@ class AppController:
                             setattr(m, k, v)
                     plot_item.markers.append(m)
 
-            self.data_manager.recalculate_time_data()
-            self._sync_x_bounds()
-            if isinstance(data, dict) and "style_config" in data:
-                cfg = self.data_manager.config
-
-                # Восстанавливаем режим
-                if hasattr(cfg, "y_mode"):
-                    self.control_panel.tab_scale.mode_var.set(cfg.y_mode)
-
-                # Восстанавливаем границы X
-                if hasattr(cfg, "x_min") and hasattr(cfg, "x_max"):
-                    self.control_panel.tab_scale.scale_min.set(cfg.x_min)
-                    self.control_panel.tab_scale.scale_max.set(cfg.x_max)
-                    self.control_panel.tab_scale.ent_min.delete(0, tk.END)
-                    self.control_panel.tab_scale.ent_min.insert(0, f"{cfg.x_min:.3f}")
-                    self.control_panel.tab_scale.ent_max.delete(0, tk.END)
-                    self.control_panel.tab_scale.ent_max.insert(0, f"{cfg.x_max:.3f}")
-
-                # Восстанавливаем границы Y
-                if hasattr(cfg, "y_min") and hasattr(cfg, "y_max"):
-                    self.control_panel.tab_scale.y_min_var.set(cfg.y_min)
-                    self.control_panel.tab_scale.y_max_var.set(cfg.y_max)
-                    self.control_panel.tab_scale.ent_y_min.delete(0, tk.END)
-                    self.control_panel.tab_scale.ent_y_min.insert(0, f"{cfg.y_min:.2f}")
-                    self.control_panel.tab_scale.ent_y_max.delete(0, tk.END)
-                    self.control_panel.tab_scale.ent_y_max.insert(0, f"{cfg.y_max:.2f}")
+            self.data_manager.recalculate_time_data(reset_bounds=False)
 
             self.control_panel.tab_files.update_list(self.data_manager.plots)
+            self.control_panel.tab_scale.update_list(self.data_manager.plots)
             dx, dy = self._get_steps()
             self.control_panel.tab_helpers.update_list(self.data_manager.plots, dx, dy)
             self.request_refresh(force=True)
 
         except Exception as e:
             print(f"Ошибка импорта настроек: {e}")
-
-    # --- Обработчики масштаба ---
-    def _sync_x_bounds(self):
-        b_min, b_max = self.data_manager.all_data_bounds
-        if b_min == float("inf"):
-            b_min, b_max = 0, 1
-        self.control_panel.tab_scale.update_x_bounds(b_min, b_max)
-
-        # Если текущие значения выходят за рамки, корректируем
-        if self.control_panel.tab_scale.scale_min.get() < b_min:
-            self.control_panel.tab_scale.scale_min.set(b_min)
-        if self.control_panel.tab_scale.scale_max.get() > b_max:
-            self.control_panel.tab_scale.scale_max.set(b_max)
-        self.on_x_scale_scroll()
-
-    def on_x_scale_scroll(self, event=None):
-        s_min = self.control_panel.tab_scale.scale_min.get()
-        s_max = self.control_panel.tab_scale.scale_max.get()
-        self.control_panel.tab_scale.ent_min.delete(0, tk.END)
-        self.control_panel.tab_scale.ent_min.insert(0, f"{s_min:.3f}")
-        self.control_panel.tab_scale.ent_max.delete(0, tk.END)
-        self.control_panel.tab_scale.ent_max.insert(0, f"{s_max:.3f}")
-        self.request_refresh()
-
-    def on_x_scale_entry(self):
-        try:
-            v_min = float(self.control_panel.tab_scale.ent_min.get().replace(",", "."))
-            v_max = float(self.control_panel.tab_scale.ent_max.get().replace(",", "."))
-            self.control_panel.tab_scale.scale_min.set(v_min)
-            self.control_panel.tab_scale.scale_max.set(v_max)
-            self.request_refresh(force=True)
-        except ValueError:
-            self.on_x_scale_scroll()
-
-    def on_manual_y_change(self):
-        try:
-            v_min = float(
-                self.control_panel.tab_scale.ent_y_min.get().replace(",", ".")
-            )
-            v_max = float(
-                self.control_panel.tab_scale.ent_y_max.get().replace(",", ".")
-            )
-            self.control_panel.tab_scale.y_min_var.set(v_min)
-            self.control_panel.tab_scale.y_max_var.set(v_max)
-            self.request_refresh(force=True)
-        except ValueError:
-            pass
-
-    def on_fit_y_to_visible(self):
-        s = self.control_panel.tab_scale.scale_min.get()
-        e = self.control_panel.tab_scale.scale_max.get()
-        y_mode = self.control_panel.tab_scale.mode_var.get()
-        m_min, m_max = float("inf"), float("-inf")
-
-        for item in self.data_manager.plots:
-            if not item.visible:
-                continue
-            mask = (item.t >= s) & (item.t <= e)
-
-            if y_mode == "Нормированный":
-                v_y = item.y_orig[mask]
-                max_y = v_y.max() if v_y.size and v_y.max() > 0 else 1.0
-                v = (v_y / max_y) * 100 + item.y_offset if v_y.size else np.array([])
-            else:
-                v = item.y_orig[mask] + item.y_offset
-
-            if v.size:
-                m_min, m_max = min(m_min, v.min()), max(m_max, v.max())
-
-        if m_max != float("-inf"):
-            yr = m_max - m_min if m_max > m_min else (m_max if m_max > 0 else 1)
-            new_y_min = m_min - yr * 0.02
-            new_y_max = m_max + yr * 0.05
-
-            self.control_panel.tab_scale.y_min_var.set(new_y_min)
-            self.control_panel.tab_scale.y_max_var.set(new_y_max)
-
-            # Обновляем текстовые поля
-            self.control_panel.tab_scale.ent_y_min.delete(0, tk.END)
-            self.control_panel.tab_scale.ent_y_min.insert(0, f"{new_y_min:.2f}")
-            self.control_panel.tab_scale.ent_y_max.delete(0, tk.END)
-            self.control_panel.tab_scale.ent_y_max.insert(0, f"{new_y_max:.2f}")
-
-            self.request_refresh(force=True)
-
-    def on_time_unit_change(self):
-        self.data_manager.config.convert_sec_to_min = (
-            self.control_panel.tab_scale.convert_sec_to_min_var.get()
-        )
-        self.data_manager.recalculate_time_data()
-        self._sync_x_bounds()
-        self.request_refresh(force=True)
-
-    def on_reverse_x_change(self):
-        self.data_manager.config.reverse_x = (
-            self.control_panel.tab_scale.reverse_x_var.get()
-        )
-        self.request_refresh(force=True)
 
     # --- Обработчики стилей ---
     def update_style(self, key: str, val: any):
@@ -498,11 +322,9 @@ class AppController:
 
         xlim, ylim = self.plotter.ax.get_xlim(), self.plotter.ax.get_ylim()
 
-        # По умолчанию ставим метку по центру видимой области
         anchor_x = round(np.mean(xlim), 2)
         anchor_y = round(np.mean(ylim), 2)
         offset_x = 0.0
-        # Смещение чуть выше точки привязки (на 5% от высоты графика)
         offset_y = round(abs(ylim[1] - ylim[0]) * 0.05, 2)
 
         self.data_manager.add_marker(plot_idx, anchor_x, anchor_y, offset_x, offset_y)
@@ -541,13 +363,17 @@ class AppController:
         if len(p.t) == 0 or p.id not in self.plotter.plot_lines:
             return
 
+        # Берем данные из плоттера, так как они уже обрезаны маской
+        x_data = self.plotter.plot_lines[p.id].get_xdata()
         y_data = self.plotter.plot_lines[p.id].get_ydata()
 
-        # Ищем ближайшую точку по оси X (времени) к заданному anchor_x
-        idx_closest = np.argmin(np.abs(p.t - m.anchor_x))
+        if len(x_data) == 0:
+            return
 
-        m.anchor_x = round(p.t[idx_closest], 3)
-        m.anchor_y = round(y_data[idx_closest], 3)
+        idx_closest = np.argmin(np.abs(x_data - m.anchor_x))
+
+        m.anchor_x = round(float(x_data[idx_closest]), 3)
+        m.anchor_y = round(float(y_data[idx_closest]), 3)
 
         lim = self.plotter.ax.get_ylim()
         padding = abs(lim[1] - lim[0]) * 0.02
@@ -565,14 +391,19 @@ class AppController:
         if len(p.t) == 0 or p.id not in self.plotter.plot_lines:
             return
 
+        x_data = self.plotter.plot_lines[p.id].get_xdata()
         y_data = self.plotter.plot_lines[p.id].get_ydata()
+
+        if len(x_data) == 0:
+            return
+
         lim_y = self.plotter.ax.get_ylim()
         padding = abs(lim_y[1] - lim_y[0]) * 0.02
 
         for m in p.markers:
-            idx_closest = np.argmin(np.abs(p.t - m.anchor_x))
-            m.anchor_x = round(p.t[idx_closest], 3)
-            m.anchor_y = round(y_data[idx_closest], 3)
+            idx_closest = np.argmin(np.abs(x_data - m.anchor_x))
+            m.anchor_x = round(float(x_data[idx_closest]), 3)
+            m.anchor_y = round(float(y_data[idx_closest]), 3)
             m.offset_x = 0.0
             m.offset_y = round(padding, 3)
 
@@ -622,19 +453,11 @@ class AppController:
 
                 self.control_panel.tab_labels.set_values(self.data_manager.config)
                 self.control_panel.tab_style.set_values(self.data_manager.config)
-                self.control_panel.tab_scale.convert_sec_to_min_var.set(
-                    self.data_manager.config.convert_sec_to_min
-                )
-                self.control_panel.tab_scale.reverse_x_var.set(
-                    self.data_manager.config.reverse_x
-                )
                 self.on_apply_figure_size(
                     self.data_manager.config.fig_width,
                     self.data_manager.config.fig_height,
                     custom=True,
                 )
-                self.data_manager.recalculate_time_data()
-                self._sync_x_bounds()
                 self.request_refresh(force=True)
             except Exception as e:
                 print(f"Error importing style: {e}")

@@ -44,15 +44,7 @@ class ChromatogramPlotter:
             return getattr(config, f"gen_{prop}")
         return val
 
-    def refresh(
-        self,
-        data_manager: DataManager,
-        x_min: float,
-        x_max: float,
-        y_mode: str,
-        y_min: float,
-        y_max: float,
-    ) -> None:
+    def refresh(self, data_manager: DataManager) -> None:
         """
         Основной метод обновления графика.
         """
@@ -65,6 +57,11 @@ class ChromatogramPlotter:
                 self.plot_lines[plot_id].remove()
                 del self.plot_lines[plot_id]
 
+        global_x_min, global_x_max = float("inf"), float("-inf")
+        global_y_min, global_y_max = float("inf"), float("-inf")
+        any_normalized = False
+        has_visible = False
+
         # 2. Обновление данных и стилей графиков
         for i, item in enumerate(data_manager.plots):
             if item.id not in self.plot_lines:
@@ -73,45 +70,66 @@ class ChromatogramPlotter:
 
             line = self.plot_lines[item.id]
 
-            # Применение данных по X
-            line.set_xdata(item.t)
+            if not item.visible:
+                line.set_visible(False)
+                continue
 
-            # Применение данных по Y (с учетом нормализации)
-            if y_mode == "Нормированный":
-                mask = (item.t >= x_min) & (item.t <= x_max)
-                v_y = item.y_orig[mask]
-                max_y = v_y.max() if v_y.size and v_y.max() > 0 else 1.0
-                base_y = (item.y_orig / max_y) * 100 if v_y.size else item.y_orig * 0
+            has_visible = True
+            line.set_visible(True)
+
+            # Маскируем данные по индивидуальным границам X
+            mask = (item.t >= item.x_min) & (item.t <= item.x_max)
+            t_masked = item.t[mask]
+            y_masked = item.y_orig[mask]
+
+            # Применение данных по Y (с учетом индивидуальной нормализации)
+            if item.y_mode == "Нормированный":
+                any_normalized = True
+                max_y = y_masked.max() if y_masked.size and y_masked.max() > 0 else 1.0
+                base_y = (y_masked / max_y) * 100 if y_masked.size else np.array([])
                 line.set_ydata(base_y + item.y_offset)
             else:
-                line.set_ydata(item.y_orig + item.y_offset)
+                line.set_ydata(y_masked + item.y_offset)
+
+            # Применение данных по X
+            line.set_xdata(t_masked)
 
             # Применение стилей линии
             line.set_color(item.color)
             line.set_linestyle(item.linestyle)
             line.set_linewidth(item.line_width)
-            line.set_visible(item.visible)
-            line.set_zorder(i + 10)  # Базовый z-order для графиков
+            line.set_zorder(i + 10)
 
             # Легенда
-            show_leg = item.show_in_legend and item.visible
+            show_leg = item.show_in_legend
             line.set_label(item.label if show_leg else "_nolegend_")
 
-        # 3. Настройка оси X
-        safe_x_max = x_max if x_max > x_min else x_min + 0.01
-        if config.reverse_x:
-            self.ax.set_xlim(safe_x_max, x_min)
+            # Обновляем глобальный Viewport
+            global_x_min = min(global_x_min, item.x_min)
+            global_x_max = max(global_x_max, item.x_max)
+            global_y_min = min(global_y_min, item.y_min)
+            global_y_max = max(global_y_max, item.y_max)
+
+        # 3. Настройка осей (Viewport)
+        if has_visible:
+            safe_x_max = (
+                global_x_max if global_x_max > global_x_min else global_x_min + 0.01
+            )
+            self.ax.set_xlim(global_x_min, safe_x_max)
+
+            safe_y_max = (
+                global_y_max if global_y_max > global_y_min else global_y_min + 0.01
+            )
+            self.ax.set_ylim(global_y_min, safe_y_max)
         else:
-            self.ax.set_xlim(x_min, safe_x_max)
+            self.ax.set_xlim(0, 1)
+            self.ax.set_ylim(0, 100)
 
-        # 4. Настройка оси Y
-        self.ax.set_ylim(y_min, y_max)
-
-        # 5. Отрисовка меток
+        # 4. Отрисовка меток
         self._draw_markers(data_manager.plots)
 
-        # 6. Применение глобальных стилей (шрифты, сетка, тики)
-        self._apply_style(config, y_mode)
+        # 5. Применение глобальных стилей
+        self._apply_style(config, any_normalized)
 
     def _draw_markers(self, plots: List[PlotItem]) -> None:
         """Отрисовывает метки и линии связи."""
@@ -120,46 +138,48 @@ class ChromatogramPlotter:
         self.helper_artists.clear()
 
         for p in plots:
-            if not p.visible: continue
+            if not p.visible:
+                continue
             for m in p.markers:
-                z = 1 if m.layer == 'Задний' else 50
+                z = 1 if m.layer == "Задний" else 50
                 txt = m.text if m.text.strip() else f"{m.anchor_x:.2f}"
-                
-                # Если смещение по Y положительное (текст выше пика)
+
                 if m.offset_y >= 0:
-                    va_val = 'bottom'
+                    va_val = "bottom"
                     rel_pos = (0.5, 0.0)
                 else:
-                    va_val = 'top'
+                    va_val = "top"
                     rel_pos = (0.5, 1.0)
-                
+
                 arrowprops = None
                 if m.show_connector:
                     arrowprops = dict(
-                        arrowstyle='-', 
-                        color=m.color, 
-                        lw=m.width, 
-                        shrinkA=0, 
+                        arrowstyle="-",
+                        color=m.color,
+                        lw=m.width,
+                        shrinkA=0,
                         shrinkB=0,
-                        relpos=rel_pos
+                        relpos=rel_pos,
                     )
-                
+
                 text_artist = self.ax.annotate(
                     txt,
                     xy=(m.anchor_x, m.anchor_y),
-                    # Позиция текста = точка привязки + смещение
                     xytext=(m.anchor_x + m.offset_x, m.anchor_y + m.offset_y),
                     textcoords="data",
-                    color=m.color, fontsize=m.font_size,
-                    va=va_val, ha='center', fontweight='bold', zorder=z+1,
+                    color=m.color,
+                    fontsize=m.font_size,
+                    va=va_val,
+                    ha="center",
+                    fontweight="bold",
+                    zorder=z + 1,
                     rotation=m.label_rotation,
-                    arrowprops=arrowprops
+                    arrowprops=arrowprops,
                 )
                 self.helper_artists.append(text_artist)
 
-    def _apply_style(self, config: StyleConfig, y_mode: str) -> None:
+    def _apply_style(self, config: StyleConfig, any_normalized: bool) -> None:
         """Применяет настройки оформления к осям, сетке и легенде."""
-        # Заголовки
         self.ax.set_title(
             config.title_text,
             fontfamily=self._resolve_font(config, "title", "font"),
@@ -168,9 +188,7 @@ class ChromatogramPlotter:
             fontsize=config.title_size,
         )
 
-        y_label_text = (
-            config.y_label_norm if y_mode == "Нормированный" else config.y_label_abs
-        )
+        y_label_text = config.y_label_norm if any_normalized else config.y_label_abs
 
         for axis, label in [
             (self.ax.xaxis, config.x_label),
@@ -184,7 +202,6 @@ class ChromatogramPlotter:
                 fontsize=config.label_size,
             )
 
-        # Тики (деления)
         for ax_obj in [self.ax.xaxis, self.ax.yaxis]:
             for tick in ax_obj.get_ticklabels():
                 tick.set_fontfamily(self._resolve_font(config, "tick", "font"))
@@ -224,7 +241,6 @@ class ChromatogramPlotter:
             else NullLocator()
         )
 
-        # Рамка и сетка
         for spine in self.ax.spines.values():
             spine.set_linewidth(config.spine_width)
 
@@ -233,7 +249,6 @@ class ChromatogramPlotter:
             visible=True, which="major", alpha=config.grid_alpha, lw=config.grid_width
         )
 
-        # Легенда
         if self.ax.get_legend():
             self.ax.get_legend().remove()
 
@@ -250,11 +265,9 @@ class ChromatogramPlotter:
                 )
 
     def resize_figure(self, width: float, height: float) -> None:
-        """Изменяет физический размер графика (в дюймах)."""
         self.fig.set_size_inches(width, height)
 
     def save_figure(self, filepath: str) -> None:
-        """Сохраняет график в файл."""
         ext = filepath.split(".")[-1].lower()
         if ext == "png":
             self.fig.savefig(filepath, format="png", bbox_inches="tight", dpi=300)
@@ -262,7 +275,6 @@ class ChromatogramPlotter:
             self.fig.savefig(filepath, format="svg", bbox_inches="tight")
 
     def clear(self) -> None:
-        """Полностью очищает график."""
         for line in self.plot_lines.values():
             line.remove()
         self.plot_lines.clear()
@@ -271,7 +283,6 @@ class ChromatogramPlotter:
             artist.remove()
         self.helper_artists.clear()
 
-        # --- Скрываем hover ---
         self.hover_point.set_visible(False)
         self.hover_text.set_visible(False)
 
@@ -281,12 +292,9 @@ class ChromatogramPlotter:
     def update_hover(
         self, event_x: float, event_y: float, event_xdata: float, event_ydata: float
     ):
-        """Ищет самую высокую точку в заданном радиусе от курсора и обновляет маркер."""
         candidates = []
-        RADIUS_PX = 5  # Радиус захвата в пикселях
+        RADIUS_PX = 5
 
-        # 1. ОПТИМИЗАЦИЯ: Вычисляем границы поиска в координатах данных.
-        # Переводим квадрат вокруг курсора (±5 пикселей) обратно в координаты графика.
         inv_trans = self.ax.transData.inverted()
         p1 = inv_trans.transform((event_x - RADIUS_PX, event_y - RADIUS_PX))
         p2 = inv_trans.transform((event_x + RADIUS_PX, event_y + RADIUS_PX))
@@ -294,7 +302,6 @@ class ChromatogramPlotter:
         x_min, x_max = min(p1[0], p2[0]), max(p1[0], p2[0])
         y_min, y_max = min(p1[1], p2[1]), max(p1[1], p2[1])
 
-        # Ищем кандидатов среди всех видимых графиков
         for line in self.plot_lines.values():
             if not line.get_visible():
                 continue
@@ -303,26 +310,21 @@ class ChromatogramPlotter:
             if len(x_data) == 0:
                 continue
 
-            # 2. Быстрая фильтрация: оставляем только точки внутри квадрата захвата.
-            # Это работает в сотни раз быстрее, чем трансформация всех точек в пиксели.
             mask = (
                 (x_data >= x_min)
                 & (x_data <= x_max)
                 & (y_data >= y_min)
                 & (y_data <= y_max)
             )
-
             if not np.any(mask):
-                continue  # Если рядом с курсором нет точек этой линии, пропускаем её
+                continue
 
             f_x = x_data[mask]
             f_y = y_data[mask]
 
-            # 3. Переводим в пиксели ТОЛЬКО отфильтрованные точки (их будет буквально несколько штук)
             xy_data = np.column_stack((f_x, f_y))
             xy_pixels = self.ax.transData.transform(xy_data)
 
-            # 4. Считаем точное расстояние в пикселях (чтобы отсечь углы квадрата и оставить круг)
             dists = np.hypot(xy_pixels[:, 0] - event_x, xy_pixels[:, 1] - event_y)
             valid_indices = np.where(dists <= RADIUS_PX)[0]
 
@@ -330,10 +332,7 @@ class ChromatogramPlotter:
                 candidates.append({"px": f_x[idx], "py": f_y[idx], "dist": dists[idx]})
 
         if candidates:
-            # 5. Находим ЛУЧШУЮ точку за один проход (без полной сортировки списка).
-            # Ищем минимум: сначала по -py (самый высокий Y), затем по dist (самый близкий к центру).
             best = min(candidates, key=lambda c: (-c["py"], c["dist"]))
-
             closest_data = (best["px"], best["py"])
 
             self.hover_point.set_data([closest_data[0]], [closest_data[1]])
