@@ -28,8 +28,8 @@ class ControlPanel(tk.Toplevel):
         self.notebook.add(self.tab_files, text=" 📂 Файлы ")
         self.notebook.add(self.tab_scale, text=" 📏 Масштаб ")
         self.notebook.add(self.tab_labels, text=" 📝 Подписи ")
-        self.notebook.add(self.tab_helpers, text=" 📍 Метки ")
         self.notebook.add(self.tab_style, text=" 🎨 Оформление ")
+        self.notebook.add(self.tab_helpers, text=" 📍 Метки ")
 
         self.setup_bottom_panel()
 
