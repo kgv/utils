@@ -141,6 +141,10 @@ class ChromatogramPlotter:
             if not p.visible:
                 continue
             for m in p.markers:
+                # Пропускаем скрытые метки
+                if not getattr(m, "visible", True):
+                    continue
+
                 z = 1 if m.layer == "Задний" else 50
                 txt = m.text if m.text.strip() else f"{m.anchor_x:.2f}"
 

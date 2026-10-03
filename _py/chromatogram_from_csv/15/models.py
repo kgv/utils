@@ -121,4 +121,5 @@ class PlotMarker:
     layer: str = "Задний"
     width: float = 0.5
     show_connector: bool = False
+    visible: bool = True
     id: str = field(default_factory=lambda: str(uuid.uuid4()))
