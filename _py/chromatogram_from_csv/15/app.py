@@ -385,13 +385,13 @@ class AppController:
 
         x_data = self.plotter.plot_lines[p.id].get_xdata()
         y_data = self.plotter.plot_lines[p.id].get_ydata()
-
+        
         if len(x_data) == 0:
             return
 
         idx_closest = np.argmin(np.abs(x_data - m.anchor_x))
 
-        m.anchor_x = round(float(x_data[idx_closest]), 3)
+        # Оставляем anchor_x без изменений, меняем только anchor_y
         m.anchor_y = round(float(y_data[idx_closest]), 3)
 
         lim = self.plotter.ax.get_ylim()
@@ -411,16 +411,17 @@ class AppController:
 
         x_data = self.plotter.plot_lines[p.id].get_xdata()
         y_data = self.plotter.plot_lines[p.id].get_ydata()
-
+        
         if len(x_data) == 0:
             return
-
+            
         lim_y = self.plotter.ax.get_ylim()
         padding = abs(lim_y[1] - lim_y[0]) * 0.02
 
         for m in p.markers:
             idx_closest = np.argmin(np.abs(x_data - m.anchor_x))
-            m.anchor_x = round(float(x_data[idx_closest]), 3)
+            
+            # Оставляем anchor_x без изменений, меняем только anchor_y
             m.anchor_y = round(float(y_data[idx_closest]), 3)
             m.offset_x = 0.0
             m.offset_y = round(padding, 3)
