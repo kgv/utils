@@ -54,9 +54,15 @@ class AppController:
         if not getattr(self, "ui_ready", False):
             return
 
-        # Отрисовка (теперь plotter сам берет все нужные данные из data_manager)
+        # Отрисовка
         self.plotter.refresh(self.data_manager)
         self.main_window.redraw_canvas()
+
+    def refresh_ui(self):
+        """Вспомогательный метод для обновления обеих панелей во вкладке Файлы."""
+        self.control_panel.tab_files.update_list(self.data_manager.plots)
+        dx, dy = self._get_steps()
+        self.control_panel.tab_files.update_markers(self.data_manager.plots, dx, dy)
 
     # --- Обработчики событий мыши (Hover и Клик) ---
     def on_mouse_move(self, event):
@@ -100,46 +106,72 @@ class AppController:
             color = self.palette[len(self.data_manager.plots) % len(self.palette)]
             self.data_manager.add_plot(p, color, 1.5)
 
-        self.control_panel.tab_files.update_list(self.data_manager.plots)
-        self.control_panel.tab_scale.update_list(self.data_manager.plots)
-        dx, dy = self._get_steps()
-        self.control_panel.tab_helpers.update_list(self.data_manager.plots, dx, dy)
+        self.refresh_ui()
         self.request_refresh(force=True)
 
     def on_clear_all(self):
         self.data_manager.clear_all()
         self.plotter.clear()
-        self.control_panel.tab_files.update_list(self.data_manager.plots)
-        self.control_panel.tab_scale.update_list(self.data_manager.plots)
-        self.control_panel.tab_helpers.update_list(self.data_manager.plots, 0.1, 0.1)
+        self.refresh_ui()
         self.request_refresh(force=True)
 
     def update_plot(self, idx: int, key: str, val: any):
         try:
-            if key in ["line_width", "x_offset", "y_offset"]:
+            if key in [
+                "line_width",
+                "x_offset",
+                "y_offset",
+                "x_min",
+                "x_max",
+                "y_min",
+                "y_max",
+            ]:
                 val = float(str(val).replace(",", "."))
+
             setattr(self.data_manager.plots[idx], key, val)
-            if key == "x_offset":
+
+            if key in ["convert_sec_to_min", "reverse_x"]:
+                self.data_manager.recalculate_time_data(reset_bounds=True)
+                self.refresh_ui()
+            elif key == "x_offset":
                 self.data_manager.recalculate_time_data(reset_bounds=False)
+            elif key == "visible":
+                # Если изменилась видимость, нужно перерисовать панель меток
+                self.refresh_ui()
+
             self.request_refresh()
         except ValueError:
             pass
 
     def on_move_plot(self, idx: int, direction: int):
         self.data_manager.move_plot(idx, direction)
-        self.control_panel.tab_files.update_list(self.data_manager.plots)
-        self.control_panel.tab_scale.update_list(self.data_manager.plots)
-        dx, dy = self._get_steps()
-        self.control_panel.tab_helpers.update_list(self.data_manager.plots, dx, dy)
+        self.refresh_ui()
         self.request_refresh(force=True)
 
     def on_remove_plot(self, idx: int):
         self.data_manager.remove_plot(idx)
-        self.control_panel.tab_files.update_list(self.data_manager.plots)
-        self.control_panel.tab_scale.update_list(self.data_manager.plots)
-        dx, dy = self._get_steps()
-        self.control_panel.tab_helpers.update_list(self.data_manager.plots, dx, dy)
+        self.refresh_ui()
         self.request_refresh(force=True)
+
+    def on_fit_y_to_visible(self, idx: int):
+        p = self.data_manager.plots[idx]
+        mask = (p.t >= p.x_min) & (p.t <= p.x_max)
+
+        if p.y_mode == "Нормированный":
+            v_y = p.y_orig[mask]
+            max_y = v_y.max() if v_y.size and v_y.max() > 0 else 1.0
+            v = (v_y / max_y) * 100 + p.y_offset if v_y.size else np.array([])
+        else:
+            v = p.y_orig[mask] + p.y_offset
+
+        if v.size:
+            m_min, m_max = v.min(), v.max()
+            yr = m_max - m_min if m_max > m_min else (m_max if m_max > 0 else 1)
+            p.y_min = m_min - yr * 0.02
+            p.y_max = m_max + yr * 0.05
+
+            self.refresh_ui()
+            self.request_refresh(force=True)
 
     def on_export_file_settings(self):
         path = filedialog.asksaveasfilename(
@@ -227,7 +259,6 @@ class AppController:
                 plot_item.y_offset = p_dict.get("y_offset", 0.0)
                 plot_item.visible = p_dict.get("visible", True)
 
-                # Индивидуальные настройки масштаба
                 plot_item.y_mode = p_dict.get("y_mode", "Абсолютный")
                 plot_item.convert_sec_to_min = p_dict.get("convert_sec_to_min", False)
                 plot_item.reverse_x = p_dict.get("reverse_x", False)
@@ -267,11 +298,7 @@ class AppController:
                     plot_item.markers.append(m)
 
             self.data_manager.recalculate_time_data(reset_bounds=False)
-
-            self.control_panel.tab_files.update_list(self.data_manager.plots)
-            self.control_panel.tab_scale.update_list(self.data_manager.plots)
-            dx, dy = self._get_steps()
-            self.control_panel.tab_helpers.update_list(self.data_manager.plots, dx, dy)
+            self.refresh_ui()
             self.request_refresh(force=True)
 
         except Exception as e:
@@ -314,12 +341,7 @@ class AppController:
             abs(ylim[1] - ylim[0]) / 100.0 or 0.1,
         )
 
-    def on_add_marker(self):
-        plot_str = self.control_panel.tab_helpers.target_plot_var.get()
-        if not plot_str:
-            return
-        plot_idx = int(plot_str.split(":")[0])
-
+    def on_add_marker(self, idx: int):
         xlim, ylim = self.plotter.ax.get_xlim(), self.plotter.ax.get_ylim()
 
         anchor_x = round(np.mean(xlim), 2)
@@ -327,9 +349,8 @@ class AppController:
         offset_x = 0.0
         offset_y = round(abs(ylim[1] - ylim[0]) * 0.05, 2)
 
-        self.data_manager.add_marker(plot_idx, anchor_x, anchor_y, offset_x, offset_y)
-        dx, dy = self._get_steps()
-        self.control_panel.tab_helpers.update_list(self.data_manager.plots, dx, dy)
+        self.data_manager.add_marker(idx, anchor_x, anchor_y, offset_x, offset_y)
+        self.refresh_ui()
         self.request_refresh(force=True)
 
     def update_marker(self, plot_idx: int, marker_idx: int, key: str, val: any):
@@ -352,8 +373,7 @@ class AppController:
 
     def on_remove_marker(self, plot_idx: int, marker_idx: int):
         self.data_manager.remove_marker(plot_idx, marker_idx)
-        dx, dy = self._get_steps()
-        self.control_panel.tab_helpers.update_list(self.data_manager.plots, dx, dy)
+        self.refresh_ui()
         self.request_refresh(force=True)
 
     def on_auto_marker_pos(self, plot_idx: int, marker_idx: int):
@@ -363,7 +383,6 @@ class AppController:
         if len(p.t) == 0 or p.id not in self.plotter.plot_lines:
             return
 
-        # Берем данные из плоттера, так как они уже обрезаны маской
         x_data = self.plotter.plot_lines[p.id].get_xdata()
         y_data = self.plotter.plot_lines[p.id].get_ydata()
 
@@ -381,8 +400,7 @@ class AppController:
         m.offset_x = 0.0
         m.offset_y = round(padding, 3)
 
-        dx, dy = self._get_steps()
-        self.control_panel.tab_helpers.update_list(self.data_manager.plots, dx, dy)
+        self.refresh_ui()
         self.request_refresh(force=True)
 
     def on_auto_marker_pos_all(self, plot_idx: int):
@@ -407,8 +425,7 @@ class AppController:
             m.offset_x = 0.0
             m.offset_y = round(padding, 3)
 
-        dx, dy = self._get_steps()
-        self.control_panel.tab_helpers.update_list(self.data_manager.plots, dx, dy)
+        self.refresh_ui()
         self.request_refresh(force=True)
 
     # --- Утилиты ---
@@ -422,13 +439,10 @@ class AppController:
         if new_c:
             if is_marker:
                 self.data_manager.plots[idx].markers[marker_idx].color = new_c
-                dx, dy = self._get_steps()
-                self.control_panel.tab_helpers.update_list(
-                    self.data_manager.plots, dx, dy
-                )
             else:
                 self.data_manager.plots[idx].color = new_c
-                self.control_panel.tab_files.update_list(self.data_manager.plots)
+
+            self.refresh_ui()
             self.request_refresh(force=True)
 
     def on_export_style(self):

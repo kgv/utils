@@ -2,9 +2,7 @@
 import tkinter as tk
 from tkinter import ttk
 from ui.tab_files import TabFiles
-from ui.tab_scale import TabScale
 from ui.tab_labels import TabLabels
-from ui.tab_helpers import TabHelpers
 from ui.tab_style import TabStyle
 
 
@@ -13,23 +11,19 @@ class ControlPanel(tk.Toplevel):
         super().__init__(parent)
         self.controller = controller
         self.title("Панель управления")
-        self.geometry("1150x950")
+        self.geometry("1350x950")  # Немного расширили окно для двух панелей
         self.protocol("WM_DELETE_WINDOW", self.controller.on_close)
 
         self.notebook = ttk.Notebook(self)
         self.notebook.pack(fill="both", expand=True, padx=5, pady=5)
 
         self.tab_files = TabFiles(self.notebook, controller)
-        self.tab_scale = TabScale(self.notebook, controller)
         self.tab_labels = TabLabels(self.notebook, controller)
-        self.tab_helpers = TabHelpers(self.notebook, controller)
         self.tab_style = TabStyle(self.notebook, controller)
 
-        self.notebook.add(self.tab_files, text=" 📂 Файлы ")
-        self.notebook.add(self.tab_scale, text=" 📏 Масштаб ")
+        self.notebook.add(self.tab_files, text=" 📂 Файлы, Масштаб и Метки ")
         self.notebook.add(self.tab_labels, text=" 📝 Подписи ")
         self.notebook.add(self.tab_style, text=" 🎨 Оформление ")
-        self.notebook.add(self.tab_helpers, text=" 📍 Метки ")
 
         self.setup_bottom_panel()
 
