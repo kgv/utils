@@ -38,25 +38,25 @@ percent = percent.unpivot(
 print(f"unpivot: {percent}")
 
 df = df.join(
-    percent, on=["Component", "CAS", "RI", "RT", "Vial"], how="full", coalesce=True
-)
-print(f"join: {df}")
-# .select(
-#     [
-#         "Vial",
-#         "Species",
-#         "Object",
-#         "Tree",
-#         "Component",
-#         "CAS",
-#         "RI",
-#         "RT",
-#         "Percent",
-#         "Absolute",
-#     ]
-# )
+    percent, on=["Vial", "Component", "CAS", "RI", "RT"], how="full", coalesce=True
+).select(
+    [
+        "Vial",
+        "Species",
+        "Object",
+        "Tree",
+        "Component",
+        "CAS",
+        "RI",
+        "RT",
+        "Percent",
+        "Absolute",
+    ]
+).sort("Vial")
 
-percent.write_csv("output.txt")
+print(f"join: {df}")
+
+df.write_csv("output.txt")
 
 
 # # pl.struct("Vial", "Value").alias("Values")
