@@ -1,0 +1,72 @@
+Vial,Species,Object,Tree,Light,Description
+1,Thuja plicata,238174,1,,дерево
+2,Thuja plicata,238174,1,,дерево
+3,Thuja plicata,238174,1,,дерево
+4,Juniperus rigida,318939,1,,дерево
+5,Juniperus rigida,318939,1,,дерево
+6,Juniperus rigida,318939,1,,дерево
+7,Microbiota decussata,4/73,1,,куст
+8,Microbiota decussata,4/73,1,,куст
+9,Microbiota decussata,4/73,1,,куст
+10,Chamaecyparis lawsoniana 'Ellwoodii',247596,1,,""
+11,Chamaecyparis lawsoniana 'Ellwoodii',247596,1,,""
+12,Chamaecyparis lawsoniana 'Ellwoodii',247596,1,,""
+13,Cupressus nootkatensis,202515,1,,куст
+14,Cupressus nootkatensis,202515,1,,куст
+15,Cupressus nootkatensis,202515,1,,куст
+16,Microbiota decussata,20140030,1,,куст
+17,Microbiota decussata,20140030,1,,куст
+18,Microbiota decussata,20140030,1,,куст
+19,Juniperus davurica,20140023,1,,куст; распластанный
+20,Juniperus davurica,20140023,1,,куст; распластанный
+21,Juniperus davurica,20140023,1,,куст; распластанный
+22,Juniperus rigida,252947,1,,дерево
+23,Juniperus rigida,252947,1,,дерево
+24,Juniperus rigida,252947,1,,дерево
+25,Thujopsis dolabrata 'Variegata',299338/72,1,,"одно дерево, но насажено много"
+26,Thujopsis dolabrata 'Variegata',299338/72,1,,"одно дерево, но насажено много"
+27,Juniperus chinensis var. sargentii,423705,1,,дерево
+28,Juniperus chinensis var. sargentii,423705,1,,дерево
+29,Juniperus scopulorum,305660,1,,дерево
+30,Juniperus scopulorum,305660,1,,дерево
+31,Juniperus pseudosabina,342963/79,1,,заросль; левее; синяя
+32,Juniperus pseudosabina,342963/79,1,,заросль; левее; синяя
+33,Juniperus pseudosabina (J.turkestanica),236061,1,,дерево
+34,Juniperus pseudosabina (J.turkestanica),236061,1,,дерево
+35,Juniperus pseudosabina (J.turkestanica),254450,1,,дерево
+36,Juniperus pseudosabina (J.turkestanica),254450,1,,дерево
+37,Juniperus communis var. saxatilis (J. sibirica),28043,1,,заросль; форма ползучая; было множество образцов; все срослись; левая дуга заросли
+38,Juniperus communis var. saxatilis (J. sibirica),28043,1,,заросль; форма ползучая; было множество образцов; все срослись; левая дуга заросли
+39,Juniperus communis (J. suecica),249972,1,,заросль; форма ползучая; было множество образцов; все срослись; правая дуга заросли
+40,Juniperus communis (J. suecica),249972,1,,заросль; форма ползучая; было множество образцов; все срослись; правая дуга заросли
+41,Juniperus virginiana,248592,1,,дерево
+42,Juniperus virginiana,248592,1,,дерево
+43,Juniperus virginiana,315380,1,,дерево; слева
+44,Juniperus virginiana,315380,1,,дерево; слева
+45,Juniperus virginiana,315380,3,min,дерево
+46,Juniperus virginiana,315380,3,min,дерево
+47,Juniperus virginiana,315380,2,,дерево; справа
+48,Juniperus virginiana,315380,2,,дерево; справа
+49,Juniperus virginiana,45989,1,max,дерево
+50,Juniperus virginiana,45989,1,max,дерево
+51,Juniperus virginiana,45989,2,med,дерево
+52,Juniperus virginiana,45989,2,med,дерево
+53,Juniperus virginiana,45989,3,min,дерево; замученый; справа
+54,Juniperus virginiana,45989,3,min,дерево; замученый; справа
+55,Juniperus sabina,18,1,med,возможно 1 дерево; ползучее; стелящееся
+56,Juniperus sabina,18,2,min,возможно 1 дерево; ползучее; стелящееся
+57,Juniperus sabina,18,3,max,возможно 1 дерево; ползучее; стелящееся
+58,Juniperus communis,45990,1,med,не стелящийся
+59,Juniperus communis,45990,2,min,не стелящийся; валяющийся
+60,Juniperus communis,45990,3,max,не стелящийся; отдельностоящий
+61,Chamaecyparis pisifera,49612,1,max,роща; представлен сортами; выбираем дерево чистого вида
+62,Chamaecyparis pisifera,49612,2,min,роща; представлен сортами; выбираем дерево чистого вида
+63,Chamaecyparis pisifera,10833,2,min,дерево
+64,Chamaecyparis pisifera,10833,1,min,дерево
+65,Chamaecyparis lawsoniana ?,,1,,дерево
+67,Thuja plicata,288244,1,,дерево; слева
+68,Thuja plicata,288244,2,,дерево; справа
+69,Thuja occidentalis,62390,1,,дерево; слева
+70,Thuja occidentalis,62390,2,min,дерево; справа
+71,Thuja occidentalis,235076,1,,дерево; слева
+72,Thuja occidentalis,235076,2,,дерево; справа
