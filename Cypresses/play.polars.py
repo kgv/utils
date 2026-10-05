@@ -16,7 +16,7 @@ light = pl.Enum(["min", "med", "max"])
 # print(f"read: {header}")
 
 df = pl.read_csv(
-    "Cypresses/csv/Vial,Species,Object,Tree,Component,CAS,RI,RT,Absolute.txt",
+    "Cypresses/csv/Vial,Species,Object,Tree,Component,CAS,RI,RT,Percent,Absolute.txt",
     schema_overrides={"Object": pl.String},
 )
 print(f"df: {df}")
