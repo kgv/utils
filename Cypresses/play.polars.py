@@ -40,64 +40,13 @@ print(f"traits_df: {traits_df}")
 
 # $RSD_{pooled} = \sqrt{ \frac{(n_1-1)RSD_1^2 + (n_2-1)RSD_2^2 + \dots + (n_k-1)RSD_k^2}{(n_1-1) + (n_2-1) + \dots + (n_k-1)} }$
 
-# ################################################################################
-# # Mean for Tree
-# tree_component_stats = (
-#     # ШАГ 1: Считаем RSD для каждого летучего вещества
-#     df.group_by(["Species", "Object", "Tree", "Component"], maintain_order=True).agg(
-#         pl.col("Absolute").mean().round(1).alias("Absolute_Mean"),
-#         pl.col("Absolute").std().round(1).alias("Absolute_StandardDeviation"),
-#         (pl.col("Absolute").std() / pl.col("Absolute").mean() * 100)
-#         .round(1)
-#         .alias("Absolute_RelativeStandardDeviation"),
-#         pl.col("Percent").mean().round(1).alias("Percent_Mean"),
-#         pl.col("Percent").std().round(1).alias("Percent_StandardDeviation"),
-#         (pl.col("Percent").std() / pl.col("Percent").mean() * 100)
-#         .round(1)
-#         .alias("Percent_RelativeStandardDeviation"),
-#         pl.len().alias("N"),
-#     )
-# )
-# print(f"tree_component_stats: {tree_component_stats}")
-# tree_component_stats.write_csv("TreeComponentStats.txt")
-
-# # ШАГ 2: Объединяем (pool) RSD для всего дерева
-# tree_stats = (
-#     tree_component_stats.with_columns(
-#         # Числитель: (n - 1) * RSD^2
-#         ((pl.col("N") - 1) * (pl.col("Absolute_RelativeStandardDeviation") ** 2)).alias(
-#             "_Numerator"
-#         ),
-#         # Знаменатель: (n - 1)
-#         (pl.col("N") - 1).alias("_Denominator"),
-#     )
-#     .group_by(["Species", "Object", "Tree"], maintain_order=True)
-#     .agg(
-#         # Суммируем числители и знаменатели
-#         pl.col("_Numerator").sum().alias("_Numerator"),
-#         pl.col("_Denominator").sum().alias("_Denominator"),
-#         # Считаем, сколько веществ пошло в расчет
-#         pl.len().alias("N"),
-#     )
-#     .with_columns(
-#         # Итоговый Pooled RSD для дерева
-#         # (pl.col("_Numerator") / pl.col("_Denominator")).sqrt()
-#         pl.when(pl.col("_Denominator") > 0)
-#         .then((pl.col("_Numerator") / pl.col("_Denominator")).sqrt())
-#         .otherwise(None)
-#         .alias("RSD")
-#     )
-#     .drop(["_Numerator", "_Denominator"])
-#     .with_columns(cs.float().round(2))
-# )
-# print(f"tree_stats: {tree_stats}")
-# tree_stats.write_csv("TreeStats.txt")
-
 ################################################################################
-# Mean for Object
-object_component_stats = (
-    df.group_by(["Species", "Object", "Component"], maintain_order=True)
+# Mean for Tree
+tree_component_stats = (
+    # ШАГ 1: Считаем RSD для каждого летучего вещества
+    df.group_by(["Species", "Object", "Tree", "Component"], maintain_order=True)
     .agg(
+        pl.col("Vial"),
         pl.col("Absolute").mean().round(1).alias("Absolute_Mean"),
         pl.col("Absolute").std().round(1).alias("Absolute_StandardDeviation"),
         (pl.col("Absolute").std() / pl.col("Absolute").mean() * 100)
@@ -108,15 +57,10 @@ object_component_stats = (
         (pl.col("Percent").std() / pl.col("Percent").mean() * 100)
         .round(1)
         .alias("Percent_RelativeStandardDeviation"),
-        pl.col("Tree"),
-        pl.col("Vial"),
         pl.len().alias("N"),
     )
     .with_columns(
-        [
-            pl.format("[{}]", pl.col("Tree").cast(pl.List(pl.String)).list.join(",")),
-            pl.format("[{}]", pl.col("Vial").cast(pl.List(pl.String)).list.join(",")),
-        ]
+        pl.format("[{}]", pl.col("Vial").cast(pl.List(pl.String)).list.join(",")),
     )
     .select(
         [
@@ -135,12 +79,12 @@ object_component_stats = (
         ]
     )
 )
-# Absolute_Mean,Absolute_StandardDeviation,Absolute_RelativeStandardDeviation,Percent_Mean,Percent_StandardDeviation,Percent_RelativeStandardDeviation,Tree,Vial,N
-print(f"object_component_stats: {object_component_stats}")
-object_component_stats.write_csv("ObjectComponentStats.txt")
+print(f"tree_component_stats: {tree_component_stats}")
+tree_component_stats.write_csv("TreeComponentStats.txt")
 
-object_stats = (
-    object_component_stats.with_columns(
+# ШАГ 2: Объединяем (pool) RSD для всего дерева
+tree_stats = (
+    tree_component_stats.with_columns(
         # Числитель: (n - 1) * RSD^2
         ((pl.col("N") - 1) * (pl.col("Absolute_RelativeStandardDeviation") ** 2)).alias(
             "_Numerator"
@@ -148,9 +92,8 @@ object_stats = (
         # Знаменатель: (n - 1)
         (pl.col("N") - 1).alias("_Denominator"),
     )
-    .group_by(["Species", "Object"], maintain_order=True)
+    .group_by(["Species", "Object", "Tree"], maintain_order=True)
     .agg(
-        pl.col("Tree"),
         pl.col("Vial"),
         # Суммируем числители и знаменатели
         pl.col("_Numerator").sum().alias("_Numerator"),
@@ -159,10 +102,13 @@ object_stats = (
         pl.len().alias("N"),
     )
     .with_columns(
-        pl.col("Tree").list.unique().list.join(","),
         pl.col("Vial").list.unique().list.join(","),
         # Итоговый Pooled RSD для дерева
-        (pl.col("_Numerator") / pl.col("_Denominator")).sqrt().alias("RSD"),
+        # (pl.col("_Numerator") / pl.col("_Denominator")).sqrt()
+        pl.when(pl.col("_Denominator") > 0)
+        .then((pl.col("_Numerator") / pl.col("_Denominator")).sqrt())
+        .otherwise(None)
+        .alias("RSD"),
     )
     .drop(["_Numerator", "_Denominator"])
     .with_columns(cs.float().round(2))
@@ -177,8 +123,95 @@ object_stats = (
         ]
     )
 )
-print(f"object_stats: {object_stats}")
-object_stats.write_csv("ObjectStats.txt")
+print(f"tree_stats: {tree_stats}")
+tree_stats.write_csv("TreeStats.txt")
+
+# ################################################################################
+# # Mean for Object
+# object_component_stats = (
+#     df.group_by(["Species", "Object", "Component"], maintain_order=True)
+#     .agg(
+#         pl.col("Tree"),
+#         pl.col("Vial"),
+#         pl.col("Absolute").mean().round(1).alias("Absolute_Mean"),
+#         pl.col("Absolute").std().round(1).alias("Absolute_StandardDeviation"),
+#         (pl.col("Absolute").std() / pl.col("Absolute").mean() * 100)
+#         .round(1)
+#         .alias("Absolute_RelativeStandardDeviation"),
+#         pl.col("Percent").mean().round(1).alias("Percent_Mean"),
+#         pl.col("Percent").std().round(1).alias("Percent_StandardDeviation"),
+#         (pl.col("Percent").std() / pl.col("Percent").mean() * 100)
+#         .round(1)
+#         .alias("Percent_RelativeStandardDeviation"),
+#         pl.len().alias("N"),
+#     )
+#     .with_columns(
+#         [
+#             pl.format("[{}]", pl.col("Tree").cast(pl.List(pl.String)).list.join(",")),
+#             pl.format("[{}]", pl.col("Vial").cast(pl.List(pl.String)).list.join(",")),
+#         ]
+#     )
+#     .select(
+#         [
+#             "Species",
+#             "Object",
+#             "Tree",
+#             "Vial",
+#             "Component",
+#             "Absolute_Mean",
+#             "Absolute_StandardDeviation",
+#             "Absolute_RelativeStandardDeviation",
+#             "Percent_Mean",
+#             "Percent_StandardDeviation",
+#             "Percent_RelativeStandardDeviation",
+#             "N",
+#         ]
+#     )
+# )
+# # Absolute_Mean,Absolute_StandardDeviation,Absolute_RelativeStandardDeviation,Percent_Mean,Percent_StandardDeviation,Percent_RelativeStandardDeviation,Tree,Vial,N
+# print(f"object_component_stats: {object_component_stats}")
+# object_component_stats.write_csv("ObjectComponentStats.txt")
+
+# object_stats = (
+#     object_component_stats.with_columns(
+#         # Числитель: (n - 1) * RSD^2
+#         ((pl.col("N") - 1) * (pl.col("Absolute_RelativeStandardDeviation") ** 2)).alias(
+#             "_Numerator"
+#         ),
+#         # Знаменатель: (n - 1)
+#         (pl.col("N") - 1).alias("_Denominator"),
+#     )
+#     .group_by(["Species", "Object"], maintain_order=True)
+#     .agg(
+#         pl.col("Tree"),
+#         pl.col("Vial"),
+#         # Суммируем числители и знаменатели
+#         pl.col("_Numerator").sum().alias("_Numerator"),
+#         pl.col("_Denominator").sum().alias("_Denominator"),
+#         # Считаем, сколько веществ пошло в расчет
+#         pl.len().alias("N"),
+#     )
+#     .with_columns(
+#         pl.col("Tree").list.unique().list.join(","),
+#         pl.col("Vial").list.unique().list.join(","),
+#         # Итоговый Pooled RSD для дерева
+#         (pl.col("_Numerator") / pl.col("_Denominator")).sqrt().alias("RSD"),
+#     )
+#     .drop(["_Numerator", "_Denominator"])
+#     .with_columns(cs.float().round(2))
+#     .select(
+#         [
+#             "Species",
+#             "Object",
+#             "Tree",
+#             "Vial",
+#             "RSD",
+#             "N",
+#         ]
+#     )
+# )
+# print(f"object_stats: {object_stats}")
+# object_stats.write_csv("ObjectStats.txt")
 
 ################################################################################
 
