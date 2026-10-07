@@ -1,0 +1,41 @@
+Species,Object,Tree,N,RSD
+Thuja plicata,238174,1,64,5.76
+Juniperus rigida,318939,2,64,7.84
+Microbiota decussata,4/73,3,64,6.63
+Chamaecyparis lawsoniana 'Ellwoodii',247596,4,64,9.59
+Cupressus nootkatensis,202515,5,64,8.13
+Microbiota decussata,20140030,6,64,17.57
+Juniperus davurica,20140023,7,64,10.65
+Juniperus rigida,252947,8,64,13.73
+Thujopsis dolabrata 'Variegata',299338/72,9,64,15.72
+Juniperus chinensis var. sargentii,423705,10,64,13.34
+Juniperus scopulorum,305660,11,64,11.12
+Juniperus pseudosabina,342963/79,12,64,5.46
+Juniperus pseudosabina (J.turkestanica),236061,13,64,3.52
+Juniperus pseudosabina (J.turkestanica),254450,14,64,3.88
+Juniperus communis var. saxatilis (J. sibirica),28043,15,64,4.14
+Juniperus communis (J. suecica),249972,16,64,4.97
+Juniperus virginiana,248592,17,64,6.29
+Juniperus virginiana,315380,18,64,6.98
+Juniperus virginiana,315380,19,64,9.19
+Juniperus virginiana,315380,20,64,9.42
+Juniperus virginiana,45989,21,64,4.04
+Juniperus virginiana,45989,22,64,6.7
+Juniperus virginiana,45989,23,64,6.83
+Juniperus sabina,18,24,64,
+Juniperus sabina,18,25,64,
+Juniperus sabina,18,26,64,
+Juniperus communis,45990,27,64,
+Juniperus communis,45990,28,64,
+Juniperus communis,45990,29,64,
+Chamaecyparis pisifera,49612,30,64,
+Chamaecyparis pisifera,49612,31,64,
+Chamaecyparis pisifera,10833,32,64,
+Chamaecyparis pisifera,10833,33,64,
+Chamaecyparis lawsoniana ?,,34,64,
+Thuja plicata,288244,35,64,
+Thuja plicata,288244,36,64,
+Thuja occidentalis,62390,37,64,
+Thuja occidentalis,62390,38,64,
+Thuja occidentalis,235076,39,64,
+Thuja occidentalis,235076,40,64,
