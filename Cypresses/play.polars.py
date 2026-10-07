@@ -43,7 +43,6 @@ print(f"traits_df: {traits_df}")
 ################################################################################
 # Mean for Tree
 tree_component_stats = (
-    # ШАГ 1: Считаем RSD для каждого летучего вещества
     df.group_by(["Species", "Object", "Tree", "Component"], maintain_order=True)
     .agg(
         pl.col("Vial"),
@@ -82,7 +81,6 @@ tree_component_stats = (
 print(f"tree_component_stats: {tree_component_stats}")
 tree_component_stats.write_csv("TreeComponentStats.txt")
 
-# ШАГ 2: Объединяем (pool) RSD для всего дерева
 tree_stats = (
     tree_component_stats.with_columns(
         # Числитель: (n - 1) * RSD^2
