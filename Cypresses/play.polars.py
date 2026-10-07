@@ -16,7 +16,7 @@ light = pl.Enum(["min", "med", "max"])
 # print(f"read: {header}")
 
 df = pl.read_csv(
-    "Cypresses/csv/Vial,Species,Object,Tree,Component,CAS,RI,RT,Percent,Absolute.txt",
+    "Cypresses/csv/Species,Object,Tree,Vial,Component,CAS,RI,RT,Percent,Absolute.txt",
     schema_overrides={"Object": pl.String},
 )
 print(f"df: {df}")
@@ -26,6 +26,9 @@ traits_df = pl.read_csv(
     schema_overrides={"Object": pl.String, "Light": light},
 )
 print(f"traits_df: {traits_df}")
+
+df = df.group_by(["Species", "Object", "Tree", "Vial"]).agg().sort("Vial")
+print(f"df: {df}")
 
 # df = df.with_columns(
 #     Tree=pl.struct(["Species", "Object", "Tree"]).rank().cast(pl.Int64)
