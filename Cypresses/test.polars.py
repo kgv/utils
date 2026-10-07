@@ -27,40 +27,19 @@ traits_df = pl.read_csv(
 )
 print(f"traits_df: {traits_df}")
 
-# df = df.with_columns(
-#     Tree=pl.struct(["Species", "Object", "Tree"]).rank().cast(pl.Int64)
-# )
-# print(f"df: {df}")
+# 2. Трансформируем данные в "широкий" формат
+df = df.pivot(
+    values="Absolute",
+    index=["Object", "Tree"],
+    on="Component",
+    aggregate_function="mean"
+).fill_null(0.0) 
+print(f"pivot: {df}")
 
-# # 1. Выделяем все уникальные пары "Object + Tree"
-# # maintain_order=True гарантирует, что они останутся в том порядке, как шли в CSV
-# other = (
-#     df.select(["Object", "Tree"])
-#     .unique(maintain_order=True)
-#     .with_columns(
-#         # Генерируем числа от 1 до количества уникальных деревьев
-#         GlobalTree=pl.int_range(1, pl.len() + 1)
-#     )
-# )
-
-# # 2. Присоединяем эти новые номера к основному датафрейму
-# df = (
-#     df.join(other, on=["Object", "Tree"], how="left")
-#     .drop("Tree")  # Удаляем старую колонку со сбитой нумерацией (1,2, 1,2)
-#     .rename({"GlobalTree": "Tree"})
-#     .select(
-#         "Species",
-#         "Object",
-#         "Tree",
-#         "Vial",
-#         "Component",
-#         "CAS",
-#         "RI",
-#         "RT",
-#         "Percent",
-#         "Absolute",
-#     )
-# )
+# 3. Выделяем матрицу признаков (изолируем только химические компоненты)
+# Получаем список столбцов, игнорируя метаданные (Object, Tree)
+component_cols = [col for col in df.columns if col not in ["Object", "Tree"]]
+print(f"component_cols: {component_cols}")
 
 df.write_csv("output.txt")
 
