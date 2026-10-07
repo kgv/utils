@@ -95,21 +95,47 @@ print(f"traits_df: {traits_df}")
 
 ################################################################################
 # Mean for Object
-object_component_stats = df.group_by(
-    ["Species", "Object", "Component"], maintain_order=True
-).agg(
-    pl.col("Absolute").mean().round(1).alias("Absolute_Mean"),
-    pl.col("Absolute").std().round(1).alias("Absolute_StandardDeviation"),
-    (pl.col("Absolute").std() / pl.col("Absolute").mean() * 100)
-    .round(1)
-    .alias("Absolute_RelativeStandardDeviation"),
-    pl.col("Percent").mean().round(1).alias("Percent_Mean"),
-    pl.col("Percent").std().round(1).alias("Percent_StandardDeviation"),
-    (pl.col("Percent").std() / pl.col("Percent").mean() * 100)
-    .round(1)
-    .alias("Percent_RelativeStandardDeviation"),
-    pl.len().alias("N"),
+object_component_stats = (
+    df.group_by(["Species", "Object", "Component"], maintain_order=True)
+    .agg(
+        pl.col("Absolute").mean().round(1).alias("Absolute_Mean"),
+        pl.col("Absolute").std().round(1).alias("Absolute_StandardDeviation"),
+        (pl.col("Absolute").std() / pl.col("Absolute").mean() * 100)
+        .round(1)
+        .alias("Absolute_RelativeStandardDeviation"),
+        pl.col("Percent").mean().round(1).alias("Percent_Mean"),
+        pl.col("Percent").std().round(1).alias("Percent_StandardDeviation"),
+        (pl.col("Percent").std() / pl.col("Percent").mean() * 100)
+        .round(1)
+        .alias("Percent_RelativeStandardDeviation"),
+        pl.col("Tree"),
+        pl.col("Vial"),
+        pl.len().alias("N"),
+    )
+    .with_columns(
+        [
+            pl.format("[{}]", pl.col("Tree").cast(pl.List(pl.String)).list.join(",")),
+            pl.format("[{}]", pl.col("Vial").cast(pl.List(pl.String)).list.join(",")),
+        ]
+    )
+    .select(
+        [
+            "Species",
+            "Object",
+            "Tree",
+            "Vial",
+            "Component",
+            "Absolute_Mean",
+            "Absolute_StandardDeviation",
+            "Absolute_RelativeStandardDeviation",
+            "Percent_Mean",
+            "Percent_StandardDeviation",
+            "Percent_RelativeStandardDeviation",
+            "N",
+        ]
+    )
 )
+# Absolute_Mean,Absolute_StandardDeviation,Absolute_RelativeStandardDeviation,Percent_Mean,Percent_StandardDeviation,Percent_RelativeStandardDeviation,Tree,Vial,N
 print(f"object_component_stats: {object_component_stats}")
 object_component_stats.write_csv("ObjectComponentStats.txt")
 
@@ -124,6 +150,8 @@ object_stats = (
     )
     .group_by(["Species", "Object"], maintain_order=True)
     .agg(
+        pl.col("Tree"),
+        pl.col("Vial"),
         # Суммируем числители и знаменатели
         pl.col("_Numerator").sum().alias("_Numerator"),
         pl.col("_Denominator").sum().alias("_Denominator"),
@@ -131,13 +159,23 @@ object_stats = (
         pl.len().alias("N"),
     )
     .with_columns(
+        pl.col("Tree").list.unique().list.join(","),
+        pl.col("Vial").list.unique().list.join(","),
         # Итоговый Pooled RSD для дерева
-        (pl.col("_Numerator") / pl.col("_Denominator"))
-        .sqrt()
-        .alias("RSD")
+        (pl.col("_Numerator") / pl.col("_Denominator")).sqrt().alias("RSD"),
     )
     .drop(["_Numerator", "_Denominator"])
     .with_columns(cs.float().round(2))
+    .select(
+        [
+            "Species",
+            "Object",
+            "Tree",
+            "Vial",
+            "RSD",
+            "N",
+        ]
+    )
 )
 print(f"object_stats: {object_stats}")
 object_stats.write_csv("ObjectStats.txt")
