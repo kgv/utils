@@ -63,7 +63,7 @@ Chamaecyparis pisifera,49612,30,61,max,роща; представлен сорт
 Chamaecyparis pisifera,49612,31,62,min,роща; представлен сортами; выбираем дерево чистого вида
 Chamaecyparis pisifera,10833,32,63,min,дерево
 Chamaecyparis pisifera,10833,33,64,min,дерево
-Chamaecyparis lawsoniana ?,,,65,,дерево
+Chamaecyparis lawsoniana ?,,34,65,,дерево
 Thuja plicata,288244,35,67,,дерево; слева
 Thuja plicata,288244,36,68,,дерево; справа
 Thuja occidentalis,62390,37,69,,дерево; слева

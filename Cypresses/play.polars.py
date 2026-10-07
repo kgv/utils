@@ -22,13 +22,34 @@ df = pl.read_csv(
 print(f"df: {df}")
 
 traits_df = pl.read_csv(
-    "Cypresses/csv/Vial,Species,Object,Tree,Description,Light.txt",
+    "Cypresses/csv/Species,Object,Tree,Vial,Light,Description.txt",
     schema_overrides={"Object": pl.String, "Light": light},
 )
 print(f"traits_df: {traits_df}")
 
-df = df.group_by(["Species", "Object", "Tree", "Vial"]).agg().sort("Vial")
-print(f"df: {df}")
+bad_rows = df.filter(pl.col("Tree").is_null())
+print(bad_rows)
+
+# Mean for Tree
+# df = df.group_by(["Species", "Object", "Tree", "Component"]).agg(["Vial", pl.col("Absolute").mean()]).sort("Tree").with_columns(pl.col("Vial").cast(pl.List(pl.String)).list.join(","))
+# print(f"df: {df}")
+tree_stats = (
+    df.group_by(["Species", "Object", "Tree", "Component"])
+    .agg(
+        pl.col("Absolute").mean().alias("Absolute_mean"),
+        pl.col("Absolute").std().alias("Absolute_sd"),
+        # Если нужно, можно сразу посчитать и для Percent
+        pl.col("Percent").mean().alias("Percent_mean"),
+        pl.col("Percent").std().alias("Percent_sd"),
+    )
+    .sort("Tree")
+)
+print(f"tree_stats: {tree_stats}")
+
+df.write_csv("tree_stats.txt")
+
+# df = df.group_by(["Species", "Object", "Tree", "Vial"]).agg().sort("Vial")
+# print(f"df: {df}")
 
 # df = df.with_columns(
 #     Tree=pl.struct(["Species", "Object", "Tree"]).rank().cast(pl.Int64)
@@ -64,8 +85,6 @@ print(f"df: {df}")
 #         "Absolute",
 #     )
 # )
-
-df.write_csv("output.txt")
 
 # df = df.pivot(index=["Проба (виала)"], on="Компонент", values="Value")
 # print(f"df: {df}")
