@@ -6,6 +6,10 @@ import polars as pl
 import polars.selectors as cs
 import seaborn as sns
 
+# 1166,8 (1200) - монотерпены
+# сесквитерпены
+# н/и RI 1671.6 (вероятно, производное ионола) - исключаем как вероятно, производное ионола
+
 N = 3
 light = pl.Enum(["min", "med", "max"])
 
