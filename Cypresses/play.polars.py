@@ -21,7 +21,7 @@ light = pl.Enum(["min", "med", "max"])
 # print(f"read: {header}")
 
 df = pl.read_csv(
-    "Cypresses/csv/Species,Object,Tree,Vial,Component,CAS,RI,RT,Percent,Absolute.txt",
+    "Cypresses/csv/Species,Object,Tree,Vial,Component,CAS,RI,RT,Percent,PartsPerMillion.txt",
     schema_overrides={
         "Species": pl.String,
         "Object": pl.String,
@@ -31,7 +31,7 @@ df = pl.read_csv(
         "RI": pl.Float64,
         "RT": pl.Float64,
         "Percent": pl.Float64,
-        "Absolute": pl.Float64,
+        "PartsPerMillion": pl.Float64,
     },
 )
 print(f"df: {df}")
@@ -50,11 +50,14 @@ tree_component_stats = (
     df.group_by(["Species", "Object", "Tree", "Component"], maintain_order=True)
     .agg(
         pl.col("Vial"),
-        pl.col("Absolute").mean().round(1).alias("Absolute_Mean"),
-        pl.col("Absolute").std().round(1).alias("Absolute_StandardDeviation"),
-        (pl.col("Absolute").std() / pl.col("Absolute").mean() * 100)
+        pl.col("PartsPerMillion").mean().round(1).alias("PartsPerMillion_Mean"),
+        pl.col("PartsPerMillion")
+        .std()
         .round(1)
-        .alias("Absolute_RelativeStandardDeviation"),
+        .alias("PartsPerMillion_StandardDeviation"),
+        (pl.col("PartsPerMillion").std() / pl.col("PartsPerMillion").mean() * 100)
+        .round(1)
+        .alias("PartsPerMillion_RelativeStandardDeviation"),
         pl.col("Percent").mean().round(1).alias("Percent_Mean"),
         pl.col("Percent").std().round(1).alias("Percent_StandardDeviation"),
         (pl.col("Percent").std() / pl.col("Percent").mean() * 100)
@@ -63,7 +66,7 @@ tree_component_stats = (
         pl.len().alias("N"),
     )
     .with_columns(
-        pl.format("[{}]", pl.col("Vial").cast(pl.List(pl.String)).list.join(",")),
+        pl.format("[{}]", pl.col("Vial").cast(pl.List(pl.String)).list.join(",")).alias("Vial"),
     )
     .select(
         [
@@ -72,12 +75,12 @@ tree_component_stats = (
             "Tree",
             "Vial",
             "Component",
-            "Absolute_Mean",
-            "Absolute_StandardDeviation",
-            "Absolute_RelativeStandardDeviation",
-            "Percent_Mean",
-            "Percent_StandardDeviation",
-            "Percent_RelativeStandardDeviation",
+            # "PartsPerMillion_Mean",
+            # "PartsPerMillion_StandardDeviation",
+            # "PartsPerMillion_RelativeStandardDeviation",
+            # "Percent_Mean",
+            # "Percent_StandardDeviation",
+            # "Percent_RelativeStandardDeviation",
             "N",
         ]
     )
@@ -88,9 +91,10 @@ tree_component_stats.write_csv("TreeComponentStats.txt")
 tree_stats = (
     tree_component_stats.with_columns(
         # Числитель: (n - 1) * RSD^2
-        ((pl.col("N") - 1) * (pl.col("Absolute_RelativeStandardDeviation") ** 2)).alias(
-            "_Numerator"
-        ),
+        (
+            (pl.col("N") - 1)
+            * (pl.col("PartsPerMillion_RelativeStandardDeviation") ** 2)
+        ).alias("_Numerator"),
         # Знаменатель: (n - 1)
         (pl.col("N") - 1).alias("_Denominator"),
     )
@@ -135,11 +139,11 @@ tree_stats.write_csv("TreeStats.txt")
 #     .agg(
 #         pl.col("Tree"),
 #         pl.col("Vial"),
-#         pl.col("Absolute").mean().round(1).alias("Absolute_Mean"),
-#         pl.col("Absolute").std().round(1).alias("Absolute_StandardDeviation"),
-#         (pl.col("Absolute").std() / pl.col("Absolute").mean() * 100)
+#         pl.col("PartsPerMillion").mean().round(1).alias("PartsPerMillion_Mean"),
+#         pl.col("PartsPerMillion").std().round(1).alias("PartsPerMillion_StandardDeviation"),
+#         (pl.col("PartsPerMillion").std() / pl.col("PartsPerMillion").mean() * 100)
 #         .round(1)
-#         .alias("Absolute_RelativeStandardDeviation"),
+#         .alias("PartsPerMillion_RelativeStandardDeviation"),
 #         pl.col("Percent").mean().round(1).alias("Percent_Mean"),
 #         pl.col("Percent").std().round(1).alias("Percent_StandardDeviation"),
 #         (pl.col("Percent").std() / pl.col("Percent").mean() * 100)
@@ -160,9 +164,9 @@ tree_stats.write_csv("TreeStats.txt")
 #             "Tree",
 #             "Vial",
 #             "Component",
-#             "Absolute_Mean",
-#             "Absolute_StandardDeviation",
-#             "Absolute_RelativeStandardDeviation",
+#             "PartsPerMillion_Mean",
+#             "PartsPerMillion_StandardDeviation",
+#             "PartsPerMillion_RelativeStandardDeviation",
 #             "Percent_Mean",
 #             "Percent_StandardDeviation",
 #             "Percent_RelativeStandardDeviation",
@@ -170,14 +174,14 @@ tree_stats.write_csv("TreeStats.txt")
 #         ]
 #     )
 # )
-# # Absolute_Mean,Absolute_StandardDeviation,Absolute_RelativeStandardDeviation,Percent_Mean,Percent_StandardDeviation,Percent_RelativeStandardDeviation,Tree,Vial,N
+# # PartsPerMillion_Mean,PartsPerMillion_StandardDeviation,PartsPerMillion_RelativeStandardDeviation,Percent_Mean,Percent_StandardDeviation,Percent_RelativeStandardDeviation,Tree,Vial,N
 # print(f"object_component_stats: {object_component_stats}")
 # object_component_stats.write_csv("ObjectComponentStats.txt")
 
 # object_stats = (
 #     object_component_stats.with_columns(
 #         # Числитель: (n - 1) * RSD^2
-#         ((pl.col("N") - 1) * (pl.col("Absolute_RelativeStandardDeviation") ** 2)).alias(
+#         ((pl.col("N") - 1) * (pl.col("PartsPerMillion_RelativeStandardDeviation") ** 2)).alias(
 #             "_Numerator"
 #         ),
 #         # Знаменатель: (n - 1)
@@ -251,7 +255,7 @@ tree_stats.write_csv("TreeStats.txt")
 #         "RI",
 #         "RT",
 #         "Percent",
-#         "Absolute",
+#         "PartsPerMillion",
 #     )
 # )
 
