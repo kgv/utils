@@ -74,8 +74,28 @@ df = (
     )
 )
 print(f"group: {df}")
-df.write_csv("TreeComponentStats.txt")
 
+# df = (
+#     df.with_columns(cs.float().round(3))
+#     .with_columns(
+#         pl.format(
+#             "{}±{}",
+#             pl.col("PartsPerMillion_Mean"),
+#             pl.col("PartsPerMillion_StandardDeviation").cast(pl.String).fill_null(""),
+#         ).alias("PartsPerMillion")
+#     )
+#     .pivot(
+#         index=[
+#             "Species",
+#             "Object",
+#             "Tree",
+#             "Vial",
+#         ],
+#         on="Component",
+#         values="PartsPerMillion",
+#     )
+# )
+# print(f"pivot: {df}")
 df = df.pivot(
     index=[
         "Species",
@@ -86,7 +106,59 @@ df = df.pivot(
     on="Component",
     values="PartsPerMillion_Mean",
 )
-df.write_csv("TreeComponentWide.txt")
+df.write_csv("TreeComponent.txt")
+
+matrix = df.select(
+    pl.all()
+    .exclude(
+        [
+            "Species",
+            "Object",
+            "Tree",
+            "Vial",
+        ]
+    )
+    .fill_null(0.0)
+)
+print(f"matrix: {matrix}")
+
+
+# Косинусное расстояние
+def cosine_distance(x):
+    # Считаем попарное косинусное расстояние (матрица N x N)
+    dist_matrix = cosine_distances(x)
+    # Оборачиваем результат обратно в красивый Polars DataFrame
+    trees = df["Tree"].to_list()
+    dist_df = (
+        pl.DataFrame(dist_matrix, schema=[f"{tree}" for tree in trees])
+        .with_columns(pl.Series("Tree", trees))
+        .select(["Tree"] + [f"{tree}" for tree in trees])
+    )
+    print(dist_df)
+    dist_df.write_csv("tree_cosine_distances.txt")
+
+
+# Расстояние Брея-Кертиса
+def braycurtis_distance(x):
+    dist_matrix = pairwise_distances(x, metric="braycurtis")
+    trees = df["Tree"].to_list()
+    dist_df = (
+        pl.DataFrame(dist_matrix, schema=[f"{tree}" for tree in trees])
+        .with_columns(pl.Series("Tree", trees))
+        .select(["Tree"] + [f"{tree}" for tree in trees])
+    )
+    print(dist_df)
+    dist_df.write_csv("tree_braycurtis_distance.txt")
+
+# X — матрица признаков (только неотрицательные значения, например, частоты слов)
+# y — вектор целевой переменной (классы)
+scores, p_values = chi2(X, y)
+
+# Извлекаем матрицу признаков (только компоненты) в формат NumPy
+X = matrix.to_numpy()
+cosine_distance(X)
+braycurtis_distance(X)
+
 
 # # $RSD_{pooled} = \sqrt{ \frac{(n_1-1)RSD_1^2 + (n_2-1)RSD_2^2 + \dots + (n_k-1)RSD_k^2}{(n_1-1) + (n_2-1) + \dots + (n_k-1)} }$
 # tree_stats = (
