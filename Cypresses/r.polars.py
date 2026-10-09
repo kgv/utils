@@ -25,7 +25,8 @@ clean_df = df.select(
     pl.all().exclude(["Species", "Object", "Tree", "Vial"]).fill_null(0.0)
 )
 
-X = clean_df.to_numpy()
+# X = clean_df.to_numpy()
+X = np.log1p(clean_df.to_numpy())
 y = df["Species"].to_numpy()
 features = clean_df.columns
 
@@ -55,7 +56,7 @@ features = clean_df.columns
 # - "sqeuclidean"
 # - "yule"
 # dist_array = pdist(X, metric="braycurtis") # 0.16191430499014675
-dist_array = pdist(X, metric="cosine") # 0.11964859856011284
+dist_array = pdist(X, metric="cosine")  # 0.11964859856011284
 # dist_array = pdist(X, metric="correlation") # 0.13331103104831807
 # dist_array = pdist(X, metric="seuclidean") # 0.13257149130848048
 dist_matrix = squareform(dist_array)
@@ -91,7 +92,7 @@ nmds = MDS(
     n_init=100,  # 1000 Больше случайных стартов для поиска глобального минимума
     max_iter=100,  # 1000 Больше итераций на каждый старт
     eps=1e-9,  # Более строгий критерий остановки (продолжать оптимизацию до упора)
-    random_state=42,  # 123 42
+    random_state=42,
 )
 nmds_coords = nmds.fit_transform(dist_matrix)
 # 0 perfect

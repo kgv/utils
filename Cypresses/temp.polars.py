@@ -6,6 +6,7 @@ from sklearn.metrics.pairwise import cosine_distances, euclidean_distances
 from sklearn.preprocessing import normalize
 import numpy as np
 import polars as pl
+import polars.selectors as cs
 
 # Чтение данных
 df = pl.read_csv(
@@ -42,6 +43,7 @@ Y = df["Species"].to_numpy()
 # Идеально для непрерывных данных. Проверяет, насколько сильно различаются
 # средние значения компонента у разных видов деревьев.
 f_scores, p_values_anova = f_classif(X, Y)
+print(f"f_scores: {f_scores}; p_values_anova: {p_values_anova}")
 
 # Метод Б: Тот самый Chi-square (Хи-квадрат)
 # Работает, так как концентрации не бывают отрицательными (X >= 0).
@@ -52,7 +54,7 @@ chi2_scores, p_values_chi2 = chi2(X, Y)
 # Строит множество деревьев решений и смотрит, какие компоненты
 # чаще всего и эффективнее всего разделяют виды. (Самый надежный метод для сложных данных).
 rf = RandomForestClassifier(
-    n_estimators=1000, # Увеличиваем количество деревьев до 1000 для максимальной стабильности
+    n_estimators=1000,  # Увеличиваем количество деревьев до 1000 для максимальной стабильности
     random_state=42,
     class_weight="balanced",  # Заставляем алгоритм обращать равное внимание на редкие и частые виды деревьев
     n_jobs=-1,  # Используем все ядра процессора, чтобы 1000 деревьев посчитались мгновенно
@@ -69,15 +71,18 @@ importance_df = (
         {
             "Component": clean_df.columns,
             "RF_Importance": rf_importances,
-            "ANOVA_F_Score": f_scores,
+            "ANOVA_F": f_scores,
+            "ANOVA_P": p_values_anova,
             "Chi2_Score": chi2_scores,
         }
     )
     .with_columns(
+        cs.float().round(2)
         # Округляем для красоты
-        pl.col("RF_Importance").round(4),
-        pl.col("ANOVA_F_Score").round(2),
-        pl.col("Chi2_Score").round(2),
+        # pl.col("RF_Importance").round(4),
+        # pl.col("ANOVA_F").round(2),
+        # pl.col("ANOVA_F").round(2),
+        # pl.col("Chi2_Score").round(2),
     )
     .sort("RF_Importance", descending=True)
 )  # Сортируем по важности от Случайного леса

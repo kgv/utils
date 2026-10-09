@@ -1,61 +1,61 @@
-Component,RF_Importance,ANOVA_F_Score,Chi2_Score
-Sabinene,0.0377,2.23,53976.7
-Germacrene D-4-ol,0.0361,39.81,119933.13
-Humulene,0.0328,1.76,2141.44
-beta-Myrcene+beta-Pinene,0.0301,5.77,23461.5
-Sabinene hydrate acetate,0.0291,4.66,2311.44
-beta-Phellandrene,0.0284,13.32,1015.75
-Limonene,0.0283,152.83,184370.0
-beta-Elemene,0.028,20.96,1588.16
-cis-3-hexenal,0.0274,3.44,440.27
-Bornyl acetate,0.0257,22.58,35866.74
-alpha-Pinene,0.0255,10.53,201459.38
-Camphene,0.0252,7.57,1104.46
-Terpinolene,0.0251,1.03,1498.24
-alpha-Copaene,0.0247,228.74,902.1
-alpha-thujene,0.0239,3.22,855.2
-delta-Elemene,0.0236,92.46,1691.54
-(E)-Nerolidol,0.023,8.34,1114.11
-gamma-Terpinene,0.0225,6.9,337.36
-gamma-Elemene,0.0224,13.43,5192.02
-alpha-Terpinyl acetate,0.0212,5.08,2275.27
-delta-Cadinene,0.0209,3.46,686.29
-3-Carene,0.0206,0.39,50397.3
-Caryophyllene,0.0205,1.01,1644.35
-"2-Hexenal, (E)-",0.0199,1.82,134.59
-1-Octen-3-ol,0.0195,5.79,124.69
-trans-Sabinyl acetate,0.019,12.05,11727.55
-Elemol,0.0176,1.1,56520.53
-Geranyl acetate,0.0164,83.95,1627.53
-alpha-Bisabolol,0.0155,287.0,8133.04
-Pregeijerene B,0.0152,1.2,3090.42
-н/и RI 1518.6,0.0149,17.47,1654.77
-cis-Muurol-5-en-4-alpha-ol,0.0142,inf,1521.07
-10-epi-Cubebol,0.0135,3876.5,18208.61
-beta-Thujone,0.0126,8.25,7108.1
-н/и RI 965.22,0.0125,120.64,1750.44
-Camphor,0.0125,0.91,721.43
-alpha-Thujone,0.0115,29.15,205936.98
-alpha-fenchene,0.0113,0.4,502.28
-cis-Muurol-5-en-4-beta-ol,0.0113,inf,18428.95
-Fenchyl acetate,0.0111,1.22,223.18
-cis-Thujopsene,0.011,97.18,14744.95
-н/и RI 1570.88,0.0103,3.85,1396.03
-Thujopsan-2-alpha-ol,0.0103,168.44,1384865.72
-Cedrol,0.0094,198.5,14644.7
-н/и RI 1525.21,0.0093,2.41,1895.74
-н/и RI 1542.49,0.0093,1.92,747.83
-beta-Cedrene,0.0092,48.42,6605.27
-Fenchone,0.0088,2.13,7961.18
-"н/и RI 1628.9 (сесквитерпеновый спирт, ряд туйопсанола)",0.0088,154.19,11315.37
-Neothujyl acetate,0.0084,6.18,461.6
-Methyl myrtenate,0.008,inf,2779.81
-н/и RI 1564.91,0.0071,58.25,11698.88
-Safrole,0.0069,1.0,583.27
-Microbiotol,0.0067,2321.7,41822.79
-Caryophyllene oxide,0.0058,2.63,374.7
-н/и RI 1540.22,0.0054,61.97,7142.88
-beta-Chamigrene,0.0049,66.71,9915.47
-"6,9-Guaiadiene",0.0046,1.93,1004.18
-(E)-beta-Farnesene,0.0041,287.28,14409.73
-н/и RI 1569.20,0.0003,0.54,332.73
+Component,RF_Importance,ANOVA_F,ANOVA_P,Chi2_Score
+Humulene,0.04,1.76,0.11,2141.44
+Germacrene D-4-ol,0.04,39.81,0.0,119933.13
+cis-3-hexenal,0.03,3.44,0.0,440.27
+alpha-thujene,0.03,3.22,0.01,855.2
+alpha-Pinene,0.03,10.53,0.0,201459.38
+Sabinene,0.03,2.23,0.04,53976.7
+beta-Myrcene+beta-Pinene,0.03,5.77,0.0,23461.5
+Limonene,0.03,152.83,0.0,184370.0
+Terpinolene,0.03,1.03,0.47,1498.24
+Bornyl acetate,0.03,22.58,0.0,35866.74
+beta-Elemene,0.03,20.96,0.0,1588.16
+"2-Hexenal, (E)-",0.02,1.82,0.09,134.59
+Camphene,0.02,7.57,0.0,1104.46
+1-Octen-3-ol,0.02,5.79,0.0,124.69
+3-Carene,0.02,0.39,0.98,50397.3
+beta-Phellandrene,0.02,13.32,0.0,1015.75
+gamma-Terpinene,0.02,6.9,0.0,337.36
+Sabinene hydrate acetate,0.02,4.66,0.0,2311.44
+trans-Sabinyl acetate,0.02,12.05,0.0,11727.55
+Pregeijerene B,0.02,1.2,0.34,3090.42
+delta-Elemene,0.02,92.46,0.0,1691.54
+alpha-Terpinyl acetate,0.02,5.08,0.0,2275.27
+Geranyl acetate,0.02,83.95,0.0,1627.53
+alpha-Copaene,0.02,228.74,0.0,902.1
+gamma-Elemene,0.02,13.43,0.0,5192.02
+Caryophyllene,0.02,1.01,0.48,1644.35
+н/и RI 1518.6,0.02,17.47,0.0,1654.77
+delta-Cadinene,0.02,3.46,0.0,686.29
+(E)-Nerolidol,0.02,8.34,0.0,1114.11
+Elemol,0.02,1.1,0.41,56520.53
+alpha-fenchene,0.01,0.4,0.97,502.28
+н/и RI 965.22,0.01,120.64,0.0,1750.44
+Fenchone,0.01,2.13,0.05,7961.18
+alpha-Thujone,0.01,29.15,0.0,205936.98
+beta-Thujone,0.01,8.25,0.0,7108.1
+Camphor,0.01,0.91,0.58,721.43
+Fenchyl acetate,0.01,1.22,0.33,223.18
+Neothujyl acetate,0.01,6.18,0.0,461.6
+Safrole,0.01,1.0,0.5,583.27
+Methyl myrtenate,0.01,inf,0.0,2779.81
+beta-Cedrene,0.01,48.42,0.0,6605.27
+"6,9-Guaiadiene",0.01,1.93,0.07,1004.18
+cis-Thujopsene,0.01,97.18,0.0,14744.95
+н/и RI 1525.21,0.01,2.41,0.03,1895.74
+н/и RI 1540.22,0.01,61.97,0.0,7142.88
+н/и RI 1542.49,0.01,1.92,0.08,747.83
+10-epi-Cubebol,0.01,3876.5,0.0,18208.61
+н/и RI 1564.91,0.01,58.25,0.0,11698.88
+н/и RI 1570.88,0.01,3.85,0.0,1396.03
+cis-Muurol-5-en-4-beta-ol,0.01,inf,0.0,18428.95
+cis-Muurol-5-en-4-alpha-ol,0.01,inf,0.0,1521.07
+Caryophyllene oxide,0.01,2.63,0.02,374.7
+"н/и RI 1628.9 (сесквитерпеновый спирт, ряд туйопсанола)",0.01,154.19,0.0,11315.37
+Thujopsan-2-alpha-ol,0.01,168.44,0.0,1384865.72
+Cedrol,0.01,198.5,0.0,14644.7
+Microbiotol,0.01,2321.7,0.0,41822.79
+alpha-Bisabolol,0.01,287.0,0.0,8133.04
+(E)-beta-Farnesene,0.0,287.28,0.0,14409.73
+beta-Chamigrene,0.0,66.71,0.0,9915.47
+н/и RI 1569.20,0.0,0.54,0.91,332.73
