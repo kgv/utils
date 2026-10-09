@@ -50,65 +50,34 @@ df_joined = df_joined.with_columns(
 )
 
 # ==========================================
-# 2. СТАТИСТИКА (ANOVA + Dunnett's Post-Hoc)
+# 2. СТАТИСТИКА (SCIPY + STATSMODELS)
 # ==========================================
-import scipy.stats as stats
 
-p_values_list = []
+# Вытаскиваем колонки со списками значений в Python
+treat_lists = df_joined["treat_values"].to_list()
+ctrl_lists = df_joined["ctrl_values"].to_list()
 
-# Группируем данные по неделе и жирной кислоте
-for name, group in df_joined.group_by(["Week", "FattyAcid"]):
-    week, fa = name[0], name[1]
+p_values = []
 
-    # Значения контроля одинаковы для всех строк в этой группе
-    ctrl_vals = group["ctrl_values"].to_list()[0]
-    ctrl_clean = [x for x in ctrl_vals if x is not None and not np.isnan(x)]
+# Прогоняем через стандартный t-test из scipy
+for t_vals, c_vals in zip(treat_lists, ctrl_lists):
+    # Очищаем от возможных None/NaN
+    t_clean = [x for x in t_vals if x is not None and not np.isnan(x)]
+    c_clean = [x for x in c_vals if x is not None and not np.isnan(x)]
 
-    # Собираем данные по всем концентрациям Ni
-    treat_data = {}
-    for row in group.iter_rows(named=True):
-        t_vals = row["treat_values"]
-        t_clean = [x for x in t_vals if x is not None and not np.isnan(x)]
-        if len(t_clean) >= 2:
-            treat_data[row["Ni"]] = t_clean
+    # t-test требует минимум 2 значения в каждой группе
+    if len(t_clean) >= 2 and len(c_clean) >= 2:
+        # Welch's t-test (equal_var=False) - стандарт для биологии
+        stat, p = ttest_ind(t_clean, c_clean, equal_var=False)
+        p_values.append(p)
+    else:
+        p_values.append(np.nan)
 
-    # Если данных недостаточно даже для контроля, пропускаем
-    if len(ctrl_clean) < 2 or not treat_data:
-        for row in group.iter_rows(named=True):
-            p_values_list.append(
-                {"Week": week, "FattyAcid": fa, "Ni": row["Ni"], "p_value": np.nan}
-            )
-        continue
-
-    treat_list = list(treat_data.values())
-    ni_keys = list(treat_data.keys())
-
-    # Dunnett's test идеально подходит для сравнения нескольких групп с одним контролем
-    res = dunnett(*treat_list, control=ctrl_clean)
-
-    # Извлекаем p-values (может быть числом, если опыт один, или массивом)
-    pvals = [res.pvalue] if len(treat_list) == 1 else res.pvalue
-
-    for ni, p in zip(ni_keys, pvals):
-        p_values_list.append(
-            {"Week": week, "FattyAcid": fa, "Ni": ni, "p_value": p}
-        )
-
-    # Заполняем NaN для тех концентраций Ni, где было мало данных (<2 значений)
-    for row in group.iter_rows(named=True):
-        if row["Ni"] not in treat_data:
-            p_values_list.append(
-                {"Week": week, "FattyAcid": fa, "Ni": row["Ni"], "p_value": np.nan}
-            )
-
-# Превращаем результаты в DataFrame
-df_pvals = pl.DataFrame(p_values_list)
-
-# Присоединяем p-values к основной таблице
-df_joined = df_joined.join(df_pvals, on=["Week", "FattyAcid", "Ni"], how="left")
+# Возвращаем p-values обратно в Polars
+df_joined = df_joined.with_columns(p_value=pl.Series(p_values))
 
 # Делаем FDR-поправку (Benjamini-Hochberg) через statsmodels
-# (Поправка все еще нужна, так как мы тестируем множество разных жирных кислот)
+# Отфильтровываем NaN, так как multipletests не работает с пропусками
 valid_mask = df_joined["p_value"].is_not_null() & ~df_joined["p_value"].is_nan()
 df_valid = df_joined.filter(valid_mask)
 
@@ -116,8 +85,10 @@ if df_valid.height > 0:
     p_vals_valid = df_valid["p_value"].to_numpy()
     _, q_vals_valid, _, _ = multipletests(p_vals_valid, method="fdr_bh")
 
+    # Добавляем q_value к валидным строкам
     df_valid = df_valid.with_columns(q_value=pl.Series(q_vals_valid))
 
+    # Присоединяем обратно к основной таблице
     df_joined = df_joined.join(
         df_valid.select(["Week", "FattyAcid", "Ni", "q_value"]),
         on=["Week", "FattyAcid", "Ni"],
@@ -126,7 +97,7 @@ if df_valid.height > 0:
 else:
     df_joined = df_joined.with_columns(q_value=pl.lit(None, dtype=pl.Float64))
 
-# Расставляем звездочки значимости (с исправленным округлением!)
+# Расставляем звездочки значимости
 df_joined = df_joined.with_columns(
     Significance=pl.format(
         "{}\n{}",
@@ -139,7 +110,7 @@ df_joined = df_joined.with_columns(
         .otherwise(pl.lit("")),
         pl.when(pl.col("q_value") < 0.001)
         .then(pl.lit("p<0.001"))
-        .otherwise(pl.col("q_value").round(decimals=3).cast(pl.String)),
+        .otherwise(pl.col("q_value").round(3)),
     )
 )
 
