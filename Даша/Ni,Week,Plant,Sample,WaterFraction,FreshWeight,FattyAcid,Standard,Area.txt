@@ -1,4 +1,4 @@
-Ni,Week,Plant,Sample,Water,FreshWeight,FattyAcid,Standard,Area
+Ni,Week,Plant,Sample,WaterFraction,FreshWeight,FattyAcid,Standard,Area
 0,1,37,37,0.92,0.2665,14:0,,82121.704
 0,1,37,37,0.92,0.2665,15:0,,63504.39
 0,1,37,37,0.92,0.2665,16:0,,6832628.462
