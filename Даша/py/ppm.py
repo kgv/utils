@@ -32,29 +32,58 @@ df = (
         .sum()
         .over(over),
         # Считаем итоговый ppm по сухой массе
-        ppm=(pl.col("Mass_mg") / pl.col("DryWeight_g")) * 1000,
+        PartsPerMillion=(pl.col("Mass_mg") / pl.col("DryWeight_g")) * 1000,
     )
     .with_columns(
         Lipids_mg_g=(pl.col("Sum_Mass_mg") / pl.col("DryWeight_g") * 1000).over(over),
-        ppm_Sum=pl.col("ppm").filter(pl.col("Standard").is_null()).sum().over(over),
-        ppm_log1p=pl.col("ppm").log1p(),
+        _PartsPerMillion_Sum=pl.col("PartsPerMillion")
+        .filter(pl.col("Standard").is_null())
+        .sum()
+        .over(over),
     )
-    .drop(["_IS_Area", "_IS_Standard"])
+    .with_columns(
+        Percent=(pl.col("PartsPerMillion") / pl.col("_PartsPerMillion_Sum") * 100),
+    )
+    .with_columns(
+        _Percent_Sum=pl.col("Percent")
+        .filter(pl.col("Standard").is_null())
+        .sum()
+        .round(1)
+        .over(over),
+    )
+    # .drop(["_IS_Area", "_IS_Standard"])
 )
 
-df = df.drop(
+df = df.select(
     [
+        "Ni",
+        "Week",
+        "Plant",
+        "Sample",
         "WaterFraction",
         "FreshWeight",
+        "FattyAcid",
         "Standard",
         "Area",
-        "DryWeight_g",
-        "Mass_mg",
-        "Sum_Mass_mg",
-        "Lipids_mg_g",
-        "ppm_Sum",
-        "ppm_log1p",
+        "PartsPerMillion",
+        "Percent",
+        "_PartsPerMillion_Sum",
+        "_Percent_Sum",
     ]
 )
+# df = df.drop(
+#     [
+#         "WaterFraction",
+#         "FreshWeight",
+#         "Standard",
+#         "Area",
+#         "DryWeight_g",
+#         "Mass_mg",
+#         "Sum_Mass_mg",
+#         "Lipids_mg_g",
+#         "ppm_Sum",
+#         "ppm_log1p",
+#     ]
+# )
 
-df.write_csv("Даша/output.txt")
+df.write_csv("Даша/Ni,Week,Plant,Sample,FattyAcid,PartsPerMillion,Percent.txt")
