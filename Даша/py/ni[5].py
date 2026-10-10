@@ -1,12 +1,13 @@
-import tkinter as tk
-from tkinter import ttk
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
-import polars as pl
-import numpy as np
 from scipy.stats import ttest_ind
 from statsmodels.stats.multitest import multipletests
-import seaborn as sns
+from tkinter import ttk
+from utils import format_list
 import matplotlib.pyplot as plt
+import numpy as np
+import polars as pl
+import seaborn as sns
+import tkinter as tk
 
 # ==========================================
 # 1. ЧТЕНИЕ ДАННЫХ
@@ -14,16 +15,6 @@ import matplotlib.pyplot as plt
 df = pl.read_csv("Даша/Ni,Week,Plant,Sample,FattyAcid,PartsPerMillion,Percent.txt")
 
 epsilon_val = np.finfo(float).eps
-
-
-def format_list(name, round_decimals=1):
-    return pl.format(
-        "[{}]",
-        pl.col(name)
-        .list.eval(pl.element().round(round_decimals))
-        .cast(pl.List(pl.String))
-        .list.join(","),
-    ).alias(name)
 
 
 # ==========================================
@@ -61,7 +52,7 @@ combo_source_data = ttk.Combobox(
 combo_source_data.current(0)
 combo_source_data.pack(side=tk.LEFT, padx=10)
 
-# Выпадающий список для выбора округления
+# Выпадающий список для выбора точности округления
 tk.Label(frame_controls, text="Round decimals:", font=("Arial", 12)).pack(side=tk.LEFT)
 combo_round = ttk.Combobox(
     frame_controls,
@@ -93,8 +84,6 @@ toolbar.update()
 # 4. ФУНКЦИЯ ПЕРЕСЧЕТА И ПЕРЕРИСОВКИ
 # ==========================================
 def update_plot(event=None):
-    df_calc = df.filter(pl.col("FattyAcid") != "17:0").filter(pl.col("Plant") != 37)
-
     # Считываем значения из Combo Box
     method = combo_transform_method.get()
     target_col = combo_source_data.get()
@@ -109,12 +98,20 @@ def update_plot(event=None):
         )
     else:
         transform_expr = pl.col(target_col).log1p()
-    df_calc = df_calc.with_columns(transform_expr.alias("ProcessedValue"))
+
+    df_calc = (
+        df.filter(pl.col("FattyAcid") != "17:0")
+        .filter(pl.col("Plant") != 37)
+        .with_columns(transform_expr.alias("ProcessedValue"))
+    )
 
     df_agg = df_calc.group_by(["Ni", "Week", "FattyAcid"], maintain_order=True).agg(
         Plants=pl.col("Plant"),
         Values=pl.col("ProcessedValue"),
         Values_Mean=pl.col("ProcessedValue").mean(),
+        Values_RelativeStandardDeviation=pl.col("ProcessedValue").std()
+        / pl.col("ProcessedValue").mean()
+        * 100,
     )
 
     df_ctrl = df_agg.filter(pl.col("Ni") == 0).select(
@@ -123,6 +120,9 @@ def update_plot(event=None):
         pl.col("Plants").alias("Ctrl_Plants"),
         pl.col("Values").alias("Ctrl_Values"),
         pl.col("Values_Mean").alias("Ctrl_Mean"),
+        pl.col("Values_RelativeStandardDeviation").alias(
+            "Ctrl_RelativeStandardDeviation"
+        ),
     )
 
     df_treat = df_agg.filter(pl.col("Ni") != 0).select(
@@ -132,17 +132,12 @@ def update_plot(event=None):
         pl.col("Plants").alias("Treat_Plants"),
         pl.col("Values").alias("Treat_Values"),
         pl.col("Values_Mean").alias("Treat_Mean"),
+        pl.col("Values_RelativeStandardDeviation").alias(
+            "Treat_RelativeStandardDeviation"
+        ),
     )
 
     df_joined = df_treat.join(df_ctrl, on=["Week", "FattyAcid"], how="left")
-    df_joined.with_columns(
-        [
-            format_list("Treat_Plants", round_decimals),
-            format_list("Treat_Values", round_decimals),
-            format_list("Ctrl_Plants", round_decimals),
-            format_list("Ctrl_Values", round_decimals),
-        ]
-    ).write_csv("Даша/df_joined.txt")
 
     if method == "epsilon":
         df_joined = df_joined.with_columns(
@@ -150,7 +145,10 @@ def update_plot(event=None):
         )
     else:
         df_joined = df_joined.with_columns(
-            Log2FC=(pl.col("Treat_Mean") - pl.col("Ctrl_Mean")) / np.log(2)
+            # Log2FC=(pl.col("Treat_Mean") - pl.col("Ctrl_Mean")) / np.log(2)
+            Log2FC=(
+                (pl.col("Treat_Mean").exp() - 1) / (pl.col("Ctrl_Mean").exp() - 1)
+            ).log(2)
         )
 
     # --- Б. СТАТИСТИКА ---
@@ -168,6 +166,14 @@ def update_plot(event=None):
             p_values.append(np.nan)
 
     df_joined = df_joined.with_columns(p_value=pl.Series(p_values))
+    df_joined.with_columns(
+        [
+            format_list("Treat_Plants", round_decimals),
+            format_list("Treat_Values", round_decimals),
+            format_list("Ctrl_Plants", round_decimals),
+            format_list("Ctrl_Values", round_decimals),
+        ]
+    ).write_csv("Даша/df_joined.txt")
 
     valid_mask = df_joined["p_value"].is_not_null() & ~df_joined["p_value"].is_nan()
     df_valid = df_joined.filter(valid_mask)
@@ -184,11 +190,6 @@ def update_plot(event=None):
         )
     else:
         df_joined = df_joined.with_columns(q_value=pl.lit(None, dtype=pl.Float64))
-
-    # Сохраняем текущий результат в файл
-    # df_joined.with_columns(
-    #     [format_list("treat_values"), format_list("ctrl_values")]
-    # ).write_csv("Даша/output.txt")
 
     # 1. Считаем во сколько раз изменилось значение (2 в степени модуля Log2FC)
     fold_change = (2 ** pl.col("Log2FC").abs()).round(round_decimals)
