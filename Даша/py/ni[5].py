@@ -11,15 +11,18 @@ import matplotlib.pyplot as plt
 # ==========================================
 # 1. ЧТЕНИЕ ДАННЫХ
 # ==========================================
-df = pl.read_csv("Даша/Ni,Week,Plant,Sample,FattyAcid,ppm.txt")
-
+df = pl.read_csv("Даша/Ni,Week,Plant,Sample,FattyAcid,PartsPerMillion,Percent.txt")
 
 epsilon_val = np.finfo(float).eps
 
 
-def format_list(name):
+def format_list(name, round_decimals=1):
     return pl.format(
-        "[{}]", pl.col(name).cast(pl.List(pl.String)).list.join(",")
+        "[{}]",
+        pl.col(name)
+        .list.eval(pl.element().round(round_decimals))
+        .cast(pl.List(pl.String))
+        .list.join(","),
     ).alias(name)
 
 
@@ -34,31 +37,41 @@ root.geometry("1200x900")  # Стартовый размер окна
 frame_controls = tk.Frame(root, padx=10, pady=10)
 frame_controls.pack(side=tk.TOP, fill=tk.X)
 
-# Выпадающий список для метода
-tk.Label(frame_controls, text="Метод расчета:", font=("Arial", 12)).pack(side=tk.LEFT)
-combo_method = ttk.Combobox(
+# Выпадающий список для метода трансформации
+tk.Label(frame_controls, text="Transform method:", font=("Arial", 12)).pack(
+    side=tk.LEFT
+)
+combo_transform_method = ttk.Combobox(
     frame_controls,
     values=["epsilon", "log1p"],
     state="readonly",
     font=("Arial", 12),
-    width=10,
 )
-combo_method.current(0)  # По умолчанию выбран первый элемент
-combo_method.pack(side=tk.LEFT, padx=10)
+combo_transform_method.current(0)  # По умолчанию выбран первый элемент
+combo_transform_method.pack(side=tk.LEFT, padx=10)
 
-# Выпадающий список для колонки
-tk.Label(frame_controls, text="Колонка данных:", font=("Arial", 12)).pack(
-    side=tk.LEFT, padx=(20, 0)
-)
-combo_col = ttk.Combobox(
+# Выпадающий список для выбора исходных данных
+tk.Label(frame_controls, text="Source data:", font=("Arial", 12)).pack(side=tk.LEFT)
+combo_source_data = ttk.Combobox(
     frame_controls,
-    values=["pct", "ppm"],
+    values=["Percent", "PartsPerMillion"],
     state="readonly",
     font=("Arial", 12),
-    width=10,
 )
-combo_col.current(0)
-combo_col.pack(side=tk.LEFT, padx=10)
+combo_source_data.current(0)
+combo_source_data.pack(side=tk.LEFT, padx=10)
+
+# Выпадающий список для выбора округления
+tk.Label(frame_controls, text="Round decimals:", font=("Arial", 12)).pack(side=tk.LEFT)
+combo_round = ttk.Combobox(
+    frame_controls,
+    values=[1, 2, 3, 4, 5, 6],
+    state="readonly",
+    font=("Arial", 12),
+)
+combo_round.current(0)
+combo_round.pack(side=tk.LEFT, padx=10)
+
 
 # ==========================================
 # 3. НАСТРОЙКА ГРАФИКА (MATPLOTLIB)
@@ -80,22 +93,12 @@ toolbar.update()
 # 4. ФУНКЦИЯ ПЕРЕСЧЕТА И ПЕРЕРИСОВКИ
 # ==========================================
 def update_plot(event=None):
-    df_calc = (
-        df.filter(pl.col("FattyAcid") != "17:0")
-        .filter(pl.col("Plant") != 37)
-        .with_columns(
-            # Считаем долю в процентах
-            pct=(pl.col("ppm") / pl.col("ppm").sum() * 100).over(
-                ["Ni", "Week", "Plant"]
-            )
-        )
-    )
-    print(f"df_calc: {df_calc}")
-    df_calc.write_csv("Даша/df_calc.txt")
+    df_calc = df.filter(pl.col("FattyAcid") != "17:0").filter(pl.col("Plant") != 37)
 
     # Считываем значения из Combo Box
-    method = combo_method.get()
-    target_col = combo_col.get()
+    method = combo_transform_method.get()
+    target_col = combo_source_data.get()
+    round_decimals = int(combo_round.get())
 
     # --- А. ПОДГОТОВКА ДАННЫХ ---
     if method == "epsilon":
@@ -106,20 +109,20 @@ def update_plot(event=None):
         )
     else:
         transform_expr = pl.col(target_col).log1p()
-    df_calc = df_calc.with_columns(transform_expr.alias("processed_val"))
+    df_calc = df_calc.with_columns(transform_expr.alias("ProcessedValue"))
 
     df_agg = df_calc.group_by(["Ni", "Week", "FattyAcid"], maintain_order=True).agg(
         Plants=pl.col("Plant"),
-        values=pl.col("processed_val"),
-        mean_val=pl.col("processed_val").mean(),
+        Values=pl.col("ProcessedValue"),
+        Values_Mean=pl.col("ProcessedValue").mean(),
     )
 
     df_ctrl = df_agg.filter(pl.col("Ni") == 0).select(
         pl.col("Week"),
         pl.col("FattyAcid"),
         pl.col("Plants").alias("Ctrl_Plants"),
-        pl.col("values").alias("ctrl_values"),
-        pl.col("mean_val").alias("ctrl_mean"),
+        pl.col("Values").alias("Ctrl_Values"),
+        pl.col("Values_Mean").alias("Ctrl_Mean"),
     )
 
     df_treat = df_agg.filter(pl.col("Ni") != 0).select(
@@ -127,32 +130,32 @@ def update_plot(event=None):
         pl.col("FattyAcid"),
         pl.col("Ni"),
         pl.col("Plants").alias("Treat_Plants"),
-        pl.col("values").alias("treat_values"),
-        pl.col("mean_val").alias("treat_mean"),
+        pl.col("Values").alias("Treat_Values"),
+        pl.col("Values_Mean").alias("Treat_Mean"),
     )
 
     df_joined = df_treat.join(df_ctrl, on=["Week", "FattyAcid"], how="left")
     df_joined.with_columns(
         [
-            format_list("Treat_Plants"),
-            format_list("treat_values"),
-            format_list("Ctrl_Plants"),
-            format_list("ctrl_values"),
+            format_list("Treat_Plants", round_decimals),
+            format_list("Treat_Values", round_decimals),
+            format_list("Ctrl_Plants", round_decimals),
+            format_list("Ctrl_Values", round_decimals),
         ]
     ).write_csv("Даша/df_joined.txt")
 
     if method == "epsilon":
         df_joined = df_joined.with_columns(
-            Log2FC=(pl.col("treat_mean") / pl.col("ctrl_mean")).log(2)
+            Log2FC=(pl.col("Treat_Mean") / pl.col("Ctrl_Mean")).log(2)
         )
     else:
         df_joined = df_joined.with_columns(
-            Log2FC=(pl.col("treat_mean") - pl.col("ctrl_mean")) / np.log(2)
+            Log2FC=(pl.col("Treat_Mean") - pl.col("Ctrl_Mean")) / np.log(2)
         )
 
     # --- Б. СТАТИСТИКА ---
-    treat_lists = df_joined["treat_values"].to_list()
-    ctrl_lists = df_joined["ctrl_values"].to_list()
+    treat_lists = df_joined["Treat_Values"].to_list()
+    ctrl_lists = df_joined["Ctrl_Values"].to_list()
     p_values = []
 
     for t_vals, c_vals in zip(treat_lists, ctrl_lists):
@@ -188,7 +191,7 @@ def update_plot(event=None):
     # ).write_csv("Даша/output.txt")
 
     # 1. Считаем во сколько раз изменилось значение (2 в степени модуля Log2FC)
-    fold_change = (2 ** pl.col("Log2FC").abs()).round(1)
+    fold_change = (2 ** pl.col("Log2FC").abs()).round(round_decimals)
 
     df_joined = df_joined.with_columns(
         Significance=pl.format(
@@ -200,8 +203,8 @@ def update_plot(event=None):
             .when(pl.col("q_value") < 0.05)
             .then(pl.lit("*"))
             .otherwise(pl.lit("")),
-            pl.col("treat_mean").round(1),
-            pl.col("ctrl_mean").round(1),
+            pl.col("Treat_Mean").round(round_decimals),
+            pl.col("Ctrl_Mean").round(round_decimals),
             pl.when(pl.col("Log2FC") > 0)
             .then(pl.format("⬈ {}", fold_change))
             .when(pl.col("Log2FC") < 0)
@@ -270,8 +273,9 @@ def update_plot(event=None):
 # 5. ЗАПУСК
 # ==========================================
 # Привязываем обновление графика к выбору в выпадающих списках
-combo_method.bind("<<ComboboxSelected>>", update_plot)
-combo_col.bind("<<ComboboxSelected>>", update_plot)
+combo_transform_method.bind("<<ComboboxSelected>>", update_plot)
+combo_source_data.bind("<<ComboboxSelected>>", update_plot)
+combo_round.bind("<<ComboboxSelected>>", update_plot)
 
 # Первичная отрисовка при запуске
 update_plot()
