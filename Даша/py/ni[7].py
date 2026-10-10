@@ -100,7 +100,11 @@ def update_plot(event=None):
         transform_expr = pl.col(target_col).log1p()
 
     df_calc = (
-        df.filter(pl.col("FattyAcid") != "17:0")
+        df.filter(
+            (pl.col("FattyAcid") != "17:0")
+            & (pl.col("FattyAcid") != "14:0")
+            & (pl.col("FattyAcid") != "15:0")
+        )
         .filter(pl.col("Plant") != 37)
         .with_columns(transform_expr.alias("ProcessedValue"))
     )
@@ -112,6 +116,7 @@ def update_plot(event=None):
         Plants=pl.col("Plant"),
         Values=pl.col("ProcessedValue"),  # Трансформированные значения для t-test
         Original_Mean=pl.col(target_col).mean(),  # Оригинальные значения для Log2FC
+        Values_StandardDeviation=pl.col(target_col).std(),
     )
 
     # Защита от деления на ноль при расчете Log2FC
@@ -126,6 +131,7 @@ def update_plot(event=None):
         pl.col("FattyAcid"),
         pl.col("Plants").alias("Ctrl_Plants"),
         pl.col("Values").alias("Ctrl_Values"),
+        pl.col("Values_StandardDeviation").alias("Ctrl_StandardDeviation"),
         pl.col("Safe_Original_Mean").alias("Ctrl_Mean"),  # Берем оригинальное среднее
     )
 
@@ -135,6 +141,7 @@ def update_plot(event=None):
         pl.col("Ni"),
         pl.col("Plants").alias("Treat_Plants"),
         pl.col("Values").alias("Treat_Values"),
+        pl.col("Values_StandardDeviation").alias("Treat_StandardDeviation"),
         pl.col("Safe_Original_Mean").alias("Treat_Mean"),  # Берем оригинальное среднее
     )
 
@@ -200,11 +207,11 @@ def update_plot(event=None):
     # Звездочки с переносом строки (если значимо)
     stars = (
         pl.when(pl.col("q_value") < 0.001)
-        .then(pl.lit("***\n"))
+        .then(pl.lit("***"))
         .when(pl.col("q_value") < 0.01)
-        .then(pl.lit("**\n"))
+        .then(pl.lit("**"))
         .when(pl.col("q_value") < 0.05)
-        .then(pl.lit("*\n"))
+        .then(pl.lit("*"))
         .otherwise(pl.lit(""))
     )
 
@@ -220,11 +227,13 @@ def update_plot(event=None):
     # Собираем итоговую строку
     df_joined = df_joined.with_columns(
         Significance=pl.format(
-            "{}{}/{} ({})",
+            "{}({})\n{}±{}\n{}±{}",
             stars,
-            pl.col("Treat_Mean").round(round_decimals),
-            pl.col("Ctrl_Mean").round(round_decimals),
             arrows,
+            pl.col("Treat_Mean").round(round_decimals),
+            pl.col("Treat_StandardDeviation").round(round_decimals),
+            pl.col("Ctrl_Mean").round(round_decimals),
+            pl.col("Ctrl_StandardDeviation").round(round_decimals),
         )
     )
 
@@ -244,18 +253,51 @@ def update_plot(event=None):
         fontsize=14,
     )
 
+    # Заданный порядок для основных ЖК
+    priority_fa = [
+        "16:0",
+        "9-16:1",
+        "18:0",
+        "11-Me-12-18:1",
+        "9-18:1",
+        "11-18:1",
+        "9,12-18:2",
+        "9,12,15-18:3",
+    ]
+
     for i, week in enumerate([1, 5]):
         df_w = df_plot[df_plot["Week"] == week]
         if df_w.empty:
             continue
 
-        ordered_fa = df_w["FattyAcid"].drop_duplicates().tolist()
+        # Получаем все уникальные ЖК для текущей недели.
+        # Порядок здесь соответствует исходному порядку в вашем txt-файле
+        unique_fa = df_w["FattyAcid"].drop_duplicates().tolist()
+
+        # 1. Выбираем те, что есть в приоритетном списке (сохраняя заданный порядок priority_fa)
+        top_fa = [fa for fa in priority_fa if fa in unique_fa]
+
+        # 2. Выбираем остальные (20 атомов и более) и ОСТАВЛЯЕМ ИХ В ИСХОДНОМ ПОРЯДКЕ
+        other_fa = [fa for fa in unique_fa if fa not in priority_fa]
+
+        # 3. Формируем итоговый список.
+        # Добавляем строку " " (пробел) как визуальный разделитель, если есть "остальные" ЖК
+        if other_fa:
+            ordered_fa = top_fa + [" "] + other_fa
+        else:
+            ordered_fa = top_fa
+
+        # Пересобираем таблицы. reindex автоматически создаст пустую строку из NaN для " "
         pivot_log2fc = df_w.pivot(
             index="FattyAcid", columns="Ni", values="Log2FC"
         ).reindex(ordered_fa)
-        pivot_sig = df_w.pivot(
-            index="FattyAcid", columns="Ni", values="Significance"
-        ).reindex(ordered_fa)
+
+        # fillna("") нужен, чтобы в пустой строке-разделителе не писалось слово "nan"
+        pivot_sig = (
+            df_w.pivot(index="FattyAcid", columns="Ni", values="Significance")
+            .reindex(ordered_fa)
+            .fillna("")
+        )
 
         sns.heatmap(
             pivot_log2fc,
