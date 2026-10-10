@@ -40,9 +40,10 @@ df = (
         .filter(pl.col("Standard").is_null())
         .sum()
         .over(over),
+        _Area_Sum=pl.col("Area").filter(pl.col("Standard").is_null()).sum().over(over),
     )
     .with_columns(
-        Percent=(pl.col("PartsPerMillion") / pl.col("_PartsPerMillion_Sum") * 100),
+        Percent=(pl.col("Area") / pl.col("_Area_Sum") * 100),
     )
     .with_columns(
         _Percent_Sum=pl.col("Percent")
