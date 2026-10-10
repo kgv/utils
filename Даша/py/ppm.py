@@ -1,5 +1,7 @@
 import polars as pl
 
+over = ["Ni", "Week", "Plant", "Sample"]
+
 # Чтение данных
 df = pl.read_csv(
     "Даша/Ni,Week,Plant,Sample,WaterFraction,FreshWeight,FattyAcid,Standard,Area.txt"
@@ -15,9 +17,9 @@ df = (
         _IS_Area=pl.col("Area")
         .filter(pl.col("Standard").is_not_null())
         .first()
-        .over("Plant"),
+        .over(over),
         # Находим значение концентрации (Standard) для каждого Plant
-        _IS_Standard=pl.col("Standard").drop_nulls().first().over("Plant"),
+        _IS_Standard=pl.col("Standard").drop_nulls().first().over(over),
     )
     .with_columns(
         # Считаем абсолютную массу кислоты в мг
@@ -28,15 +30,13 @@ df = (
         Sum_Mass_mg=pl.col("Mass_mg")
         .filter(pl.col("Standard").is_null())
         .sum()
-        .over("Plant"),
+        .over(over),
         # Считаем итоговый ppm по сухой массе
         ppm=(pl.col("Mass_mg") / pl.col("DryWeight_g")) * 1000,
     )
     .with_columns(
-        Lipids_mg_g=(pl.col("Sum_Mass_mg") / pl.col("DryWeight_g") * 1000).over(
-            "Plant"
-        ),
-        ppm_Sum=pl.col("ppm").filter(pl.col("Standard").is_null()).sum().over("Plant"),
+        Lipids_mg_g=(pl.col("Sum_Mass_mg") / pl.col("DryWeight_g") * 1000).over(over),
+        ppm_Sum=pl.col("ppm").filter(pl.col("Standard").is_null()).sum().over(over),
         ppm_log1p=pl.col("ppm").log1p(),
     )
     .drop(["_IS_Area", "_IS_Standard"])

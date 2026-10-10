@@ -38,45 +38,50 @@ unpivot_dfs = [
     .with_columns(
         pl.col("Plant").cast(pl.Int64),
     )
-    .select([pl.col("Plant"), pl.all().exclude("Plant")])
+    .select(
+        [
+            "Ni",
+            "Week",
+            "Plant",
+            "FattyAcid",
+            "Standard",
+            "Area",
+        ]
+    )
     for df in dfs
 ]
 
 df = pl.concat(unpivot_dfs)
 print(f"unpivot: {df}")
 
-df.write_csv("Даша/output.txt")
+df.write_csv("Даша/Ni,Week,Plant,FattyAcid,Standard,Area.txt")
+df.group_by(["Ni", "Week", "Plant"], maintain_order=True).agg().write_csv(
+    "Даша/output.txt"
+)
 
-# df = (
-#     df.unpivot(
-#         index=["FattyAcid", "Standard", "Ni", "Week"],
-#         variable_name="Plant",
-#         value_name="Area",
-#     )
-#     .with_columns(
-#         pl.col("Plant").cast(pl.Int64),
-#     )
-#     .select([pl.col("Plant"), pl.all().exclude("Plant")])
-# )
+################################################################################
 
-# df = df.join(
-#     df,
-#     on=["Vial"],
-#     how="full",
-#     coalesce=True,
-#     # maintain_order="left_right",
-# ).select(
-#     [
-#         "Species",
-#         "Object",
-#         "Tree",
-#         "Vial",
-#         "Component",
-#         "CAS",
-#         "RI",
-#         "RT",
-#         "Percent",
-#         "PartsPerMillion",
-#     ]
-# )
-# print(f"df: {df}")
+plant_df = pl.read_csv("Даша/csv/Plant,Sample.txt")
+print(f"plant_df: {plant_df}")
+
+df = df.join(
+    plant_df,
+    on=["Plant"],
+    how="full",
+    coalesce=True,
+    maintain_order="left_right",
+).select(
+    [
+        "Ni",
+        "Week",
+        "Plant",
+        "Sample",
+        "Water",
+        "FreshWeight",
+        "FattyAcid",
+        "Standard",
+        "Area",
+    ]
+)
+
+# df.write_csv("Даша/output.txt")

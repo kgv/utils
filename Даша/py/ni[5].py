@@ -38,7 +38,7 @@ frame_controls.pack(side=tk.TOP, fill=tk.X)
 tk.Label(frame_controls, text="Метод расчета:", font=("Arial", 12)).pack(side=tk.LEFT)
 combo_method = ttk.Combobox(
     frame_controls,
-    values=["log1p", "epsilon"],
+    values=["epsilon", "log1p"],
     state="readonly",
     font=("Arial", 12),
     width=10,
@@ -52,7 +52,7 @@ tk.Label(frame_controls, text="Колонка данных:", font=("Arial", 12)
 )
 combo_col = ttk.Combobox(
     frame_controls,
-    values=["ppm", "pct"],
+    values=["pct", "ppm"],
     state="readonly",
     font=("Arial", 12),
     width=10,
@@ -85,9 +85,13 @@ def update_plot(event=None):
         .filter(pl.col("Plant") != 37)
         .with_columns(
             # Считаем долю в процентах
-            pct=(pl.col("ppm") / pl.col("ppm").sum() * 100).over(["Ni", "Week", "Plant", "Sample"])
+            pct=(pl.col("ppm") / pl.col("ppm").sum() * 100).over(
+                ["Ni", "Week", "Plant"]
+            )
         )
     )
+    print(f"df_calc: {df_calc}")
+    df_calc.write_csv("Даша/df_calc.txt")
 
     # Считываем значения из Combo Box
     method = combo_method.get()
@@ -105,6 +109,7 @@ def update_plot(event=None):
     df_calc = df_calc.with_columns(transform_expr.alias("processed_val"))
 
     df_agg = df_calc.group_by(["Ni", "Week", "FattyAcid"], maintain_order=True).agg(
+        Plants=pl.col("Plant"),
         values=pl.col("processed_val"),
         mean_val=pl.col("processed_val").mean(),
     )
@@ -112,6 +117,7 @@ def update_plot(event=None):
     df_ctrl = df_agg.filter(pl.col("Ni") == 0).select(
         pl.col("Week"),
         pl.col("FattyAcid"),
+        pl.col("Plants").alias("Ctrl_Plants"),
         pl.col("values").alias("ctrl_values"),
         pl.col("mean_val").alias("ctrl_mean"),
     )
@@ -120,11 +126,20 @@ def update_plot(event=None):
         pl.col("Week"),
         pl.col("FattyAcid"),
         pl.col("Ni"),
+        pl.col("Plants").alias("Treat_Plants"),
         pl.col("values").alias("treat_values"),
         pl.col("mean_val").alias("treat_mean"),
     )
 
     df_joined = df_treat.join(df_ctrl, on=["Week", "FattyAcid"], how="left")
+    df_joined.with_columns(
+        [
+            format_list("Treat_Plants"),
+            format_list("treat_values"),
+            format_list("Ctrl_Plants"),
+            format_list("ctrl_values"),
+        ]
+    ).write_csv("Даша/df_joined.txt")
 
     if method == "epsilon":
         df_joined = df_joined.with_columns(
@@ -168,9 +183,9 @@ def update_plot(event=None):
         df_joined = df_joined.with_columns(q_value=pl.lit(None, dtype=pl.Float64))
 
     # Сохраняем текущий результат в файл
-    df_joined.with_columns(
-        [format_list("treat_values"), format_list("ctrl_values")]
-    ).write_csv("Даша/output.txt")
+    # df_joined.with_columns(
+    #     [format_list("treat_values"), format_list("ctrl_values")]
+    # ).write_csv("Даша/output.txt")
 
     # 1. Считаем во сколько раз изменилось значение (2 в степени модуля Log2FC)
     fold_change = (2 ** pl.col("Log2FC").abs()).round(1)
