@@ -105,13 +105,20 @@ def update_plot(event=None):
         .with_columns(transform_expr.alias("ProcessedValue"))
     )
 
+    # ИЗМЕНЕНИЕ 1: Считаем ДВА средних.
+    # ProcessedValue - для t-test'а.
+    # target_col (Original_Mean) - для расчета Log2FC и вывода на экран.
     df_agg = df_calc.group_by(["Ni", "Week", "FattyAcid"], maintain_order=True).agg(
         Plants=pl.col("Plant"),
-        Values=pl.col("ProcessedValue"),
-        Values_Mean=pl.col("ProcessedValue").mean(),
-        Values_RelativeStandardDeviation=pl.col("ProcessedValue").std()
-        / pl.col("ProcessedValue").mean()
-        * 100,
+        Values=pl.col("ProcessedValue"),  # Трансформированные значения для t-test
+        Original_Mean=pl.col(target_col).mean(),  # Оригинальные значения для Log2FC
+    )
+
+    # Защита от деления на ноль при расчете Log2FC
+    df_agg = df_agg.with_columns(
+        Safe_Original_Mean=pl.when(pl.col("Original_Mean") == 0)
+        .then(epsilon_val)
+        .otherwise(pl.col("Original_Mean"))
     )
 
     df_ctrl = df_agg.filter(pl.col("Ni") == 0).select(
@@ -119,10 +126,7 @@ def update_plot(event=None):
         pl.col("FattyAcid"),
         pl.col("Plants").alias("Ctrl_Plants"),
         pl.col("Values").alias("Ctrl_Values"),
-        pl.col("Values_Mean").alias("Ctrl_Mean"),
-        pl.col("Values_RelativeStandardDeviation").alias(
-            "Ctrl_RelativeStandardDeviation"
-        ),
+        pl.col("Safe_Original_Mean").alias("Ctrl_Mean"),  # Берем оригинальное среднее
     )
 
     df_treat = df_agg.filter(pl.col("Ni") != 0).select(
@@ -131,28 +135,19 @@ def update_plot(event=None):
         pl.col("Ni"),
         pl.col("Plants").alias("Treat_Plants"),
         pl.col("Values").alias("Treat_Values"),
-        pl.col("Values_Mean").alias("Treat_Mean"),
-        pl.col("Values_RelativeStandardDeviation").alias(
-            "Treat_RelativeStandardDeviation"
-        ),
+        pl.col("Safe_Original_Mean").alias("Treat_Mean"),  # Берем оригинальное среднее
     )
 
     df_joined = df_treat.join(df_ctrl, on=["Week", "FattyAcid"], how="left")
 
-    if method == "epsilon":
-        df_joined = df_joined.with_columns(
-            Log2FC=(pl.col("Treat_Mean") / pl.col("Ctrl_Mean")).log(2)
-        )
-    else:
-        df_joined = df_joined.with_columns(
-            # Log2FC=(pl.col("Treat_Mean") - pl.col("Ctrl_Mean")) / np.log(2)
-            # Log2FC=(
-            #     (pl.col("Treat_Mean").exp() - 1) / (pl.col("Ctrl_Mean").exp() - 1)
-            # ).log(2)
-            Log2FC=(pl.col("Treat_Mean") / pl.col("Ctrl_Mean")).log(2)
-        )
+    # ИЗМЕНЕНИЕ 2: Log2FC теперь ВСЕГДА считается одинаково и математически верно,
+    # так как мы используем оригинальные средние значения.
+    df_joined = df_joined.with_columns(
+        Log2FC=(pl.col("Treat_Mean") / pl.col("Ctrl_Mean")).log(2)
+    )
 
     # --- Б. СТАТИСТИКА ---
+    # t-test по-прежнему делается на трансформированных данных (Treat_Values / Ctrl_Values)
     treat_lists = df_joined["Treat_Values"].to_list()
     ctrl_lists = df_joined["Ctrl_Values"].to_list()
     p_values = []
@@ -167,6 +162,8 @@ def update_plot(event=None):
             p_values.append(np.nan)
 
     df_joined = df_joined.with_columns(p_value=pl.Series(p_values))
+
+    # Сохранение в файл (оставил как у вас)
     df_joined.with_columns(
         [
             format_list("Treat_Plants", round_decimals),
@@ -192,34 +189,42 @@ def update_plot(event=None):
     else:
         df_joined = df_joined.with_columns(q_value=pl.lit(None, dtype=pl.Float64))
 
-    # 1. Считаем во сколько раз изменилось значение (2 в степени модуля Log2FC)
-    # fold_change = (2 ** pl.col("Log2FC").abs()).round(round_decimals)
+    # ИЗМЕНЕНИЕ 3: Человекочитаемый Fold Change.
+    # Возводим 2 в степень МОДУЛЯ Log2FC.
+    # Если Log2FC = 2, FC = 4 (выросло в 4 раза). Если Log2FC = -2, FC = 4 (упало в 4 раза).
+    df_joined = df_joined.with_columns(
+        FoldChange=(2 ** pl.col("Log2FC").abs()).round(round_decimals)
+    )
 
-    if method == "epsilon":
-        numerator = pl.col("Treat_Mean")
-        denominator = pl.col("Ctrl_Mean")
-    else:
-        numerator = pl.col("Treat_Mean")
-        denominator = pl.col("Ctrl_Mean")
-    fold_change = (numerator / denominator).round(round_decimals)
+    # ИЗМЕНЕНИЕ 4: Красивое форматирование текста для хитмапа
+    # Звездочки с переносом строки (если значимо)
+    stars = (
+        pl.when(pl.col("q_value") < 0.001)
+        .then(pl.lit("***\n"))
+        .when(pl.col("q_value") < 0.01)
+        .then(pl.lit("**\n"))
+        .when(pl.col("q_value") < 0.05)
+        .then(pl.lit("*\n"))
+        .otherwise(pl.lit(""))
+    )
 
+    # Стрелочки (используем порог 0.01 для исключения микро-шумов float)
+    arrows = (
+        pl.when(pl.col("Log2FC") > 0.01)
+        .then(pl.format("⬈ {}x", pl.col("FoldChange")))
+        .when(pl.col("Log2FC") < -0.01)
+        .then(pl.format("⬊ {}x", pl.col("FoldChange")))
+        .otherwise(pl.lit("без изм."))
+    )
+
+    # Собираем итоговую строку
     df_joined = df_joined.with_columns(
         Significance=pl.format(
-            "{}\n{}/{} ({})",
-            pl.when(pl.col("q_value") < 0.001)
-            .then(pl.lit("***"))
-            .when(pl.col("q_value") < 0.01)
-            .then(pl.lit("**"))
-            .when(pl.col("q_value") < 0.05)
-            .then(pl.lit("*"))
-            .otherwise(pl.lit("")),
+            "{}{}/{} ({})",
+            stars,
             pl.col("Treat_Mean").round(round_decimals),
             pl.col("Ctrl_Mean").round(round_decimals),
-            pl.when(pl.col("Log2FC") > 0)
-            .then(pl.format("⬈ {}", fold_change))
-            .when(pl.col("Log2FC") < 0)
-            .then(pl.format("⬊ {}", fold_change))
-            .otherwise(pl.lit("без изменений")),
+            arrows,
         )
     )
 
@@ -258,8 +263,6 @@ def update_plot(event=None):
             fmt="",
             cmap="vlag",
             center=0,
-            # vmin=-3,
-            # vmax=3,
             ax=axes[i],
             cbar=(i == 1),
             cbar_ax=cbar_ax if i == 1 else None,
