@@ -1,6 +1,8 @@
 import polars as pl
 
 # Чтение данных
+
+# PartsPerMillion
 ppm_df = pl.read_csv("Cypresses/csv/Input_PartsPerMillion.txt")
 print(f"ppm_df: {ppm_df}")
 ppm_df = (
@@ -26,8 +28,9 @@ ppm_df = (
     )
 )
 print(f"ppm_df: {ppm_df}")
-ppm_df.write_csv("_PartsPerMillion.txt")
+ppm_df.write_csv("Cypresses/_PartsPerMillion.txt")
 
+# Percent
 pc_df = pl.read_csv("Cypresses/csv/Input_Percent.txt")
 print(f"pc_df: {pc_df}")
 pc_df = (
@@ -53,7 +56,7 @@ pc_df = (
     )
 )
 print(f"pc_df: {pc_df}")
-pc_df.write_csv("_Percent.txt")
+pc_df.write_csv("Cypresses/_Percent.txt")
 
 df = pc_df.join(
     ppm_df,
@@ -73,4 +76,6 @@ df = pc_df.join(
     ]
 )
 print(f"df: {df}")
-df.write_csv("Vial,Component,CAS,RI,RT,Percent,PartsPerMillion.txt")
+df.write_csv("Cypresses/{Fields=Vial,Component,CAS,RI,RT,Percent,PartsPerMillion}.txt")
+
+# species_df = pl.read_csv("Cypresses/csv/Species,Object,Tree,Vial,Light,Description.txt")
