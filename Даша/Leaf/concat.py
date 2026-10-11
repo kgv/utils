@@ -55,9 +55,9 @@ df = pl.concat(unpivot_dfs)
 print(f"unpivot: {df}")
 
 df.write_csv("Даша/{Kind=Leaf}{Fiels=Ni,Week,Plant,FattyAcid,Standard,Area.txt}")
-# df.group_by(["Ni", "Week", "Plant"], maintain_order=True).agg().write_csv(
-#     "Даша/output.txt"
-# )
+df.group_by(["Ni", "Week", "Plant"], maintain_order=True).agg().write_csv(
+    "Даша/output.txt"
+)
 
 ################################################################################
 
