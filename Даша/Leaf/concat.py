@@ -54,40 +54,40 @@ unpivot_dfs = [
 df = pl.concat(unpivot_dfs)
 print(f"unpivot: {df}")
 
-df.write_csv("Даша/{Kind=Leaf}{Fiels=Ni,Week,Plant,FattyAcid,Standard,Area.txt}")
-df.group_by(["Ni", "Week", "Plant"], maintain_order=True).agg().write_csv(
-    "Даша/output.txt"
-)
+df.write_csv("Даша/{Kind=Leaf}{Fields=Ni,Week,Plant,FattyAcid,Standard,Area.txt}")
+# df.group_by(["Ni", "Week", "Plant"], maintain_order=True).agg().write_csv(
+#     "Даша/output.txt"
+# )
 
 ################################################################################
 
-# sample_df = pl.read_csv("Даша/csv/Ni,Week,Plant,Sample,WaterFraction,FreshWeight.txt")
-# print(f"sample_df: {sample_df}")
+sample_df = pl.read_csv("Даша/csv/{Kind=Leaf}{Fields=Ni,Week,Plant,Sample,WaterFraction,FreshWeight}.txt")
+print(f"sample_df: {sample_df}")
 
-# df = df.join(
-#     sample_df,
-#     on=[
-#         "Ni",
-#         "Week",
-#         "Plant",
-#     ],
-#     how="full",
-#     coalesce=True,
-#     maintain_order="left_right",
-# ).select(
-#     [
-#         "Ni",
-#         "Week",
-#         "Plant",
-#         "Sample",
-#         "WaterFraction",
-#         "FreshWeight",
-#         "FattyAcid",
-#         "Standard",
-#         "Area",
-#     ]
-# )
+df = df.join(
+    sample_df,
+    on=[
+        "Ni",
+        "Week",
+        "Plant",
+    ],
+    how="full",
+    coalesce=True,
+    maintain_order="left_right",
+).select(
+    [
+        "Ni",
+        "Week",
+        "Plant",
+        "Sample",
+        "WaterFraction",
+        "FreshWeight",
+        "FattyAcid",
+        "Standard",
+        "Area",
+    ]
+)
 
 df.write_csv(
-    "Даша/{Kind=Leaf}{Fiels=Ni,Week,Plant,Sample,WaterFraction,FreshWeight,FattyAcid,Standard,Area.txt}"
+    "Даша/{Kind=Leaf}{Fields=Ni,Week,Plant,Sample,WaterFraction,FreshWeight,FattyAcid,Standard,Area.txt}"
 )
