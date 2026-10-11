@@ -32,17 +32,17 @@ dfs = [
 unpivot_dfs = [
     df.unpivot(
         index=["FattyAcid", "Standard", "Ni", "Week"],
-        variable_name="Plant",
+        variable_name="Sample",
         value_name="Area",
     )
     .with_columns(
-        pl.col("Plant").cast(pl.Int64),
+        pl.col("Sample").cast(pl.Int64),
     )
     .select(
         [
             "Ni",
             "Week",
-            "Plant",
+            "Sample",
             "FattyAcid",
             "Standard",
             "Area",
@@ -54,8 +54,8 @@ unpivot_dfs = [
 df = pl.concat(unpivot_dfs)
 print(f"unpivot: {df}")
 
-df.write_csv("Даша/{Kind=Leaf}{Fields=Ni,Week,Plant,FattyAcid,Standard,Area.txt}")
-# df.group_by(["Ni", "Week", "Plant"], maintain_order=True).agg().write_csv(
+df.write_csv("Даша/{Kind=Leaf}{Fields=Ni,Week,Sample,FattyAcid,Standard,Area.txt}")
+# df.group_by(["Ni", "Week", "Sample"], maintain_order=True).agg().write_csv(
 #     "Даша/output.txt"
 # )
 
@@ -69,7 +69,7 @@ df = df.join(
     on=[
         "Ni",
         "Week",
-        "Plant",
+        "Sample",
     ],
     how="full",
     coalesce=True,
