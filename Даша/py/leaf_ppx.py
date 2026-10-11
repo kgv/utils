@@ -79,6 +79,6 @@ df = df.select(
     ]
 )
 
-df.write_csv("Даша/{Kind=Leaf}{Fields=Ni,Week,Plant,Sample,FattyAcid,PartsPer}.txt")
+df.write_csv("Даша/{Kind=Leaf}{Fields=Ni,Week,Plant,Sample,FattyAcid,PartsPerX}.txt")
 # https://en.wikipedia.org/wiki/Parts-per_notation
 # PartsPerHundred PartsPerThousand PartsPerMillion
