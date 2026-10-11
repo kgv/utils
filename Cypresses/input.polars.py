@@ -78,4 +78,11 @@ df = pc_df.join(
 print(f"df: {df}")
 df.write_csv("Cypresses/{Fields=Vial,Component,CAS,RI,RT,Percent,PartsPerMillion}.txt")
 
+# Чтение данных
+species_df = pl.read_csv(
+    "Cypresses/csv/Input_Species,Identifier,Tree,Vial,Description.txt"
+)
+species_df = species_df.group_by(["Species", "Identifier"]).agg()
+print(f"species_df: {species_df}")
+
 # species_df = pl.read_csv("Cypresses/csv/Species,Object,Tree,Vial,Light,Description.txt")
