@@ -136,5 +136,5 @@ df = species_df.join(
 )
 
 df.write_csv(
-    "Cypresses/{Fields=Genus,Species,Variety,Identifier,Tree,Vial,Component,CAS,RI,RT,Percent,PartsPerMillion}.txt"
+    "Cypresses/csv/{Kind=Output}{Fields=Genus,Species,Variety,Identifier,Tree,Vial,Component,CAS,RI,RT,Percent,PartsPerMillion}.txt"
 )
