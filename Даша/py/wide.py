@@ -34,7 +34,7 @@ df = pl.read_csv(
 print(f"read: {df}")
 
 # Превращаем в широкий формат
-df = df.pivot(
+df = df.filter((pl.col("FattyAcid") != "17:0") & (pl.col("FattyAcid") != "15:0")).pivot(
     index=[
         "Ni",
         "Week",

@@ -5,7 +5,9 @@ library(knitr)
 library(vegan)
 
 # Укажите здесь название столбца, по которому нужно группировать данные
-# ("Species", "Variety", "Genus")
+# "Genus"
+# "Species"
+# "Variety"
 TARGET_GROUP <- "Species"
 
 # Укажите здесь метрику расстояния 
