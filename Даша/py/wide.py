@@ -28,21 +28,21 @@ import seaborn as sns
 # "Sum_PartsPerThousand_DryWeight": pl.Float64,
 # "Sum_PartsPerMillion_DryWeight": pl.Float64,
 
+# kind = "Leaf"
+kind = "Root"
+# values = "Percent_Area" # Столбец, откуда берем сами цифры
+values = "PartsPerMillion_DryWeight"
+
 df = pl.read_csv(
-    "Даша/{Kind=Leaf}{Fields=Ni,Week,Plant,Sample,FattyAcid,PartsPerX}.txt",
+    f"Даша/{{Kind={kind}}}{{Fields=Ni,Week,Sample,Plant,FattyAcid,PartsPerX}}.txt",
 )
 print(f"read: {df}")
 
 # Превращаем в широкий формат
 df = df.filter((pl.col("FattyAcid") != "17:0") & (pl.col("FattyAcid") != "15:0")).pivot(
-    index=[
-        "Ni",
-        "Week",
-        "Sample",
-    ],
+    index=["Ni", "Week", "Sample"],
     on="FattyAcid",  # Столбец, значения которого станут новыми заголовками
-    # values="Percent_Area",  # Столбец, откуда берем сами цифры (можно заменить на "PartsPerMillion_DryWeight")
-    values="PartsPerMillion_DryWeight",  # Столбец, откуда берем сами цифры (можно заменить на "PartsPerMillion_DryWeight")
+    values=values,
 )
 
 # df = df.filter(pl.col("Week") == 5)
@@ -53,4 +53,5 @@ df = df.filter((pl.col("FattyAcid") != "17:0") & (pl.col("FattyAcid") != "15:0")
 #     .alias("Ni")
 # )
 
-df.write_csv("Даша/_Wide{Kind=Leaf}.txt")
+df.write_csv(f"Даша/_Wide{{Kind={kind}}}{{Value={values}}}.txt")
+# df.write_csv(f"Даша/_Wide{{Kind={kind}}}{{Value={values}}}{{Week=5}}.txt")
