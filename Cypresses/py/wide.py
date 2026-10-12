@@ -92,5 +92,18 @@ df = df.pivot(
     ],
     on="Component",
     values="PartsPerMillion_Mean",
+).with_columns(
+    [
+        pl.concat_str(
+            [pl.col("Genus"), pl.col("Species")],
+            separator=" ",
+            ignore_nulls=True,
+        ).alias("Species"),
+        pl.concat_str(
+            [pl.col("Genus"), pl.col("Species"), pl.col("Variety")],
+            separator=" ",
+            ignore_nulls=True,
+        ).alias("Variety"),
+    ]
 )
 df.write_csv("Cypresses/_Wide.txt")
