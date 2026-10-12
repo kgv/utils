@@ -1,6 +1,6 @@
 """
 Модуль для визуализации результатов анализа.
-Отвечает за построение графиков NMDS и интерактивные подсказки.
+Отвечает за построение графиков ординации и интерактивные подсказки.
 """
 
 from scipy.spatial import ConvexHull
@@ -13,37 +13,24 @@ import config
 
 
 class Visualizer:
-    """
-    Класс для отрисовки 2D графиков ординации с интерактивными элементами.
-    """
-
     def __init__(self) -> None:
         self.fig: Optional[plt.Figure] = None
         self.ax: Optional[plt.Axes] = None
         self.scatters: List[Tuple[Any, np.ndarray]] = []
         self.annot: Optional[Any] = None
 
-    def plot_nmds(
+    def plot_ordination(
         self,
+        analysis_type: str,
         coords: np.ndarray,
         taxonomy_labels: np.ndarray,
         hover_labels: np.ndarray,
         taxonomy_name: str,
         distance_metric: str,
         transform_method: str,
-        stress: float,
+        metric_val: float,
     ) -> None:
-        """
-        Строит график NMDS с выпуклыми оболочками (Convex Hull) для каждой группы.
 
-        :param coords: Координаты точек после NMDS (2D массив).
-        :param taxonomy_labels: Метки классов для раскраски.
-        :param hover_labels: Текст для всплывающих подсказок.
-        :param taxonomy_name: Название выбранной таксономии (для заголовка).
-        :param distance_metric: Использованная метрика (для заголовка).
-        :param transform_method: Использованный метод трансформации (для заголовка).
-        :param stress: Значение stress после NMDS (для заголовка).
-        """
         self.fig, self.ax = plt.subplots(figsize=config.PLOT_FIGSIZE)
         unique_species = np.unique(taxonomy_labels)
         colors = matplotlib.colormaps.get_cmap(config.COLORMAP_NAME)
@@ -55,7 +42,6 @@ class Visualizer:
             pts = coords[idx]
             lbls = hover_labels[idx]
 
-            # Отрисовка точек
             sc = self.ax.scatter(
                 pts[:, 0],
                 pts[:, 1],
@@ -65,7 +51,6 @@ class Visualizer:
             )
             self.scatters.append((sc, lbls))
 
-            # Отрисовка ConvexHull (выпуклой оболочки)
             if len(pts) > 2:
                 hull = ConvexHull(pts)
                 for simplex in hull.simplices:
@@ -83,7 +68,6 @@ class Visualizer:
                     alpha=config.HULL_FILL_ALPHA,
                 )
             elif len(pts) == 2:
-                # Если точек всего две, рисуем просто линию
                 self.ax.plot(
                     pts[:, 0],
                     pts[:, 1],
@@ -92,29 +76,26 @@ class Visualizer:
                     alpha=config.HULL_LINE_ALPHA,
                 )
 
-        # Настройка осей и заголовка
-        title = (
-            f"NMDS Ordination\n"
-            f"Taxonomy: {taxonomy_name}; Distance: {distance_metric}; Transform: {transform_method}\n"
-            f"Stress: {stress:.2f}"
-        )
+        if analysis_type == "NMDS":
+            title_metric = f"Stress: {metric_val:.4f}"
+            self.ax.set_xlabel("NMDS1")
+            self.ax.set_ylabel("NMDS2")
+        else:
+            title_metric = f"Explained Variance (2D): {metric_val*100:.2f}%"
+            self.ax.set_xlabel("PC1")
+            self.ax.set_ylabel("PC2")
+
+        title = f"{analysis_type} Ordination\nTaxonomy: {taxonomy_name}; Distance: {distance_metric}; Transform: {transform_method}\n{title_metric}"
         self.ax.set_title(title)
-        self.ax.set_xlabel("NMDS1")
-        self.ax.set_ylabel("NMDS2")
         self.ax.legend(bbox_to_anchor=(1.05, 1), loc="upper left")
         plt.tight_layout()
 
-        # Настройка интерактивности
         self._setup_annotations()
         plt.show()
 
     def _setup_annotations(self) -> None:
-        """
-        Инициализирует объект аннотации и привязывает событие движения мыши.
-        """
         if self.ax is None or self.fig is None:
             return
-
         self.annot = self.ax.annotate(
             "",
             xy=(0, 0),
@@ -128,28 +109,21 @@ class Visualizer:
         self.fig.canvas.mpl_connect("motion_notify_event", self._on_hover)
 
     def _on_hover(self, event: Any) -> None:
-        """
-        Обработчик события наведения мыши на график.
-        """
         if event.inaxes == self.ax:
             for sc, lbls in self.scatters:
                 cont, ind = sc.contains(event)
                 if cont:
                     point_idx = ind["ind"][0]
                     pos = sc.get_offsets()[point_idx]
-
                     self.annot.xy = pos
                     self.annot.set_text(lbls[point_idx])
                     self.annot.set_visible(True)
                     self.fig.canvas.draw_idle()
                     return
-
-            # Если мышь не на точке, скрываем подсказку
             if self.annot.get_visible():
                 self.annot.set_visible(False)
                 self.fig.canvas.draw_idle()
         else:
-            # Если мышь вне осей графика
             if self.annot and self.annot.get_visible():
                 self.annot.set_visible(False)
                 self.fig.canvas.draw_idle()

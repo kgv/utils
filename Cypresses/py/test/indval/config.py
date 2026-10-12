@@ -27,6 +27,7 @@ META_COLUMNS: Final[List[str]] = [
 ]
 
 # --- Настройки GUI (значения для Combobox) ---
+ANALYSIS_TYPES: Final[List[str]] = ["NMDS", "PCA"]
 TRANSFORM_METHODS: Final[List[str]] = ["None", "log1p"]
 DISTANCE_METRICS: Final[List[str]] = [
     "braycurtis",
@@ -49,8 +50,9 @@ SEED_VALUES: Final[List[str]] = ["42", "1234"]
 
 # --- Настройки анализа ---
 PERMUTATIONS_COUNT: Final[int] = 999
-NMDS_COMPONENTS: Final[int] = 2
+ORDINATION_COMPONENTS: Final[int] = 2
 NMDS_EPSILON: Final[float] = 1e-9
+TOP_N_FEATURES: Final[int] = 10  # Количество выводимых видов для IndVal и SIMPER
 
 # --- Настройки визуализации ---
 PLOT_FIGSIZE: Final[Tuple[int, int]] = (10, 8)
