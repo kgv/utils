@@ -25,7 +25,7 @@ sink("Даша/_Simper.txt", split = FALSE)
 set.seed(1234)
 
 # Загрузка данных
-mydata <- read.csv("Даша/_Wide.txt", check.names = FALSE, stringsAsFactors = FALSE)
+mydata <- read.csv("Даша/_Wide5.txt", check.names = FALSE, stringsAsFactors = FALSE)
 
 # Отделяем матрицу обилий (начиная с 4-го столбца)
 abund <- mydata[, 4:ncol(mydata)]

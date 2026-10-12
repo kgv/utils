@@ -45,4 +45,12 @@ df = df.filter((pl.col("FattyAcid") != "17:0") & (pl.col("FattyAcid") != "15:0")
     values="PartsPerMillion_DryWeight",  # Столбец, откуда берем сами цифры (можно заменить на "PartsPerMillion_DryWeight")
 )
 
-df.write_csv("Даша/_Wide.txt")
+# df = df.filter(pl.col("Week") == 5)
+# df = df.with_columns(
+#     pl.when(pl.col("Ni") == 0)
+#     .then(pl.lit("Control"))
+#     .otherwise(pl.lit("Experiment"))
+#     .alias("Ni")
+# )
+
+df.write_csv("Даша/_Wide{Kind=Leaf}.txt")

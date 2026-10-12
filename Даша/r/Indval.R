@@ -8,9 +8,9 @@ library(vegan)
 # "Ni": Проверяет гипотезу, отличается ли в целом профиль жирных кислот у растений, которые росли без никеля (0), от тех, что росли с никелем (50, 250, 500, 750, 1000).
 # "Week": Проверяет гипотезу, изменяется ли состав жирных кислот со временем (стал ли он другими к 5-й неделе по сравнению с 1-й).
 # c("Ni", "Week"): Проверит гипотезу, есть ли разница в составе жирных кислот между этими 12 уникальными состояниями.
-# TARGET_GROUP <- "Ni"
+TARGET_GROUP <- "Ni"
 # TARGET_GROUP <- "Week"
-TARGET_GROUP <- c("Ni", "Week")
+# TARGET_GROUP <- c("Ni", "Week")
 
 # Укажите здесь метрику расстояния 
 # ("bray", "jaccard", "euclidean", "manhattan")
@@ -25,7 +25,7 @@ sink("Даша/_Indval.txt", split = FALSE)
 set.seed(1234)
 
 # Загрузка данных
-mydata <- read.csv("Даша/_Wide.txt", check.names = FALSE, stringsAsFactors = FALSE)
+mydata <- read.csv("Даша/_Wide1.txt", check.names = FALSE, stringsAsFactors = FALSE)
 
 # Отделяем матрицу обилий (начиная с 4-го столбца)
 abund <- mydata[, 4:ncol(mydata)]

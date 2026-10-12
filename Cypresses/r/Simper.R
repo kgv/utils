@@ -47,22 +47,23 @@ cat("Метрика расстояния:", TARGET_DISTANCE, "\n")
 
 sim <- simper(m_abund, group_factor)
 sim_sum <- summary(sim)
+print(sim_sum)
 
-for (comp_name in names(sim_sum)) {
-  cat("\n--------------------------------------------------\n")
-  cat("Сравнение:", comp_name, "\n")
-  cat("--------------------------------------------------\n")
+# for (comp_name in names(sim_sum)) {
+#   cat("\n--------------------------------------------------\n")
+#   cat("Сравнение:", comp_name, "\n")
+#   cat("--------------------------------------------------\n")
   
-  df <- sim_sum[[comp_name]]
+#   df <- sim_sum[[comp_name]]
   
-  # Округляем длинные числа до 4 знаков после запятой
-  is_num <- sapply(df, is.numeric)
-  df[is_num] <- lapply(df[is_num], round, 4)
+#   # Округляем длинные числа до 4 знаков после запятой
+#   is_num <- sapply(df, is.numeric)
+#   df[is_num] <- lapply(df[is_num], round, 4)
   
-  # Выводим красивую таблицу
-  print(kable(df, format = "markdown"))
-  cat("\n")
-}
+#   # Выводим красивую таблицу
+#   print(kable(df, format = "markdown"))
+#   cat("\n")
+# }
 
 # =====================================================================
 # КОНЕЦ ПЕРЕНАПРАВЛЕНИЯ ВЫВОДА

@@ -72,19 +72,9 @@ df = df.select(
         "_Percent_Sum",
     ]
 )
-# df = df.drop(
-#     [
-#         "WaterFraction",
-#         "FreshWeight",
-#         "Standard",
-#         "Area",
-#         "DryWeight_g",
-#         "Mass_mg",
-#         "Sum_Mass_mg",
-#         "Lipids_mg_g",
-#         "ppm_Sum",
-#         "ppm_log1p",
-#     ]
-# )
 
-df.write_csv("Даша/Ni,Week,Plant,Sample,FattyAcid,PartsPerMillion,Percent.txt")
+# df.write_csv("Даша/Ni,Week,Plant,Sample,FattyAcid,PartsPerMillion,Percent.txt")
+
+df.write_csv("Даша/{Kind=Leaf}{Fields=Ni,Week,Plant,Sample,FattyAcid,PartsPerX}.txt")
+# https://en.wikipedia.org/wiki/Parts-per_notation
+# PartsPerHundred PartsPerThousand PartsPerMillion
