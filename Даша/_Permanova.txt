@@ -1,0 +1,14 @@
+=== Результаты PERMANOVA ===
+Анализируемые факторы: Ni и Week 
+Метрика расстояния: bray 
+Permutation test for adonis under reduced model
+Permutation: free
+Number of permutations: 9999
+
+adonis2(formula = perm_formula, data = mydata, permutations = 9999, method = TARGET_DISTANCE)
+         Df SumOfSqs      R2      F Pr(>F)    
+Model     3  0.31279 0.58917 32.506  1e-04 ***
+Residual 68  0.21812 0.41083                  
+Total    71  0.53091 1.00000                  
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1

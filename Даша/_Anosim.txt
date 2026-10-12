@@ -1,0 +1,35 @@
+=== Результаты ANOSIM ===
+Анализируемые факторы: Ni и Week 
+Метрика расстояния: bray 
+
+Call:
+anosim(x = m_abund, grouping = group_factor, permutations = 9999,      distance = TARGET_DISTANCE) 
+Dissimilarity: bray 
+
+ANOSIM statistic R: 0.4768 
+      Significance: 1e-04 
+
+Permutation: free
+Number of permutations: 9999
+
+Upper quantiles of permutations (null model):
+   90%    95%  97.5%    99% 
+0.0504 0.0672 0.0812 0.1019 
+
+Dissimilarity ranks between and within classes:
+         0%    25%    50%     75% 100%    N
+Between   1 695.75 1341.5 1960.25 2556 2376
+0.1     142 584.50  793.0 1224.50 1854   15
+50.1     56 364.00  659.0 1014.00 1268   15
+250.1   167 468.50  773.0 1087.00 1466   15
+500.1    25 248.50  709.0 1114.50 1775   15
+750.1   135 527.00  873.0 1201.00 1833   15
+1000.1  120 340.50  469.0 1153.00 1593   15
+0.5      18 195.50  467.0  603.00  807   15
+50.5    158 487.50  989.0 1537.00 2181   15
+250.5    21 146.00  271.0  755.00 1275   15
+500.5     2  45.50  297.0  594.00  825   15
+750.5    12  54.50  169.0 1819.00 2029   15
+1000.5   24 304.50  909.0 1477.00 1830   15
+
+NULL
