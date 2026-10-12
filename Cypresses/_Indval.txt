@@ -1,3 +1,84 @@
 === Результаты IndVal ===
 Анализируемые факторы: Species 
 Метрика расстояния: bray 
+
+ Multilevel pattern analysis
+ ---------------------------
+
+ Association function: r.g
+ Significance level (alpha): 0.05
+
+ Total number of species: 60
+ Selected number of species: 24 
+ Number of species associated to 1 group: 20 
+ Number of species associated to 2 groups: 2 
+ Number of species associated to 3 groups: 1 
+ Number of species associated to 4 groups: 0 
+ Number of species associated to 5 groups: 0 
+ Number of species associated to 6 groups: 0 
+ Number of species associated to 7 groups: 1 
+ Number of species associated to 8 groups: 0 
+ Number of species associated to 9 groups: 0 
+ Number of species associated to 10 groups: 0 
+ Number of species associated to 11 groups: 0 
+ Number of species associated to 12 groups: 0 
+ Number of species associated to 13 groups: 0 
+
+ List of species associated to each combination: 
+
+ Group Chamaecyparis lawsoniana  #sps.  4 
+                            stat p.value   
+cis-Muurol-5-en-4-beta-ol  0.998   0.004 **
+10-epi-Cubebol             0.998   0.008 **
+Geranyl acetate            0.974   0.010 **
+cis-Muurol-5-en-4-alpha-ol 0.970   0.027 * 
+
+ Group Chamaecyparis pisifera  #sps.  2 
+                stat p.value    
+Bornyl acetate 0.971   0.001 ***
+Camphene       0.833   0.018 *  
+
+ Group Microbiota decussata  #sps.  11 
+                                                         stat p.value   
+Microbiotol                                             0.999   0.008 **
+(E)-beta-Farnesene                                      0.998   0.006 **
+Thujopsan-2-alpha-ol                                    0.996   0.005 **
+alpha-Bisabolol                                         0.994   0.005 **
+н/и RI 1628.9 (сесквитерпеновый спирт, ряд туйопсанола) 0.994   0.008 **
+beta-Chamigrene                                         0.991   0.006 **
+н/и RI 1540.22                                          0.988   0.004 **
+cis-Thujopsene                                          0.987   0.009 **
+н/и RI 1564.91                                          0.986   0.008 **
+Cedrol                                                  0.985   0.009 **
+beta-Cedrene                                            0.984   0.008 **
+
+ Group Thuja occidentalis  #sps.  1 
+                     stat p.value  
+Caryophyllene oxide 0.836   0.035 *
+
+ Group Thuja plicata  #sps.  1 
+               stat p.value   
+alpha-Thujone 0.935   0.008 **
+
+ Group Thujopsis dolabrata  #sps.  1 
+                stat p.value   
+gamma-Terpinene 0.93   0.009 **
+
+ Group Chamaecyparis lawsoniana+Chamaecyparis pisifera  #sps.  1 
+                        stat p.value  
+alpha-Terpinyl acetate 0.828   0.022 *
+
+ Group Juniperus communis+Juniperus pseudosabina  #sps.  1 
+              stat p.value  
+beta-Elemene 0.797   0.031 *
+
+ Group Juniperus sabina+Thuja occidentalis+Thuja plicata  #sps.  1 
+              stat p.value   
+beta-Thujone 0.847    0.01 **
+
+ Group Callitropsis nootkatensis+Chamaecyparis pisifera+Juniperus chinensis+Juniperus sabina+Juniperus scopulorum+Juniperus virginiana+Thuja occidentalis  #sps.  1 
+              stat p.value  
+1-Octen-3-ol 0.758   0.015 *
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1 
+NULL
