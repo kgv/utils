@@ -1,10 +1,10 @@
 import polars as pl
 
-over = ["Ni", "Week", "Plant", "Sample"]
+over = ["Ni", "Week", "Sample", "Plant"]
 
 # Чтение данных
 df = pl.read_csv(
-    "Даша/Ni,Week,Plant,Sample,WaterFraction,FreshWeight,FattyAcid,Standard,Area.txt"
+    "Даша/{Kind=Root}{Fields=Ni,Week,Sample,Plant,WaterFraction,FreshWeight,FattyAcid,Standard,Area}.txt"
 )
 print(f"df: {df}")
 
@@ -19,37 +19,41 @@ df = (
         .first()
         .over(over),
         # Находим значение концентрации (Standard) для каждого Plant
-        _IS_Standard=pl.col("Standard").drop_nulls().first().over(over),
+        _IS_Weight_mg=pl.col("Standard").drop_nulls().first().over(over),
     )
     .with_columns(
         # Считаем абсолютную массу кислоты в мг
-        Mass_mg=(pl.col("Area") / pl.col("_IS_Area"))
-        * pl.col("_IS_Standard")
+        Weight_mg=(pl.col("Area") / pl.col("_IS_Area"))
+        * pl.col("_IS_Weight_mg"),
     )
     .with_columns(
-        Sum_Mass_mg=pl.col("Mass_mg")
+        Sum_Area=pl.col("Area").filter(pl.col("Standard").is_null()).sum().over(over),
+        Sum_Weight_mg=pl.col("Weight_mg")
         .filter(pl.col("Standard").is_null())
         .sum()
         .over(over),
+    )
+    .with_columns(
+        Percent_Area=(pl.col("Area") / pl.col("Sum_Area") * 100),
+        # Считаем итоговый ppt по сухой массе
+        PartsPerThousand_DryWeight=(pl.col("Weight_mg") / pl.col("DryWeight_g")),
         # Считаем итоговый ppm по сухой массе
-        PartsPerMillion=(pl.col("Mass_mg") / pl.col("DryWeight_g")) * 1000,
+        PartsPerMillion_DryWeight=(pl.col("Weight_mg") / pl.col("DryWeight_g")) * 1000,
     )
     .with_columns(
-        Lipids_mg_g=(pl.col("Sum_Mass_mg") / pl.col("DryWeight_g") * 1000).over(over),
-        _PartsPerMillion_Sum=pl.col("PartsPerMillion")
-        .filter(pl.col("Standard").is_null())
-        .sum()
-        .over(over),
-        _Area_Sum=pl.col("Area").filter(pl.col("Standard").is_null()).sum().over(over),
-    )
-    .with_columns(
-        Percent=(pl.col("Area") / pl.col("_Area_Sum") * 100),
-    )
-    .with_columns(
-        _Percent_Sum=pl.col("Percent")
+        _Lipids_mg_g=(pl.col("Sum_Weight_mg") / pl.col("DryWeight_g")).over(over),
+        Sum_Percent_Area=pl.col("Percent_Area")
         .filter(pl.col("Standard").is_null())
         .sum()
         .round(1)
+        .over(over),
+        Sum_PartsPerThousand_DryWeight=pl.col("PartsPerThousand_DryWeight")
+        .filter(pl.col("Standard").is_null())
+        .sum()
+        .over(over),
+        Sum_PartsPerMillion_DryWeight=pl.col("PartsPerMillion_DryWeight")
+        .filter(pl.col("Standard").is_null())
+        .sum()
         .over(over),
     )
     # .drop(["_IS_Area", "_IS_Standard"])
@@ -59,22 +63,22 @@ df = df.select(
     [
         "Ni",
         "Week",
-        "Plant",
         "Sample",
+        "Plant",
         "WaterFraction",
         "FreshWeight",
         "FattyAcid",
         "Standard",
         "Area",
-        "PartsPerMillion",
-        "Percent",
-        "_PartsPerMillion_Sum",
-        "_Percent_Sum",
+        "Percent_Area",
+        "PartsPerThousand_DryWeight",
+        "PartsPerMillion_DryWeight",
+        "Sum_Percent_Area",
+        "Sum_PartsPerThousand_DryWeight",
+        "Sum_PartsPerMillion_DryWeight",
     ]
 )
 
-# df.write_csv("Даша/Ni,Week,Plant,Sample,FattyAcid,PartsPerMillion,Percent.txt")
-
-df.write_csv("Даша/{Kind=Leaf}{Fields=Ni,Week,Plant,Sample,FattyAcid,PartsPerX}.txt")
+df.write_csv("Даша/{Kind=Root}{Fields=Ni,Week,Sample,Plant,FattyAcid,PartsPerX}.txt")
 # https://en.wikipedia.org/wiki/Parts-per_notation
 # PartsPerHundred PartsPerThousand PartsPerMillion

@@ -61,13 +61,13 @@ df.write_csv("Даша/{Kind=Leaf}{Fields=Ni,Week,Sample,FattyAcid,Standard,Area
 
 ################################################################################
 
-plant_df = pl.read_csv(
+sample_df = pl.read_csv(
     "Даша/csv/{Kind=Leaf}{Fields=Ni,Week,Sample,Plant,WaterFraction,FreshWeight}.txt"
 )
-print(f"plant_df: {plant_df}")
+print(f"sample_df: {sample_df}")
 
 df = df.join(
-    plant_df,
+    sample_df,
     on=[
         "Ni",
         "Week",
