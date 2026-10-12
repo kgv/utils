@@ -8,6 +8,10 @@ library(vegan)
 # ("Species", "Variety", "Genus")
 TARGET_GROUP <- "Species"
 
+# Укажите здесь метрику расстояния 
+# ("bray", "jaccard", "euclidean", "manhattan")
+TARGET_DISTANCE <- "bray"
+
 # =====================================================================
 # НАЧАЛО ПЕРЕНАПРАВЛЕНИЯ ВЫВОДА
 # =====================================================================
@@ -38,8 +42,11 @@ perm_formula <- as.formula(paste("m_abund ~", TARGET_GROUP))
 # ---------------------------------------------------------------------
 # Тест PERMANOVA (Многофакторный дисперсионный анализ)
 # ---------------------------------------------------------------------
-cat("\n=== Результаты PERMANOVA для фактора:", TARGET_GROUP, "===\n")
-permanova_result <- adonis2(perm_formula, data = mydata, permutations = 9999, method = "bray")
+cat("=== Результаты PERMANOVA ===\n")
+cat("Фактор группировки:", TARGET_GROUP, "\n")
+cat("Метрика расстояния:", TARGET_DISTANCE, "\n")
+
+permanova_result <- adonis2(perm_formula, data = mydata, permutations = 9999, method = TARGET_DISTANCE)
 print(permanova_result)
 
 # =====================================================================

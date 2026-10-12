@@ -1,7 +1,9 @@
 === Результаты ANOSIM ===
+Фактор группировки: Species 
+Метрика расстояния: bray 
 
 Call:
-anosim(x = m_abund, grouping = group_factor, permutations = 9999,      distance = "bray") 
+anosim(x = m_abund, grouping = group_factor, permutations = 9999,      distance = TARGET_DISTANCE) 
 Dissimilarity: bray 
 
 ANOSIM statistic R: 0.8174 

@@ -8,6 +8,10 @@ library(vegan)
 # ("Species", "Variety", "Genus")
 TARGET_GROUP <- "Species"
 
+# Укажите здесь метрику расстояния 
+# ("bray", "jaccard", "euclidean", "manhattan")
+TARGET_DISTANCE <- "bray"
+
 # =====================================================================
 # НАЧАЛО ПЕРЕНАПРАВЛЕНИЯ ВЫВОДА
 # =====================================================================
@@ -34,8 +38,11 @@ group_factor <- as.factor(mydata[[TARGET_GROUP]])
 # ---------------------------------------------------------------------
 # Тест ANOSIM (Анализ сходства)
 # ---------------------------------------------------------------------
-cat("\n=== Результаты ANOSIM для фактора:", TARGET_GROUP, "===\n")
-anosim_result <- anosim(m_abund, group_factor, distance = "bray", permutations = 9999)
+cat("=== Результаты ANOSIM ===\n")
+cat("Фактор группировки:", TARGET_GROUP, "\n")
+cat("Метрика расстояния:", TARGET_DISTANCE, "\n")
+
+anosim_result <- anosim(m_abund, group_factor, distance = TARGET_DISTANCE, permutations = 9999)
 print(summary(anosim_result))
 
 # =====================================================================
