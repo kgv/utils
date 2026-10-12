@@ -1,13 +1,14 @@
-import tkinter as tk
-from tkinter import ttk
 from scipy.spatial import ConvexHull
 from scipy.spatial.distance import pdist, squareform
 from skbio.stats.distance import DistanceMatrix, anosim, permanova
 from sklearn.manifold import MDS
+from tkinter import ttk
 import matplotlib
 import matplotlib.pyplot as plt
+import mplcursors
 import numpy as np
 import polars as pl
+import tkinter as tk
 
 # ==========================================
 # 1. ЧТЕНИЕ И ПОДГОТОВКА ДАННЫХ
@@ -33,6 +34,14 @@ clean_df = df.select(
     .fill_null(0.0)
 )
 
+# Создаем подписи для каждой точки
+hover_labels = np.array(
+    [
+        f"{row['Species']} {row['Variety'] or ''} {row['Identifier']} (Tree: {row['Tree']}, Vial: {row['Vial']})"
+        for row in df.to_dicts()
+    ]
+)
+
 X_raw = clean_df.to_numpy()
 y = df["Species"].to_numpy()
 print("Данные успешно загружены!")
@@ -45,6 +54,7 @@ def run_analysis():
     # Получаем значения из Combobox
     transform_method = combo_transform_method.get()
     distance_metric = combo_distance_metric.get()
+    key = combo_key.get()
     n_init = int(combo_n_init.get())
     max_iter = int(combo_max_iter.get())
 
@@ -52,11 +62,11 @@ def run_analysis():
         f"\n--- Запуск анализа: Трансформация = {transform_method}, Расстояние = {distance_metric} ---"
     )
 
-    # 1. Применяем трансформацию
+    # 1. Трансформация
     if transform_method == "log1p":
         X = np.log1p(X_raw)
     else:
-        X = X_raw  # Без трансформации (None)
+        X = X_raw
 
     # 2. Расчет матрицы расстояний
     try:
@@ -96,35 +106,87 @@ def run_analysis():
     print(f"final_stress: {nmds.stress_}")
 
     # 5. Визуализация
-    plt.figure(figsize=(10, 8))
+    fig, ax = plt.subplots(figsize=(10, 8))
     unique_species = np.unique(y)
     colors = matplotlib.colormaps.get_cmap("tab20")
+
+    # Список для хранения объектов scatter и их подписей
+    scatters = []
 
     for i, species in enumerate(unique_species):
         idx = np.where(y == species)[0]
         pts = nmds_coords[idx]
+        lbls = hover_labels[idx]
 
-        plt.scatter(pts[:, 0], pts[:, 1], label=species, color=colors(i), s=50)
+        # Рисуем точки
+        sc = ax.scatter(pts[:, 0], pts[:, 1], label=species, color=colors(i), s=50)
+        scatters.append((sc, lbls))
 
+        # Отрисовка ConvexHull
         if len(pts) > 2:
             hull = ConvexHull(pts)
             for simplex in hull.simplices:
-                plt.plot(
+                ax.plot(
                     pts[simplex, 0], pts[simplex, 1], color=colors(i), lw=2, alpha=0.6
                 )
-            plt.fill(
+            ax.fill(
                 pts[hull.vertices, 0], pts[hull.vertices, 1], color=colors(i), alpha=0.1
             )
         elif len(pts) == 2:
-            plt.plot(pts[:, 0], pts[:, 1], color=colors(i), lw=2, alpha=0.6)
+            ax.plot(pts[:, 0], pts[:, 1], color=colors(i), lw=2, alpha=0.6)
 
-    plt.title(
+    ax.set_title(
         f"NMDS Ordination ({distance_metric}); Transform: {transform_method}; Stress: {nmds.stress_:.2f}"
     )
-    plt.xlabel("NMDS1")
-    plt.ylabel("NMDS2")
-    plt.legend(bbox_to_anchor=(1.05, 1), loc="upper left")
+    ax.set_xlabel("NMDS1")
+    ax.set_ylabel("NMDS2")
+    ax.legend(bbox_to_anchor=(1.05, 1), loc="upper left")
     plt.tight_layout()
+
+    # Всплывающие подсказки
+    # Создаем объект аннотации (скрытый по умолчанию)
+    annot = ax.annotate(
+        "",
+        xy=(0, 0),
+        xytext=(10, 10),
+        textcoords="offset points",
+        bbox=dict(boxstyle="round,pad=0.4", fc="white", alpha=0.9, ec="gray"),
+        arrowprops=dict(arrowstyle="->", connectionstyle="arc3,rad=0"),
+        zorder=100,
+    )
+    annot.set_visible(False)
+
+    def hover(event):
+        # Проверяем, что мышь находится в пределах осей графика
+        if event.inaxes == ax:
+            for sc, lbls in scatters:
+                # Проверяем, попала ли мышь на какую-либо точку этого вида
+                cont, ind = sc.contains(event)
+                if cont:
+                    # Получаем индекс точки
+                    point_idx = ind["ind"][0]
+                    pos = sc.get_offsets()[point_idx]
+
+                    # Обновляем координаты и текст подсказки
+                    annot.xy = pos
+                    annot.set_text(lbls[point_idx])
+                    annot.set_visible(True)
+                    fig.canvas.draw_idle()
+                    return  # Выходим из функции, так как нашли точку
+
+            # Если цикл завершился, значит мышь не на точке -> скрываем подсказку
+            if annot.get_visible():
+                annot.set_visible(False)
+                fig.canvas.draw_idle()
+        else:
+            # Если мышь ушла за пределы графика -> скрываем подсказку
+            if annot.get_visible():
+                annot.set_visible(False)
+                fig.canvas.draw_idle()
+
+    # Привязываем функцию hover к событию движения мыши
+    fig.canvas.mpl_connect("motion_notify_event", hover)
+
     plt.show()
 
 
@@ -202,6 +264,20 @@ combo_n_init = ttk.Combobox(
 combo_n_init.current(1)
 combo_n_init.pack(side=tk.LEFT, padx=10, fill=tk.X, expand=True)
 
+# --- Выпадающий список для species ---
+frame_key = tk.Frame(frame_controls)
+frame_key.pack(fill=tk.X, pady=5)
+tk.Label(frame_key, text="key:", font=("Arial", 12), width=20, anchor="w").pack(
+    side=tk.LEFT
+)
+combo_key = ttk.Combobox(
+    frame_key,
+    values=["Genus", "Species", "Variety"],
+    state="readonly",
+    font=("Arial", 12),
+)
+combo_key.current(1)
+combo_key.pack(side=tk.LEFT, padx=10, fill=tk.X, expand=True)
 
 # --- Выпадающий список для max_iter ---
 frame_max_iter = tk.Frame(frame_controls)
