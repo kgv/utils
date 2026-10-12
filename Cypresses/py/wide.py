@@ -81,29 +81,33 @@ df = (
 print(f"group: {df}")
 df.write_csv("Cypresses/_Stats.txt")
 
-df = df.pivot(
-    index=[
-        "Genus",
-        "Species",
-        "Variety",
-        "Identifier",
-        "Tree",
-        "Vial",
-    ],
-    on="Component",
-    values="PartsPerMillion_Mean",
-).with_columns(
-    [
-        pl.concat_str(
-            [pl.col("Genus"), pl.col("Species")],
-            separator=" ",
-            ignore_nulls=True,
-        ).alias("Species"),
-        pl.concat_str(
-            [pl.col("Genus"), pl.col("Species"), pl.col("Variety")],
-            separator=" ",
-            ignore_nulls=True,
-        ).alias("Variety"),
-    ]
+df = (
+    df.pivot(
+        index=[
+            "Genus",
+            "Species",
+            "Variety",
+            "Identifier",
+            "Tree",
+            "Vial",
+        ],
+        on="Component",
+        values="PartsPerMillion_Mean",
+    )
+    .with_columns(
+        [
+            pl.concat_str(
+                [pl.col("Genus"), pl.col("Species")],
+                separator=" ",
+                ignore_nulls=True,
+            ).alias("Species"),
+            pl.concat_str(
+                [pl.col("Genus"), pl.col("Species"), pl.col("Variety")],
+                separator=" ",
+                ignore_nulls=True,
+            ).alias("Variety"),
+        ]
+    )
+    .with_columns(cs.float().fill_null(0.0))
 )
 df.write_csv("Cypresses/_Wide.txt")
