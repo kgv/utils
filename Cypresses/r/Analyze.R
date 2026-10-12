@@ -25,7 +25,7 @@ set.seed(1234)
 # check.names = FALSE важно, чтобы R не испортил названия TAG (не заменил скобки на точки)
 mydata <- read.csv("Cypresses/_Wide.txt", check.names = FALSE)
 
-# Отделяем матрицу обилий (начиная с 3-го столбца, т.к. 1 - Sample, 2 - Group)
+# Отделяем матрицу обилий (начиная с 7-го столбца)
 abund <- mydata[, 7:ncol(mydata)]
 m_abund <- as.matrix(abund)
 group_factor <- mydata$Variety
@@ -42,7 +42,7 @@ print(summary(ano))
 # ---------------------------------------------------------------------
 cat("\n=== Результаты PERMANOVA ===\n")
 # Примечание: в новых версиях vegan функция adonis() заменена на adonis2()
-perm <- adonis2(m_abund ~ Group, data = mydata, permutations = 999, method = "bray")
+perm <- adonis2(m_abund ~ Variety, data = mydata, permutations = 999, method = "bray")
 print(perm)
 
 # ---------------------------------------------------------------------
