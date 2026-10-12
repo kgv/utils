@@ -1,12 +1,13 @@
-import polars as pl
+from scipy.spatial import ConvexHull
+from scipy.spatial.distance import pdist, squareform
+from skbio.stats.distance import DistanceMatrix, anosim, permanova
+from sklearn.manifold import MDS
+import matplotlib
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
-import matplotlib
-from scipy.spatial.distance import pdist, squareform
-from scipy.spatial import ConvexHull
-from sklearn.manifold import MDS
-from skbio.stats.distance import DistanceMatrix, anosim, permanova
+import polars as pl
+import polars.selectors as selectors
 
 # ==========================================
 # 1. ЧТЕНИЕ И ПОДГОТОВКА ДАННЫХ (Ваш код)
@@ -16,6 +17,7 @@ df = pl.read_csv(
     schema_overrides={
         "Genus": pl.String,
         "Species": pl.String,
+        "Variety": pl.String,
         "Identifier": pl.String,
         "Tree": pl.Int64,
         "Vial": pl.String,
@@ -23,7 +25,9 @@ df = pl.read_csv(
 )
 
 clean_df = df.select(
-    pl.all().exclude(["Genus", "Species", "Identifier", "Tree", "Vial"]).fill_null(0.0)
+    pl.all()
+    .exclude(["Genus", "Species", "Variety", "Identifier", "Tree", "Vial"])
+    .fill_null(0.0)
 )
 print(f"clean_df: {clean_df}")
 
@@ -84,7 +88,7 @@ nmds = MDS(
     metric_mds=False,
     init="random",
     normalized_stress="auto",
-    n_init=1000,  # 1000 Больше случайных стартов для поиска глобального минимума
+    n_init=100,  # 1000 Больше случайных стартов для поиска глобального минимума
     max_iter=100,  # 1000 Больше итераций на каждый старт
     eps=1e-9,  # Более строгий критерий остановки (продолжать оптимизацию до упора)
     random_state=42,
