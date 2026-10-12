@@ -25,7 +25,13 @@ sink("Даша/_Indval.txt", split = FALSE)
 set.seed(1234)
 
 # Загрузка данных
-mydata <- read.csv("Даша/_Wide1.txt", check.names = FALSE, stringsAsFactors = FALSE)
+# mydata <- read.csv("Даша/_Wide{Kind=Leaf}{Value=PartsPerMillion_DryWeight}.txt", check.names = FALSE, stringsAsFactors = FALSE)
+# mydata <- read.csv("Даша/_Wide{Kind=Leaf}{Value=PartsPerMillion_DryWeight}{Week=1}.txt", check.names = FALSE, stringsAsFactors = FALSE)
+# mydata <- read.csv("Даша/_Wide{Kind=Leaf}{Value=PartsPerMillion_DryWeight}{Week=5}.txt", check.names = FALSE, stringsAsFactors = FALSE)
+# mydata <- read.csv("Даша/_Wide{Kind=Root}{Value=PartsPerMillion_DryWeight}.txt", check.names = FALSE, stringsAsFactors = FALSE)
+# mydata <- read.csv("Даша/_Wide{Kind=Root}{Value=PartsPerMillion_DryWeight}{Week=1}.txt", check.names = FALSE, stringsAsFactors = FALSE)
+mydata <- read.csv("Даша/_Wide{Kind=Root}{Value=PartsPerMillion_DryWeight}{Week=5}.txt", check.names = FALSE, stringsAsFactors = FALSE)
+# mydata <- read.csv("Даша/_Wide.txt", check.names = FALSE, stringsAsFactors = FALSE)
 
 # Отделяем матрицу обилий (начиная с 4-го столбца)
 abund <- mydata[, 4:ncol(mydata)]

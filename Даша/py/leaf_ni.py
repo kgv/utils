@@ -13,7 +13,7 @@ import tkinter as tk
 # 1. ЧТЕНИЕ ДАННЫХ
 # ==========================================
 df = pl.read_csv(
-    "Даша/{Kind=Leaf}{Fields=Ni,Week,Plant,Sample,FattyAcid,PartsPerX}.txt"
+    "Даша/{Kind=Leaf}{Fields=Ni,Week,Sample,Plant,FattyAcid,PartsPerX}.txt"
 )
 
 epsilon_val = np.finfo(float).eps
@@ -113,14 +113,8 @@ def update_plot(event=None):
     else:
         transform_expr = pl.col(target_col).log1p()
 
-    df_calc = (
-        df.filter(
-            (pl.col("FattyAcid") != "17:0")
-            & (pl.col("FattyAcid") != "14:0")
-            & (pl.col("FattyAcid") != "15:0")
-        )
-        .filter(pl.col("Plant") != 37)
-        .with_columns(transform_expr.alias("ProcessedValue"))
+    df_calc = df.filter((pl.col("FattyAcid") != "17:0")).with_columns(
+        transform_expr.alias("ProcessedValue")
     )
 
     # ИЗМЕНЕНИЕ 1: Считаем ДВА средних.
