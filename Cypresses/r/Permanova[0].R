@@ -1,4 +1,4 @@
-# source("/mnt/d/git/kgv/utils/Cypresses/r/Permanova[0].R", encoding = "UTF-8")
+# source("/mnt/d/git/kgv/utils/Cypresses/r/permanova[0].R", encoding = "UTF-8")
 
 library(vegan)
 

@@ -1,4 +1,4 @@
-# source("/mnt/d/git/kgv/utils/Cypresses/r/Simper.R", encoding = "UTF-8")
+# source("/mnt/d/git/kgv/utils/Cypresses/r/simper.R", encoding = "UTF-8")
 
 library(knitr)
 library(vegan)
