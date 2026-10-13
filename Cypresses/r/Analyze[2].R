@@ -1,4 +1,4 @@
-# source("/mnt/d/g/git/kgv/utils/Cypresses/r/Analyze[2].R", encoding = "UTF-8")
+# source("/mnt/d/git/kgv/utils/Cypresses/r/Analyze[2].R", encoding = "UTF-8")
 
 # install.packages("indicspecies")
 
@@ -16,7 +16,7 @@ library(vegan)
 sink("Cypresses/_Output.txt", split = FALSE)
 
 # Фиксируем генератор случайных чисел
-set.seed(1234)
+set.seed(42)
 
 # 2.1 Загрузка данных
 mydata <- read.csv("Cypresses/_Wide.txt", check.names = FALSE, stringsAsFactors = FALSE)

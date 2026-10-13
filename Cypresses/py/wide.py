@@ -12,6 +12,12 @@ import polars as pl
 import polars.selectors as cs
 import seaborn as sns
 
+# COMPONENT = "Terpene"
+# COMPONENT = "Monoterpene"
+COMPONENT = "Sesquiterpene"
+
+VALUE = "PartsPerMillion_Mean"
+
 # Monoterpene
 # Sesquiterpene
 # 1166,8 (1200) - монотерпены
@@ -85,8 +91,11 @@ df = (
 print(f"group: {df}")
 df.write_csv("Cypresses/_Stats.txt")
 
-# df = df.filter(pl.col("Terpene") == "Monoterpene")
-# df = df.filter(pl.col("Terpene") == "Sesquiterpene")
+if COMPONENT == "Monoterpene":
+    df = df.filter(pl.col("Terpene") == "Monoterpene")
+elif COMPONENT == "Sesquiterpene":
+    df = df.filter(pl.col("Terpene") == "Sesquiterpene")
+
 df = (
     df.pivot(
         index=[
@@ -98,7 +107,7 @@ df = (
             "Vial",
         ],
         on="Component",
-        values="PartsPerMillion_Mean",
+        values=VALUE,
     )
     .with_columns(
         [
@@ -116,6 +125,4 @@ df = (
     )
     .with_columns(cs.float().fill_null(0.0))
 )
-df.write_csv("Cypresses/_Wide{Value=PartsPerMillion_Mean}.txt")
-# df.write_csv("Cypresses/_Wide{Monoterpene}{Value=PartsPerMillion_Mean}.txt")
-# df.write_csv("Cypresses/_Wide{Sesquiterpene}{Value=PartsPerMillion_Mean}.txt")
+df.write_csv(f"Cypresses/_{{Type=Wide}}{{Component={COMPONENT}}}{{Value={VALUE}}}.txt")
