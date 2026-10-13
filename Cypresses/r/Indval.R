@@ -5,8 +5,8 @@ library(knitr)
 library(vegan)
 
 # Укажите здесь название столбца, по которому нужно группировать данные
-# GROUP <- "Genus"
-GROUP <- "Species"
+GROUP <- "Genus"
+# GROUP <- "Species"
 # GROUP <- "Variety"
 
 # Индекс ассоциации
@@ -23,8 +23,8 @@ FUNCTION <- "IndVal.g"
 # COUNT <- 999
 COUNT <- 999
 
-# COMPONENT = "Terpene"
-COMPONENT = "Monoterpene"
+COMPONENT = "Terpene"
+# COMPONENT = "Monoterpene"
 # COMPONENT = "Sesquiterpene"
 
 VALUE = "PartsPerMillion_Mean"

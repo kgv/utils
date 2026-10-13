@@ -8,7 +8,7 @@ import numpy as np
 import polars as pl
 from typing import List, Tuple
 
-import config
+import Cypresses.py.ndms.config as config
 
 # Настройка базового логирования
 logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")

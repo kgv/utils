@@ -8,7 +8,7 @@ import numpy as np
 import polars as pl
 from typing import List
 
-import config
+import Cypresses._trash.indval.config as config
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
 

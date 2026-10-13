@@ -12,7 +12,7 @@ from skbio.stats.distance import DistanceMatrix, anosim, permanova
 from sklearn.manifold import MDS
 from typing import Optional
 
-import config
+import Cypresses.py.ndms.config as config
 
 
 @dataclass

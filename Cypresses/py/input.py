@@ -135,19 +135,9 @@ df = species_df.join(
     ]
 )
 
+# 1166,8 (1200) - монотерпены
 # Monoterpene
 # Sesquiterpene
-# 1166,8 (1200) - монотерпены
-# pl.when(pl.col("RI").replace("", None).cast(pl.Float64) < 1200)
-# ri = pl.col("RI").cast(pl.Float64, strict=False)
-# df = df.with_columns(
-#     pl.when(ri.is_null())
-#     .then(None)
-#     .when(ri < 1200)
-#     .then(pl.lit("Monoterpene"))
-#     .otherwise(pl.lit("Sesquiterpene"))
-#     .alias("Terpene")
-# )
 df = df.with_columns(
     pl.when(pl.col("RI").cast(pl.Float64, strict=False) < 1200)
     .then(pl.lit("Monoterpene"))

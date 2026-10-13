@@ -9,7 +9,7 @@ import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 
-import config
+import Cypresses._trash.indval.config as config
 
 
 class Visualizer:

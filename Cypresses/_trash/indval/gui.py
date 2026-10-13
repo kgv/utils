@@ -7,7 +7,7 @@ import tkinter as tk
 from tkinter import ttk, messagebox
 from typing import Any, Callable, Dict
 
-import config
+import Cypresses._trash.indval.config as config
 
 
 class AppGUI:

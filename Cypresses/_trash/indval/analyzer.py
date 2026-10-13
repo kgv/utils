@@ -14,7 +14,7 @@ from sklearn.decomposition import PCA
 from itertools import combinations
 from typing import Optional, List
 
-import config
+import Cypresses._trash.indval.config as config
 
 
 @dataclass
