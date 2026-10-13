@@ -12,9 +12,9 @@ import polars as pl
 import polars.selectors as cs
 import seaborn as sns
 
-# COMPONENT = "Terpene"
+COMPONENT = "Terpene"
 # COMPONENT = "Monoterpene"
-COMPONENT = "Sesquiterpene"
+# COMPONENT = "Sesquiterpene"
 
 VALUE = "PartsPerMillion_Mean"
 

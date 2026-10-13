@@ -23,8 +23,8 @@ FUNCTION <- "IndVal.g"
 # COUNT <- 999
 COUNT <- 999
 
-COMPONENT = "Terpene"
-# COMPONENT = "Monoterpene"
+# COMPONENT = "Terpene"
+COMPONENT = "Monoterpene"
 # COMPONENT = "Sesquiterpene"
 
 VALUE = "PartsPerMillion_Mean"

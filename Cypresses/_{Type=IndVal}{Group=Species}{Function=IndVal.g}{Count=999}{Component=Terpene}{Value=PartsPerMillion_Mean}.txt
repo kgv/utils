@@ -1,6 +1,7 @@
 === Результаты IndVal ===
-Анализируемые факторы: Species 
-Метрика расстояния: IndVal.g 
+cluster: Species 
+func: IndVal.g 
+control: 999 
 
  Multilevel pattern analysis
  ---------------------------
