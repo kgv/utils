@@ -1,0 +1,16 @@
+=== PERMANOVA ===
+group: Genus 
+method: cosine 
+permutations: 9999 
+
+Permutation test for adonis under reduced model
+Permutation: free
+Number of permutations: 9999
+
+adonis2(formula = perm_formula, data = mydata, permutations = PERMUTATIONS)
+         Df SumOfSqs      R2      F Pr(>F)    
+Model     5   6.4520 0.53749 7.9025  1e-04 ***
+Residual 34   5.5518 0.46251                  
+Total    39  12.0038 1.00000                  
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1

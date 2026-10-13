@@ -7,7 +7,7 @@ Permutation test for adonis under reduced model
 Permutation: free
 Number of permutations: 9999
 
-adonis2(formula = perm_formula, data = mydata, permutations = PERMUTATIONS, method = DISTANCE)
+adonis2(formula = perm_formula, data = mydata, permutations = PERMUTATIONS)
          Df SumOfSqs      R2      F Pr(>F)    
 Model     5   5.3367 0.41225 4.7695  1e-04 ***
 Residual 34   7.6087 0.58775                  

@@ -11,6 +11,7 @@ GROUP <- "Genus"
 # https://www.rdocumentation.org/packages/vegan/topics/vegdist
 # https://vegandevs.github.io/vegan/reference/designdist.html
 DISTANCE <- "bray"
+# DISTANCE <- "cosine"
 # DISTANCE <- "euclidean"
 # DISTANCE <- "hellinger"
 
@@ -44,13 +45,21 @@ abund <- as.data.frame(lapply(abund, as.numeric))
 
 m_abund <- as.matrix(abund)
 
-# group_factor <- as.factor(mydata$Species) # Явно делаем фактором
 # Динамически получаем фактор (используем двойные скобки [[ ]] для текста)
 group_factor <- as.factor(mydata[[GROUP]])
 
+# Вычисление матрицы расстояний
+if (DISTANCE == "cosine") {
+  # Formula for 1 - Cosine Similarity
+  dist_matrix <- designdist(m_abund, method = "1 - J/sqrt(A*B)", terms = "quadratic")
+} else {
+  # Для стандартных метрик
+  dist_matrix <- vegdist(m_abund, method = DISTANCE)
+}
+
 # Динамически создаем формулу. 
-# Если GROUP = "Species", то получится формула: m_abund ~ Species
-perm_formula <- as.formula(paste("m_abund ~", GROUP))
+# Теперь мы используем готовую матрицу расстояний, поэтому формула: dist_matrix ~ GROUP
+perm_formula <- as.formula(paste("dist_matrix ~", GROUP))
 
 # ---------------------------------------------------------------------
 # Тест PERMANOVA (Многофакторный дисперсионный анализ)
@@ -61,7 +70,8 @@ cat("method:", DISTANCE, "\n")
 cat("permutations:", PERMUTATIONS, "\n\n")
 
 # https://www.rdocumentation.org/packages/vegan/topics/adonis
-permanova_result <- adonis2(perm_formula, data = mydata, permutations = PERMUTATIONS, method = DISTANCE)
+# Аргумент method убран из adonis2, так как мы передаем уже вычисленную матрицу расстояний
+permanova_result <- adonis2(perm_formula, data = mydata, permutations = PERMUTATIONS)
 print(permanova_result)
 
 # =====================================================================
