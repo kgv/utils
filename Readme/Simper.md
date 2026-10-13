@@ -1,5 +1,8 @@
 # simper
 
+- [Clarke, K.R. 1993. Non-parametric multivariate analyses of changes in community structure. Australian Journal of Ecology, 18, 117–143](https://doi.org/10.1111/j.1442-9993.1993.tb00438.x)
+- [rdocumentation.org](https://www.rdocumentation.org/packages/vegan/topics/simper)
+
 Анализ SIMPER помогает понять, **какие именно виды (или признаки/OTU) вносят наибольший вклад в различия между двумя группами образцов**.
 
 В таблице строки (первый пустой столбец) — это названия ваших видов, генов, микроорганизмов или других признаков, которые вы анализируете. Виды в таблице по умолчанию отсортированы по убыванию их вклада в различия.

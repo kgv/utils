@@ -1,4 +1,4 @@
-=== Результаты SIMPER ===
+=== SIMPER ===
 group: Genus 
 permutations: 999 
 ## Comparison: Thuja_Juniperus

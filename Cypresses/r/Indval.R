@@ -1,8 +1,6 @@
 # source("/mnt/d/git/kgv/utils/Cypresses/r/Indval.R", encoding = "UTF-8")
 
 library(indicspecies)
-# library(knitr)
-# library(vegan)
 
 # Укажите здесь название столбца, по которому нужно группировать данные
 GROUP <- "Genus"
@@ -41,8 +39,6 @@ set.seed(42)
 # Загрузка данных
 input_file <- paste0("Cypresses/_{Type=Wide}{Component=", COMPONENT, "}{Value=", VALUE, "}.txt")
 mydata <- read.csv(input_file, check.names = FALSE, stringsAsFactors = FALSE)
-# mydata <- read.csv("Cypresses/_{Type=Wide}{Monoterpene}{Value=PartsPerMillion_Mean}.txt", check.names = FALSE, stringsAsFactors = FALSE)
-# mydata <- read.csv("Cypresses/_{Type=Wide}{Sesquiterpene}{Value=PartsPerMillion_Mean}.txt", check.names = FALSE, stringsAsFactors = FALSE)
 
 # Отделяем матрицу обилий (начиная с 7-го столбца)
 abund <- mydata[, 7:ncol(mydata)]
@@ -59,7 +55,7 @@ group_factor <- as.factor(mydata[[GROUP]])
 # ---------------------------------------------------------------------
 # Процедура IndVal (Компоненты-индикаторы)
 # ---------------------------------------------------------------------
-cat("=== Результаты IndVal ===\n")
+cat("=== IndVal ===\n")
 cat("cluster:", GROUP, "\n")
 cat("func:", FUNCTION, "\n")
 cat("control:", PERMUTATIONS, "\n")

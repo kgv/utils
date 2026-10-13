@@ -1,4 +1,4 @@
-=== Результаты IndVal ===
+=== IndVal ===
 cluster: Species 
 func: IndVal.g 
 control: 999 

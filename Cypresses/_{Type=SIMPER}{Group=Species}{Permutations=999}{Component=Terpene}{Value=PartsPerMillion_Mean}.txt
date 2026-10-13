@@ -1,4 +1,4 @@
-=== Результаты SIMPER ===
+=== SIMPER ===
 group: Species 
 permutations: 999 
 ## Comparison: Thuja plicata_Juniperus rigida
