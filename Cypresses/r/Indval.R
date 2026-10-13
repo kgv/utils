@@ -11,7 +11,10 @@ library(vegan)
 TARGET_GROUP <- "Species"
 
 # Укажите здесь метрику расстояния 
-# ("bray", "jaccard", "euclidean", "manhattan")
+# "bray"
+# "jaccard"
+# "euclidean"
+# "manhattan"
 TARGET_DISTANCE <- "bray"
 
 # =====================================================================

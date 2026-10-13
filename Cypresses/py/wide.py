@@ -12,9 +12,10 @@ import polars as pl
 import polars.selectors as cs
 import seaborn as sns
 
+# Monoterpene
+# Sesquiterpene
 # 1166,8 (1200) - монотерпены
 # сесквитерпены
-# "н/и RI 1671.6 (вероятно, производное ионола)" - исключаем как вероятно, производное ионола
 
 df = pl.read_csv(
     "Cypresses/csv/{Kind=Output}{Fields=Genus,Species,Variety,Identifier,Tree,Vial,Component,CAS,RI,RT,Percent,PartsPerMillion}.txt",
@@ -35,10 +36,11 @@ df = pl.read_csv(
 )
 print(f"read: {df}")
 
+# "н/и RI 1671.6 (вероятно, производное ионола)" - исключаем как вероятно, производное ионола
 df = df.filter(pl.col("Component") != "н/и RI 1671.6 (вероятно, производное ионола)")
 print(f"filter: {df}")
 
-# Mean for Tree
+# Mean for Tree (Technical replications)
 df = (
     df.group_by(
         ["Genus", "Species", "Variety", "Identifier", "Tree", "Component"],
