@@ -1,0 +1,624 @@
+=== Результаты SIMPER ===
+group: Species 
+permutations: 999 
+## Comparison: Thuja plicata_Juniperus rigida
+
+|                         | average|     sd|  ratio|      ava|      avb| cumsum|     p|signif |
+|:------------------------|-------:|------:|------:|--------:|--------:|------:|-----:|:------|
+|Caryophyllene            |  0.2015| 0.1374| 1.4669|  17.2367| 258.2567| 0.2239| 0.002|**     |
+|Germacrene D-4-ol        |  0.1478| 0.0422| 3.5039| 167.7711|   8.4300| 0.3880| 0.731|       |
+|Sabinene hydrate acetate |  0.1380| 0.0492| 2.8052| 152.0467|   0.0000| 0.5413| 0.001|***    |
+|Humulene                 |  0.1288| 0.0796| 1.6176|   4.1078| 156.9492| 0.6844| 0.002|**     |
+
+## Comparison: Thuja plicata_Microbiota decussata
+
+|                     | average|     sd|   ratio|    ava|      avb| cumsum|     p|signif |
+|:--------------------|-------:|------:|-------:|------:|--------:|------:|-----:|:------|
+|Thujopsan-2-alpha-ol |  0.8006| 0.0385| 20.7727| 5.5533| 36598.01| 0.8078| 0.001|***    |
+
+## Comparison: Thuja plicata_Chamaecyparis lawsoniana
+
+|                          | average|     sd|  ratio| ava|     avb| cumsum|     p|signif |
+|:-------------------------|-------:|------:|------:|---:|-------:|------:|-----:|:------|
+|10-epi-Cubebol            |  0.1913| 0.0243| 7.8801|   0| 512.195| 0.2602| 0.001|***    |
+|cis-Muurol-5-en-4-beta-ol |  0.1821| 0.0231| 7.8831|   0| 487.425| 0.5079| 0.001|***    |
+
+## Comparison: Thuja plicata_Callitropsis nootkatensis
+
+|                         | average|     sd|  ratio|      ava|    avb| cumsum|     p|signif |
+|:------------------------|-------:|------:|------:|--------:|------:|------:|-----:|:------|
+|Sabinene hydrate acetate |  0.1921| 0.0243| 7.9047| 152.0467| 5.8333| 0.2961| 0.001|***    |
+
+## Comparison: Thuja plicata_Juniperus sabina
+
+|                  | average|     sd|  ratio|      ava|      avb| cumsum|    p|signif |
+|:-----------------|-------:|------:|------:|--------:|--------:|------:|----:|:------|
+|Germacrene D-4-ol |  0.3777| 0.1044| 3.6171| 167.7711| 1517.319| 0.4410| 0.12|       |
+|Elemol            |  0.2912| 0.0889| 3.2749|   0.0000| 1092.206| 0.7809| 0.01|**     |
+
+## Comparison: Thuja plicata_Thujopsis dolabrata
+
+|                  | average|     sd|  ratio|      ava|     avb| cumsum|     p|signif |
+|:-----------------|-------:|------:|------:|--------:|-------:|------:|-----:|:------|
+|Elemol            |  0.1625| 0.0609| 2.6667|   0.0000| 132.795| 0.2391| 0.288|       |
+|Germacrene D-4-ol |  0.1581| 0.0267| 5.9286| 167.7711|  19.475| 0.4718| 0.639|       |
+
+## Comparison: Thuja plicata_Juniperus chinensis
+
+|                      | average|     sd|  ratio|      ava|      avb| cumsum|     p|signif |
+|:---------------------|-------:|------:|------:|--------:|--------:|------:|-----:|:------|
+|Germacrene D-4-ol     |  0.3909| 0.0898| 4.3529| 167.7711| 1100.945| 0.4841| 0.179|       |
+|trans-Sabinyl acetate |  0.2119| 0.0339| 6.2600|   1.4333|  511.330| 0.7466| 0.003|**     |
+
+## Comparison: Thuja plicata_Juniperus scopulorum
+
+|                  | average|     sd|  ratio|      ava|     avb| cumsum|     p|signif |
+|:-----------------|-------:|------:|------:|--------:|-------:|------:|-----:|:------|
+|Elemol            |  0.2586| 0.0601| 4.3008|   0.0000| 391.275| 0.3631| 0.101|       |
+|Germacrene D-4-ol |  0.1707| 0.0842| 2.0268| 167.7711| 414.410| 0.6029| 0.571|       |
+
+## Comparison: Thuja plicata_Juniperus pseudosabina
+
+|                  | average|     sd|  ratio|      ava|      avb| cumsum|     p|signif |
+|:-----------------|-------:|------:|------:|--------:|--------:|------:|-----:|:------|
+|Germacrene D-4-ol |  0.7619| 0.0968| 7.8678| 167.7711| 5233.178| 0.8402| 0.001|***    |
+
+## Comparison: Thuja plicata_Juniperus communis
+
+|                         | average|     sd|  ratio|      ava|      avb| cumsum|     p|signif |
+|:------------------------|-------:|------:|------:|--------:|--------:|------:|-----:|:------|
+|Germacrene D-4-ol        |  0.2252| 0.3034| 0.7422| 167.7711| 1326.298| 0.2992| 0.592|       |
+|Sabinene hydrate acetate |  0.1117| 0.0583| 1.9154| 152.0467|    1.500| 0.4476| 0.001|***    |
+
+## Comparison: Thuja plicata_Juniperus virginiana
+
+|                  | average|     sd|  ratio|      ava|      avb| cumsum|     p|signif |
+|:-----------------|-------:|------:|------:|--------:|--------:|------:|-----:|:------|
+|Elemol            |  0.3038| 0.1813| 1.6752|   0.0000| 736.1736| 0.3816| 0.001|***    |
+|Germacrene D-4-ol |  0.1794| 0.1136| 1.5783| 167.7711| 540.9543| 0.6069| 0.737|       |
+
+## Comparison: Thuja plicata_Chamaecyparis pisifera
+
+|               | average|     sd|  ratio|     ava|     avb| cumsum|     p|signif |
+|:--------------|-------:|------:|------:|-------:|-------:|------:|-----:|:------|
+|Bornyl acetate |  0.5375| 0.1103| 4.8722| 49.4233| 1217.36| 0.6052| 0.001|***    |
+
+## Comparison: Thuja plicata_Thuja occidentalisНет видов с average > 0.1 для этого сравнения.
+
+## Comparison: Juniperus rigida_Microbiota decussata
+
+|                     | average|     sd|   ratio| ava|      avb| cumsum|     p|signif |
+|:--------------------|-------:|------:|-------:|---:|--------:|------:|-----:|:------|
+|Thujopsan-2-alpha-ol |  0.8012| 0.0406| 19.7386|   0| 36598.01| 0.8026| 0.001|***    |
+
+## Comparison: Juniperus rigida_Chamaecyparis lawsoniana
+
+|                          | average|     sd|  ratio| ava|     avb| cumsum|     p|signif |
+|:-------------------------|-------:|------:|------:|---:|-------:|------:|-----:|:------|
+|10-epi-Cubebol            |  0.1925| 0.0242| 7.9551|   0| 512.195| 0.2130| 0.001|***    |
+|cis-Muurol-5-en-4-beta-ol |  0.1832| 0.0230| 7.9583|   0| 487.425| 0.4158| 0.001|***    |
+
+## Comparison: Juniperus rigida_Callitropsis nootkatensis
+
+|                  | average|     sd|  ratio|      ava|   avb| cumsum|     p|signif |
+|:-----------------|-------:|------:|------:|--------:|-----:|------:|-----:|:------|
+|Caryophyllene     |  0.3127| 0.1749| 1.7883| 258.2567|  0.00| 0.3527| 0.003|**     |
+|Humulene          |  0.1913| 0.1018| 1.8787| 156.9492|  0.00| 0.5686| 0.003|**     |
+|Germacrene D-4-ol |  0.1234| 0.0548| 2.2509|   8.4300| 84.79| 0.7077| 0.676|       |
+
+## Comparison: Juniperus rigida_Juniperus sabina
+
+|                  | average|     sd|  ratio|    ava|      avb| cumsum|     p|signif |
+|:-----------------|-------:|------:|------:|------:|--------:|------:|-----:|:------|
+|Germacrene D-4-ol |  0.4247| 0.1002| 4.2382| 8.4300| 1517.319| 0.4554| 0.106|       |
+|Elemol            |  0.2919| 0.0910| 3.2090| 2.6275| 1092.206| 0.7684| 0.023|*      |
+
+## Comparison: Juniperus rigida_Thujopsis dolabrata
+
+|              | average|     sd|  ratio|      ava|     avb| cumsum|     p|signif |
+|:-------------|-------:|------:|------:|--------:|-------:|------:|-----:|:------|
+|Caryophyllene |  0.1945| 0.1932| 1.0070| 258.2567|  44.230| 0.2601| 0.014|*      |
+|Elemol        |  0.1636| 0.0795| 2.0587|   2.6275| 132.795| 0.4790| 0.315|       |
+|Humulene      |  0.1264| 0.1107| 1.1418| 156.9492|  20.930| 0.6481| 0.015|*      |
+
+## Comparison: Juniperus rigida_Juniperus chinensis
+
+|                      | average|     sd|  ratio|  ava|      avb| cumsum|     p|signif |
+|:---------------------|-------:|------:|------:|----:|--------:|------:|-----:|:------|
+|Germacrene D-4-ol     |  0.4565| 0.0727| 6.2819| 8.43| 1100.945| 0.5171| 0.152|       |
+|trans-Sabinyl acetate |  0.2139| 0.0363| 5.8840| 0.00|  511.330| 0.7593| 0.003|**     |
+
+## Comparison: Juniperus rigida_Juniperus scopulorum
+
+|                  | average|     sd|  ratio|      ava|     avb| cumsum|     p|signif |
+|:-----------------|-------:|------:|------:|--------:|-------:|------:|-----:|:------|
+|Germacrene D-4-ol |  0.2699| 0.0640| 4.2195|   8.4300| 414.410| 0.2980| 0.365|       |
+|Elemol            |  0.2597| 0.0713| 3.6410|   2.6275| 391.275| 0.5848| 0.137|       |
+|Caryophyllene     |  0.1403| 0.1258| 1.1153| 258.2567|  14.435| 0.7397| 0.056|.      |
+
+## Comparison: Juniperus rigida_Juniperus pseudosabina
+
+|                  | average|     sd|  ratio|  ava|      avb| cumsum|     p|signif |
+|:-----------------|-------:|------:|------:|----:|--------:|------:|-----:|:------|
+|Germacrene D-4-ol |  0.7927| 0.0793| 9.9937| 8.43| 5233.178| 0.8313| 0.003|**     |
+
+## Comparison: Juniperus rigida_Juniperus communis
+
+|                  | average|     sd|  ratio|      ava|      avb| cumsum|     p|signif |
+|:-----------------|-------:|------:|------:|--------:|--------:|------:|-----:|:------|
+|Germacrene D-4-ol |  0.2432| 0.3146| 0.7732|   8.4300| 1326.298| 0.3341| 0.464|       |
+|Caryophyllene     |  0.1550| 0.1282| 1.2085| 258.2567|   86.570| 0.5470| 0.003|**     |
+
+## Comparison: Juniperus rigida_Juniperus virginiana
+
+|                  | average|     sd|  ratio|      ava|      avb| cumsum|     p|signif |
+|:-----------------|-------:|------:|------:|--------:|--------:|------:|-----:|:------|
+|Elemol            |  0.3050| 0.1851| 1.6477|   2.6275| 736.1736| 0.3455| 0.010|**     |
+|Germacrene D-4-ol |  0.2548| 0.1149| 2.2167|   8.4300| 540.9543| 0.6342| 0.396|       |
+|Caryophyllene     |  0.1062| 0.0883| 1.2030| 258.2567|  72.7550| 0.7545| 0.024|*      |
+
+## Comparison: Juniperus rigida_Chamaecyparis pisifera
+
+|               | average|     sd|  ratio|     ava|     avb| cumsum|     p|signif |
+|:--------------|-------:|------:|------:|-------:|-------:|------:|-----:|:------|
+|Bornyl acetate |  0.5464| 0.0813| 6.7185| 29.2742| 1217.36| 0.6315| 0.003|**     |
+
+## Comparison: Juniperus rigida_Thuja occidentalis
+
+|              | average|     sd|  ratio|      ava|     avb| cumsum|     p|signif |
+|:-------------|-------:|------:|------:|--------:|-------:|------:|-----:|:------|
+|Caryophyllene |  0.1552| 0.1326| 1.1701| 258.2567| 75.6725| 0.2197| 0.004|**     |
+|Humulene      |  0.1038| 0.0818| 1.2691| 156.9492| 28.8875| 0.3666| 0.003|**     |
+
+## Comparison: Microbiota decussata_Chamaecyparis lawsoniana
+
+|                     | average|     sd|   ratio|      ava|     avb| cumsum|     p|signif |
+|:--------------------|-------:|------:|-------:|--------:|-------:|------:|-----:|:------|
+|Thujopsan-2-alpha-ol |   0.771| 0.0347| 22.1901| 36598.01| 129.475| 0.7926| 0.005|**     |
+
+## Comparison: Microbiota decussata_Callitropsis nootkatensis
+
+|                     | average|     sd|   ratio|      ava| avb| cumsum|     p|signif |
+|:--------------------|-------:|------:|-------:|--------:|---:|------:|-----:|:------|
+|Thujopsan-2-alpha-ol |  0.8081| 0.0508| 15.9098| 36598.01|   0| 0.8119| 0.018|*      |
+
+## Comparison: Microbiota decussata_Juniperus sabina
+
+|                     | average|     sd|   ratio|      ava|    avb| cumsum|     p|signif |
+|:--------------------|-------:|------:|-------:|--------:|------:|------:|-----:|:------|
+|Thujopsan-2-alpha-ol |  0.7589| 0.0331| 22.9379| 36598.01| 1.3175| 0.8148| 0.004|**     |
+
+## Comparison: Microbiota decussata_Thujopsis dolabrata
+
+|                     | average|   sd|   ratio|      ava| avb| cumsum|     p|signif |
+|:--------------------|-------:|----:|-------:|--------:|---:|------:|-----:|:------|
+|Thujopsan-2-alpha-ol |  0.8048| 0.05| 16.0957| 36598.01|   0| 0.8089| 0.011|*      |
+
+## Comparison: Microbiota decussata_Juniperus chinensis
+
+|                     | average|     sd|   ratio|      ava| avb| cumsum|     p|signif |
+|:--------------------|-------:|------:|-------:|--------:|---:|------:|-----:|:------|
+|Thujopsan-2-alpha-ol |  0.7782| 0.0438| 17.7477| 36598.01|   0|  0.813| 0.023|*      |
+
+## Comparison: Microbiota decussata_Juniperus scopulorum
+
+|                     | average|     sd|   ratio|      ava| avb| cumsum|     p|signif |
+|:--------------------|-------:|------:|-------:|--------:|---:|------:|-----:|:------|
+|Thujopsan-2-alpha-ol |  0.7931| 0.0473| 16.7797| 36598.01|   0| 0.8146| 0.028|*      |
+
+## Comparison: Microbiota decussata_Juniperus pseudosabina
+
+|                     | average|     sd|   ratio|      ava| avb| cumsum|     p|signif |
+|:--------------------|-------:|------:|-------:|--------:|---:|------:|-----:|:------|
+|Thujopsan-2-alpha-ol |  0.7178| 0.0436| 16.4656| 36598.01|   0| 0.7586| 0.003|**     |
+
+## Comparison: Microbiota decussata_Juniperus communis
+
+|                     | average|     sd|   ratio|      ava| avb| cumsum|     p|signif |
+|:--------------------|-------:|------:|-------:|--------:|---:|------:|-----:|:------|
+|Thujopsan-2-alpha-ol |  0.7819| 0.0545| 14.3394| 36598.01|   0| 0.7948| 0.001|***    |
+
+## Comparison: Microbiota decussata_Juniperus virginiana
+
+|                     | average|     sd|   ratio|      ava| avb| cumsum|     p|signif |
+|:--------------------|-------:|------:|-------:|--------:|---:|------:|-----:|:------|
+|Thujopsan-2-alpha-ol |  0.7839| 0.0368| 21.3047| 36598.01|   0| 0.8137| 0.002|**     |
+
+## Comparison: Microbiota decussata_Chamaecyparis pisifera
+
+|                     | average|     sd|   ratio|      ava| avb| cumsum|     p|signif |
+|:--------------------|-------:|------:|-------:|--------:|---:|------:|-----:|:------|
+|Thujopsan-2-alpha-ol |   0.782| 0.0346| 22.5917| 36598.01|   0|  0.787| 0.002|**     |
+
+## Comparison: Microbiota decussata_Thuja occidentalis
+
+|                     | average|     sd|   ratio|      ava| avb| cumsum|     p|signif |
+|:--------------------|-------:|------:|-------:|--------:|---:|------:|-----:|:------|
+|Thujopsan-2-alpha-ol |  0.8016| 0.0374| 21.4562| 36598.01|   0| 0.8068| 0.001|***    |
+
+## Comparison: Chamaecyparis lawsoniana_Callitropsis nootkatensis
+
+|                          | average|     sd|    ratio|     ava|    avb| cumsum|     p|signif |
+|:-------------------------|-------:|------:|--------:|-------:|------:|------:|-----:|:------|
+|10-epi-Cubebol            |  0.2209| 0.0009| 236.3239| 512.195| 3.7167| 0.2517| 0.001|***    |
+|cis-Muurol-5-en-4-beta-ol |  0.2084| 0.0013| 157.2313| 487.425| 7.8100| 0.4890| 0.001|***    |
+
+## Comparison: Chamaecyparis lawsoniana_Juniperus sabina
+
+|                  | average|     sd|  ratio|      ava|      avb| cumsum|     p|signif |
+|:-----------------|-------:|------:|------:|--------:|--------:|------:|-----:|:------|
+|Germacrene D-4-ol |  0.2442| 0.0659| 3.7064| 234.7467| 1517.319| 0.2872| 0.497|       |
+|Elemol            |  0.2021| 0.0710| 2.8470|   0.0000| 1092.206| 0.5248| 0.142|       |
+|10-epi-Cubebol    |  0.1008| 0.0180| 5.6115| 512.1950|    0.000| 0.6433| 0.003|**     |
+
+## Comparison: Chamaecyparis lawsoniana_Thujopsis dolabrata
+
+|                          | average|    sd|     ratio|     ava| avb| cumsum|     p|signif |
+|:-------------------------|-------:|-----:|---------:|-------:|---:|------:|-----:|:------|
+|10-epi-Cubebol            |  0.2059| 4e-04|  518.0573| 512.195|   0| 0.2475| 0.003|**     |
+|cis-Muurol-5-en-4-beta-ol |  0.1960| 2e-04| 1078.3075| 487.425|   0| 0.4831| 0.003|**     |
+
+## Comparison: Chamaecyparis lawsoniana_Juniperus chinensis
+
+|                          | average|     sd|   ratio|      ava|      avb| cumsum|     p|signif |
+|:-------------------------|-------:|------:|-------:|--------:|--------:|------:|-----:|:------|
+|Germacrene D-4-ol         |  0.2161| 0.0199| 10.8784| 234.7467| 1100.945| 0.2622| 0.488|       |
+|trans-Sabinyl acetate     |  0.1274| 0.0066| 19.1831|   0.0000|  511.330| 0.4168| 0.023|*      |
+|10-epi-Cubebol            |  0.1274| 0.0043| 29.3434| 512.1950|    0.000| 0.5713| 0.039|*      |
+|cis-Muurol-5-en-4-beta-ol |  0.1212| 0.0038| 32.0276| 487.4250|    0.000| 0.7183| 0.039|*      |
+
+## Comparison: Chamaecyparis lawsoniana_Juniperus scopulorum
+
+|                          | average|     sd|   ratio|     ava|     avb| cumsum|     p|signif |
+|:-------------------------|-------:|------:|-------:|-------:|-------:|------:|-----:|:------|
+|10-epi-Cubebol            |  0.1628| 0.0032| 51.0396| 512.195|   0.000| 0.2006| 0.021|*      |
+|cis-Muurol-5-en-4-beta-ol |  0.1549| 0.0026| 59.7534| 487.425|   0.000| 0.3914| 0.021|*      |
+|Elemol                    |  0.1247| 0.0083| 15.0160|   0.000| 391.275| 0.5451| 0.437|       |
+
+## Comparison: Chamaecyparis lawsoniana_Juniperus pseudosabina
+
+|                  | average|     sd|  ratio|      ava|      avb| cumsum|     p|signif |
+|:-----------------|-------:|------:|------:|--------:|--------:|------:|-----:|:------|
+|Germacrene D-4-ol |  0.5917| 0.1231| 4.8081| 234.7467| 5233.178| 0.6549| 0.012|*      |
+
+## Comparison: Chamaecyparis lawsoniana_Juniperus communis
+
+|                          | average|     sd|  ratio|      ava|      avb| cumsum|     p|signif |
+|:-------------------------|-------:|------:|------:|--------:|--------:|------:|-----:|:------|
+|Germacrene D-4-ol         |  0.1712| 0.2575| 0.6647| 234.7467| 1326.298| 0.2021| 0.704|       |
+|10-epi-Cubebol            |  0.1666| 0.0592| 2.8150| 512.1950|    0.000| 0.3988| 0.001|***    |
+|cis-Muurol-5-en-4-beta-ol |  0.1586| 0.0563| 2.8151| 487.4250|    0.000| 0.5860| 0.001|***    |
+
+## Comparison: Chamaecyparis lawsoniana_Juniperus virginiana
+
+|                          | average|     sd|  ratio|     ava|      avb| cumsum|     p|signif |
+|:-------------------------|-------:|------:|------:|-------:|--------:|------:|-----:|:------|
+|Elemol                    |  0.1750| 0.1251| 1.3986|   0.000| 736.1736| 0.2062| 0.191|       |
+|10-epi-Cubebol            |  0.1466| 0.0352| 4.1632| 512.195|   0.0000| 0.3790| 0.002|**     |
+|cis-Muurol-5-en-4-beta-ol |  0.1395| 0.0335| 4.1650| 487.425|   0.0000| 0.5434| 0.002|**     |
+
+## Comparison: Chamaecyparis lawsoniana_Chamaecyparis pisifera
+
+|                          | average|     sd|  ratio|      ava|       avb| cumsum|     p|signif |
+|:-------------------------|-------:|------:|------:|--------:|---------:|------:|-----:|:------|
+|Bornyl acetate            |  0.3127| 0.0365| 8.5639|  18.7383| 1217.3600| 0.3615| 0.013|*      |
+|10-epi-Cubebol            |  0.1327| 0.0167| 7.9576| 512.1950|   13.8825| 0.5149| 0.001|***    |
+|cis-Muurol-5-en-4-beta-ol |  0.1297| 0.0149| 8.6900| 487.4250|    0.0000| 0.6648| 0.001|***    |
+
+## Comparison: Chamaecyparis lawsoniana_Thuja occidentalis
+
+|                          | average|     sd|   ratio|     ava| avb| cumsum|     p|signif |
+|:-------------------------|-------:|------:|-------:|-------:|---:|------:|-----:|:------|
+|10-epi-Cubebol            |  0.1926| 0.0131| 14.7574| 512.195|   0| 0.2531| 0.001|***    |
+|cis-Muurol-5-en-4-beta-ol |  0.1834| 0.0124| 14.7837| 487.425|   0| 0.4941| 0.001|***    |
+
+## Comparison: Callitropsis nootkatensis_Juniperus sabina
+
+|                  | average|     sd|  ratio|   ava|      avb| cumsum|     p|signif |
+|:-----------------|-------:|------:|------:|-----:|--------:|------:|-----:|:------|
+|Germacrene D-4-ol |  0.4514| 0.1130| 3.9936| 84.79| 1517.319| 0.4900| 0.131|       |
+|Elemol            |  0.3265| 0.0988| 3.3061|  0.00| 1092.206| 0.8444| 0.048|*      |
+
+## Comparison: Callitropsis nootkatensis_Thujopsis dolabrata
+
+|                         | average| sd| ratio|     ava|     avb| cumsum|  p|signif |
+|:------------------------|-------:|--:|-----:|-------:|-------:|------:|--:|:------|
+|Elemol                   |  0.2623| NA|    NA|  0.0000| 132.795| 0.3280| NA|       |
+|Germacrene D-4-ol        |  0.1290| NA|    NA| 84.7900|  19.475| 0.4893| NA|       |
+|Sabinene hydrate acetate |  0.1063| NA|    NA|  5.8333|  59.640| 0.6221| NA|       |
+
+## Comparison: Callitropsis nootkatensis_Juniperus chinensis
+
+|                      | average| sd| ratio|   ava|      avb| cumsum|  p|signif |
+|:---------------------|-------:|--:|-----:|-----:|--------:|------:|--:|:------|
+|Germacrene D-4-ol     |  0.4989| NA|    NA| 84.79| 1100.945| 0.5648| NA|       |
+|trans-Sabinyl acetate |  0.2511| NA|    NA|  0.00|  511.330| 0.8489| NA|       |
+
+## Comparison: Callitropsis nootkatensis_Juniperus scopulorum
+
+|                  | average| sd| ratio|   ava|     avb| cumsum|  p|signif |
+|:-----------------|-------:|--:|-----:|-----:|-------:|------:|--:|:------|
+|Elemol            |  0.3361| NA|    NA|  0.00| 391.275| 0.4038| NA|       |
+|Germacrene D-4-ol |  0.2832| NA|    NA| 84.79| 414.410| 0.7440| NA|       |
+
+## Comparison: Callitropsis nootkatensis_Juniperus pseudosabina
+
+|                  | average|     sd|   ratio|   ava|      avb| cumsum|     p|signif |
+|:-----------------|-------:|------:|-------:|-----:|--------:|------:|-----:|:------|
+|Germacrene D-4-ol |  0.8342| 0.0562| 14.8337| 84.79| 5233.178| 0.8679| 0.002|**     |
+
+## Comparison: Callitropsis nootkatensis_Juniperus communis
+
+|                  | average|     sd|  ratio|   ava|      avb| cumsum|     p|signif |
+|:-----------------|-------:|------:|------:|-----:|--------:|------:|-----:|:------|
+|Germacrene D-4-ol |  0.2413| 0.3479| 0.6936| 84.79| 1326.298| 0.3222| 0.451|       |
+|beta-Elemene      |  0.1105| 0.0664| 1.6641|  0.00|   89.365| 0.4698| 0.001|***    |
+
+## Comparison: Callitropsis nootkatensis_Juniperus virginiana
+
+|                  | average|     sd|  ratio|   ava|      avb| cumsum|     p|signif |
+|:-----------------|-------:|------:|------:|-----:|--------:|------:|-----:|:------|
+|Elemol            |  0.3733| 0.2085| 1.7902|  0.00| 736.1736| 0.4338| 0.014|*      |
+|Germacrene D-4-ol |  0.2595| 0.1451| 1.7892| 84.79| 540.9543| 0.7354| 0.375|       |
+
+## Comparison: Callitropsis nootkatensis_Chamaecyparis pisifera
+
+|               | average|     sd|   ratio|  ava|     avb| cumsum|     p|signif |
+|:--------------|-------:|------:|-------:|----:|-------:|------:|-----:|:------|
+|Bornyl acetate |  0.6694| 0.0301| 22.2364| 6.92| 1217.36| 0.7036| 0.001|***    |
+
+## Comparison: Callitropsis nootkatensis_Thuja occidentalis
+
+|               | average|     sd|  ratio|  ava|      avb| cumsum|     p|signif |
+|:--------------|-------:|------:|------:|----:|--------:|------:|-----:|:------|
+|Bornyl acetate |  0.1316| 0.0405| 3.2466| 6.92| 103.2025| 0.1895| 0.261|       |
+|Caryophyllene  |  0.1053| 0.0255| 4.1383| 0.00|  75.6725| 0.3412| 0.059|.      |
+
+## Comparison: Juniperus sabina_Thujopsis dolabrata
+
+|                  | average|     sd|  ratio|      ava|     avb| cumsum|     p|signif |
+|:-----------------|-------:|------:|------:|--------:|-------:|------:|-----:|:------|
+|Germacrene D-4-ol |  0.4453| 0.1064| 4.1846| 1517.319|  19.475| 0.5364| 0.105|       |
+|Elemol            |  0.2669| 0.1038| 2.5704| 1092.206| 132.795| 0.8578| 0.090|.      |
+
+## Comparison: Juniperus sabina_Juniperus chinensis
+
+|       | average|     sd|  ratio|      ava|    avb| cumsum|     p|signif |
+|:------|-------:|------:|------:|--------:|------:|------:|-----:|:------|
+|Elemol |  0.2073| 0.0797| 2.6006| 1092.206| 25.855| 0.4941| 0.175|       |
+
+## Comparison: Juniperus sabina_Juniperus scopulorum
+
+|                  | average|     sd|  ratio|      ava|     avb| cumsum|     p|signif |
+|:-----------------|-------:|------:|------:|--------:|-------:|------:|-----:|:------|
+|Germacrene D-4-ol |  0.2680| 0.0880| 3.0438| 1517.319| 414.410| 0.4974| 0.357|       |
+|Elemol            |  0.1576| 0.1061| 1.4859| 1092.206| 391.275| 0.7900| 0.306|       |
+
+## Comparison: Juniperus sabina_Juniperus pseudosabina
+
+|                  | average|     sd|  ratio|      ava|       avb| cumsum|     p|signif |
+|:-----------------|-------:|------:|------:|--------:|---------:|------:|-----:|:------|
+|Germacrene D-4-ol |  0.3814| 0.1838| 2.0744| 1517.319| 5233.1783| 0.6602| 0.114|       |
+|Elemol            |  0.1176| 0.0664| 1.7708| 1092.206|  100.1883| 0.8638| 0.507|       |
+
+## Comparison: Juniperus sabina_Juniperus communis
+
+|                  | average|     sd|  ratio|      ava|      avb| cumsum|     p|signif |
+|:-----------------|-------:|------:|------:|--------:|--------:|------:|-----:|:------|
+|Germacrene D-4-ol |  0.4150| 0.0944| 4.3973| 1517.319| 1326.298| 0.5088| 0.035|*      |
+|Elemol            |  0.2528| 0.1142| 2.2143| 1092.206|   34.309| 0.8187| 0.008|**     |
+
+## Comparison: Juniperus sabina_Juniperus virginiana
+
+|                  | average|     sd|  ratio|      ava|      avb| cumsum|     p|signif |
+|:-----------------|-------:|------:|------:|--------:|--------:|------:|-----:|:------|
+|Germacrene D-4-ol |  0.2261| 0.1301| 1.7385| 1517.319| 540.9543| 0.4539| 0.611|       |
+|Elemol            |  0.1618| 0.1048| 1.5435| 1092.206| 736.1736| 0.7786| 0.175|       |
+
+## Comparison: Juniperus sabina_Chamaecyparis pisifera
+
+|                  | average|     sd|  ratio|       ava|     avb| cumsum|     p|signif |
+|:-----------------|-------:|------:|------:|---------:|-------:|------:|-----:|:------|
+|Germacrene D-4-ol |  0.3223| 0.0735| 4.3819| 1517.3192|    4.92| 0.3379| 0.222|       |
+|Bornyl acetate    |  0.2626| 0.0579| 4.5324|    2.7017| 1217.36| 0.6132| 0.014|*      |
+|Elemol            |  0.2242| 0.0754| 2.9716| 1092.2058|    0.00| 0.8482| 0.041|*      |
+
+## Comparison: Juniperus sabina_Thuja occidentalis
+
+|                  | average|     sd|  ratio|      ava|     avb| cumsum|     p|signif |
+|:-----------------|-------:|------:|------:|--------:|-------:|------:|-----:|:------|
+|Germacrene D-4-ol |  0.3946| 0.0952| 4.1451| 1517.319| 115.835| 0.4556| 0.082|.      |
+|Elemol            |  0.2931| 0.0854| 3.4325| 1092.206|   0.000| 0.7941| 0.006|**     |
+
+## Comparison: Thujopsis dolabrata_Juniperus chinensis
+
+|                      | average| sd| ratio|    ava|      avb| cumsum|  p|signif |
+|:---------------------|-------:|--:|-----:|------:|--------:|------:|--:|:------|
+|Germacrene D-4-ol     |  0.4868| NA|    NA| 19.475| 1100.945| 0.5702| NA|       |
+|trans-Sabinyl acetate |  0.2302| NA|    NA|  0.000|  511.330| 0.8398| NA|       |
+
+## Comparison: Thujopsis dolabrata_Juniperus scopulorum
+
+|                  | average| sd| ratio|     ava|     avb| cumsum|  p|signif |
+|:-----------------|-------:|--:|-----:|-------:|-------:|------:|--:|:------|
+|Germacrene D-4-ol |  0.2928| NA|    NA|  19.475| 414.410| 0.4132| NA|       |
+|Elemol            |  0.1916| NA|    NA| 132.795| 391.275| 0.6836| NA|       |
+
+## Comparison: Thujopsis dolabrata_Juniperus pseudosabina
+
+|                  | average|    sd|   ratio|    ava|      avb| cumsum|     p|signif |
+|:-----------------|-------:|-----:|-------:|------:|--------:|------:|-----:|:------|
+|Germacrene D-4-ol |  0.8179| 0.063| 12.9892| 19.475| 5233.178| 0.8788| 0.007|**     |
+
+## Comparison: Thujopsis dolabrata_Juniperus communis
+
+|                  | average|     sd|  ratio|     ava|      avb| cumsum|     p|signif |
+|:-----------------|-------:|------:|------:|-------:|--------:|------:|-----:|:------|
+|Germacrene D-4-ol |  0.2503| 0.3412| 0.7336|  19.475| 1326.298| 0.3282| 0.432|       |
+|Elemol            |  0.1243| 0.0777| 1.6002| 132.795|   34.309| 0.4911| 0.440|       |
+
+## Comparison: Thujopsis dolabrata_Juniperus virginiana
+
+|                  | average|     sd|  ratio|     ava|      avb| cumsum|     p|signif |
+|:-----------------|-------:|------:|------:|-------:|--------:|------:|-----:|:------|
+|Elemol            |  0.2752| 0.1742| 1.5794| 132.795| 736.1736| 0.3601| 0.072|.      |
+|Germacrene D-4-ol |  0.2728| 0.1217| 2.2410|  19.475| 540.9543| 0.7172| 0.319|       |
+
+## Comparison: Thujopsis dolabrata_Chamaecyparis pisifera
+
+|               | average|     sd|  ratio|   ava|     avb| cumsum|     p|signif |
+|:--------------|-------:|------:|------:|-----:|-------:|------:|-----:|:------|
+|Bornyl acetate |  0.6069| 0.0235| 25.872| 2.645| 1217.36| 0.6803| 0.001|***    |
+
+## Comparison: Thujopsis dolabrata_Thuja occidentalis
+
+|                  | average|     sd|  ratio|     ava|      avb| cumsum|     p|signif |
+|:-----------------|-------:|------:|------:|-------:|--------:|------:|-----:|:------|
+|Elemol            |  0.1582| 0.0374| 4.2332| 132.795|   0.0000| 0.2685| 0.306|       |
+|Bornyl acetate    |  0.1092| 0.0367| 2.9756|   2.645| 103.2025| 0.4538| 0.301|       |
+|Germacrene D-4-ol |  0.1037| 0.0471| 2.1986|  19.475| 115.8350| 0.6297| 0.797|       |
+
+## Comparison: Juniperus chinensis_Juniperus scopulorum
+
+|                      | average| sd| ratio|      ava|     avb| cumsum|  p|signif |
+|:---------------------|-------:|--:|-----:|--------:|-------:|------:|--:|:------|
+|Germacrene D-4-ol     |  0.2384| NA|    NA| 1100.945| 414.410| 0.3631| NA|       |
+|trans-Sabinyl acetate |  0.1776| NA|    NA|  511.330|   0.000| 0.6335| NA|       |
+|Elemol                |  0.1269| NA|    NA|   25.855| 391.275| 0.8267| NA|       |
+
+## Comparison: Juniperus chinensis_Juniperus pseudosabina
+
+|                  | average|     sd|  ratio|      ava|      avb| cumsum|     p|signif |
+|:-----------------|-------:|------:|------:|--------:|--------:|------:|-----:|:------|
+|Germacrene D-4-ol |  0.4887| 0.1848| 2.6445| 1100.945| 5233.178| 0.8085| 0.098|.      |
+
+## Comparison: Juniperus chinensis_Juniperus communis
+
+|                      | average|     sd|  ratio|      ava|      avb| cumsum|     p|signif |
+|:---------------------|-------:|------:|------:|--------:|--------:|------:|-----:|:------|
+|Germacrene D-4-ol     |  0.4527| 0.0806| 5.6149| 1100.945| 1326.298| 0.5776| 0.098|.      |
+|trans-Sabinyl acetate |  0.1842| 0.0720| 2.5578|  511.330|    0.000| 0.8127| 0.003|**     |
+
+## Comparison: Juniperus chinensis_Juniperus virginiana
+
+|                      | average|     sd|  ratio|      ava|      avb| cumsum|     p|signif |
+|:---------------------|-------:|------:|------:|--------:|--------:|------:|-----:|:------|
+|Germacrene D-4-ol     |  0.1928| 0.1404| 1.3734| 1100.945| 540.9543| 0.3075| 0.601|       |
+|Elemol                |  0.1805| 0.1364| 1.3238|   25.855| 736.1736| 0.5955| 0.229|       |
+|trans-Sabinyl acetate |  0.1592| 0.0427| 3.7312|  511.330|   0.0000| 0.8495| 0.010|**     |
+
+## Comparison: Juniperus chinensis_Chamaecyparis pisifera
+
+|                      | average|     sd|  ratio|      ava|     avb| cumsum|     p|signif |
+|:---------------------|-------:|------:|------:|--------:|-------:|------:|-----:|:------|
+|Bornyl acetate        |  0.3407| 0.0370| 9.2033|    1.900| 1217.36| 0.3645| 0.071|.      |
+|Germacrene D-4-ol     |  0.3145| 0.0420| 7.4841| 1100.945|    4.92| 0.7010| 0.261|       |
+|trans-Sabinyl acetate |  0.1467| 0.0193| 7.6144|  511.330|    0.00| 0.8579| 0.018|*      |
+
+## Comparison: Juniperus chinensis_Thuja occidentalis
+
+|                      | average|     sd|   ratio|      ava|      avb| cumsum|     p|signif |
+|:---------------------|-------:|------:|-------:|--------:|--------:|------:|-----:|:------|
+|Germacrene D-4-ol     |  0.4133| 0.0567|  7.2864| 1100.945| 115.8350| 0.5112| 0.160|       |
+|trans-Sabinyl acetate |  0.2135| 0.0173| 12.3296|  511.330|   0.8225| 0.7752| 0.003|**     |
+
+## Comparison: Juniperus scopulorum_Juniperus pseudosabina
+
+|                  | average|    sd|  ratio|    ava|      avb| cumsum|     p|signif |
+|:-----------------|-------:|-----:|------:|------:|--------:|------:|-----:|:------|
+|Germacrene D-4-ol |  0.6651| 0.129| 5.1574| 414.41| 5233.178| 0.8117| 0.038|*      |
+
+## Comparison: Juniperus scopulorum_Juniperus communis
+
+|                  | average|     sd|  ratio|     ava|      avb| cumsum|     p|signif |
+|:-----------------|-------:|------:|------:|-------:|--------:|------:|-----:|:------|
+|Germacrene D-4-ol |  0.3129| 0.2374| 1.3179| 414.410| 1326.298| 0.3888| 0.250|       |
+|Elemol            |  0.2128| 0.1061| 2.0064| 391.275|   34.309| 0.6533| 0.161|       |
+
+## Comparison: Juniperus scopulorum_Juniperus virginiana
+
+|       | average|     sd|  ratio|     ava|      avb| cumsum|     p|signif |
+|:------|-------:|------:|------:|-------:|--------:|------:|-----:|:------|
+|Elemol |  0.1652| 0.1432| 1.1538| 391.275| 736.1736| 0.4334| 0.232|       |
+
+## Comparison: Juniperus scopulorum_Chamaecyparis pisifera
+
+|                  | average|     sd|   ratio|     ava|     avb| cumsum|     p|signif |
+|:-----------------|-------:|------:|-------:|-------:|-------:|------:|-----:|:------|
+|Bornyl acetate    |  0.4242| 0.0362| 11.7113|  78.340| 1217.36| 0.4664| 0.040|*      |
+|Germacrene D-4-ol |  0.1577| 0.0284|  5.5543| 414.410|    4.92| 0.6398| 0.672|       |
+|Elemol            |  0.1506| 0.0262|  5.7421| 391.275|    0.00| 0.8054| 0.355|       |
+
+## Comparison: Juniperus scopulorum_Thuja occidentalis
+
+|                  | average|     sd|  ratio|     ava|     avb| cumsum|     p|signif |
+|:-----------------|-------:|------:|------:|-------:|-------:|------:|-----:|:------|
+|Elemol            |  0.2588| 0.0333| 7.7631| 391.275|   0.000| 0.3652| 0.090|.      |
+|Germacrene D-4-ol |  0.2009| 0.0633| 3.1717| 414.410| 115.835| 0.6488| 0.567|       |
+
+## Comparison: Juniperus pseudosabina_Juniperus communis
+
+|                  | average|     sd|  ratio|      ava|      avb| cumsum|     p|signif |
+|:-----------------|-------:|------:|------:|--------:|--------:|------:|-----:|:------|
+|Germacrene D-4-ol |  0.6581| 0.2703| 2.4349| 5233.178| 1326.298| 0.8542| 0.001|***    |
+
+## Comparison: Juniperus pseudosabina_Juniperus virginiana
+
+|                  | average|     sd|  ratio|      ava|      avb| cumsum|     p|signif |
+|:-----------------|-------:|------:|------:|--------:|--------:|------:|-----:|:------|
+|Germacrene D-4-ol |  0.6096| 0.1654| 3.6855| 5233.178| 540.9543| 0.7608| 0.002|**     |
+
+## Comparison: Juniperus pseudosabina_Chamaecyparis pisifera
+
+|                  | average|     sd|  ratio|       ava|     avb| cumsum|     p|signif |
+|:-----------------|-------:|------:|------:|---------:|-------:|------:|-----:|:------|
+|Germacrene D-4-ol |  0.6675| 0.1053| 6.3408| 5233.1783|    4.92| 0.6882| 0.002|**     |
+|Bornyl acetate    |  0.1768| 0.0715| 2.4716|   16.0967| 1217.36| 0.8705| 0.115|       |
+
+## Comparison: Juniperus pseudosabina_Thuja occidentalis
+
+|                  | average|     sd|  ratio|      ava|     avb| cumsum|     p|signif |
+|:-----------------|-------:|------:|------:|--------:|-------:|------:|-----:|:------|
+|Germacrene D-4-ol |   0.775| 0.0789| 9.8263| 5233.178| 115.835|  0.842| 0.001|***    |
+
+## Comparison: Juniperus communis_Juniperus virginiana
+
+|                  | average|     sd|  ratio|      ava|      avb| cumsum|     p|signif |
+|:-----------------|-------:|------:|------:|--------:|--------:|------:|-----:|:------|
+|Germacrene D-4-ol |  0.3013| 0.2184| 1.3794| 1326.298| 540.9543| 0.3756| 0.250|       |
+|Elemol            |  0.2570| 0.1878| 1.3685|   34.309| 736.1736| 0.6959| 0.002|**     |
+
+## Comparison: Juniperus communis_Chamaecyparis pisifera
+
+|                  | average|     sd|  ratio|      ava|     avb| cumsum|     p|signif |
+|:-----------------|-------:|------:|------:|--------:|-------:|------:|-----:|:------|
+|Bornyl acetate    |  0.4759| 0.1788| 2.6623|   12.482| 1217.36| 0.5146| 0.001|***    |
+|Germacrene D-4-ol |  0.1826| 0.2790| 0.6546| 1326.298|    4.92| 0.7121| 0.732|       |
+
+## Comparison: Juniperus communis_Thuja occidentalis
+
+|                  | average|     sd|  ratio|      ava|     avb| cumsum|     p|signif |
+|:-----------------|-------:|------:|------:|--------:|-------:|------:|-----:|:------|
+|Germacrene D-4-ol |  0.2145| 0.3114| 0.6887| 1326.298| 115.835| 0.2925| 0.634|       |
+
+## Comparison: Juniperus virginiana_Chamaecyparis pisifera
+
+|                  | average|     sd|  ratio|      ava|     avb| cumsum|     p|signif |
+|:-----------------|-------:|------:|------:|--------:|-------:|------:|-----:|:------|
+|Bornyl acetate    |  0.4052| 0.1142| 3.5498|   2.5157| 1217.36| 0.4261| 0.001|***    |
+|Elemol            |  0.2020| 0.1380| 1.4634| 736.1736|    0.00| 0.6385| 0.061|.      |
+|Germacrene D-4-ol |  0.1618| 0.0741| 2.1840| 540.9543|    4.92| 0.8087| 0.851|       |
+
+## Comparison: Juniperus virginiana_Thuja occidentalis
+
+|                  | average|     sd|  ratio|      ava|     avb| cumsum|     p|signif |
+|:-----------------|-------:|------:|------:|--------:|-------:|------:|-----:|:------|
+|Elemol            |  0.3045| 0.1768| 1.7224| 736.1736|   0.000| 0.3808| 0.001|***    |
+|Germacrene D-4-ol |  0.1999| 0.1118| 1.7886| 540.9543| 115.835| 0.6308| 0.697|       |
+
+## Comparison: Chamaecyparis pisifera_Thuja occidentalis
+
+|               | average|     sd| ratio|     ava|      avb| cumsum|     p|signif |
+|:--------------|-------:|------:|-----:|-------:|--------:|------:|-----:|:------|
+|Bornyl acetate |  0.5121| 0.0703| 7.289| 1217.36| 103.2025| 0.6618| 0.001|***    |
+

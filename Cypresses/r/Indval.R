@@ -1,8 +1,8 @@
 # source("/mnt/d/git/kgv/utils/Cypresses/r/Indval.R", encoding = "UTF-8")
 
 library(indicspecies)
-library(knitr)
-library(vegan)
+# library(knitr)
+# library(vegan)
 
 # Укажите здесь название столбца, по которому нужно группировать данные
 GROUP <- "Genus"
