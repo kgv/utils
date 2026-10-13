@@ -8,12 +8,34 @@ GROUP <- "Genus"
 # GROUP <- "Variety"
 
 # Укажите здесь метрику расстояния
+# 
 # https://www.rdocumentation.org/packages/vegan/topics/vegdist
 # https://vegandevs.github.io/vegan/reference/designdist.html
-DISTANCE <- "bray"
-# DISTANCE <- "cosine"
+# 
+# DISTANCE <- "manhattan"
 # DISTANCE <- "euclidean"
+# DISTANCE <- "canberra"
+# DISTANCE <- "clark"
+DISTANCE <- "bray"
+# DISTANCE <- "kulczynski"
+# DISTANCE <- "jaccard"
+# DISTANCE <- "gower"
+# DISTANCE <- "altGower"
+# DISTANCE <- "morisita"
+# DISTANCE <- "horn"
+# DISTANCE <- "mountford"
+# DISTANCE <- "raup"
+# DISTANCE <- "binomial"
+# DISTANCE <- "chao"
+# DISTANCE <- "cao"
+# DISTANCE <- "mahalanobis"
+# DISTANCE <- "chisq"
+# DISTANCE <- "chord"
 # DISTANCE <- "hellinger"
+# DISTANCE <- "aitchison"
+# DISTANCE <- "robust.aitchison"
+# 
+# DISTANCE <- "cosine"
 
 # PERMUTATIONS <- 9999
 PERMUTATIONS <- 9999
