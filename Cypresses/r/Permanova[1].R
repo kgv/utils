@@ -1,10 +1,10 @@
-# source("/mnt/d/git/kgv/utils/Cypresses/r/Permanova.R", encoding = "UTF-8")
+# source("/mnt/d/git/kgv/utils/Cypresses/r/Permanova[1].R", encoding = "UTF-8")
 
 library(vegan)
 
 # Укажите здесь название столбца, по которому нужно группировать данные
-# GROUP <- "Genus"
-GROUP <- "Species"
+GROUP <- "Genus"
+# GROUP <- "Species"
 # GROUP <- "Variety"
 
 # Укажите здесь метрику расстояния
