@@ -20,8 +20,8 @@ FUNCTION <- "IndVal.g"
 # Коэффициент корреляции для бинарных или количественных данных.
 # FUNCTION <- "r.g"
 
-# COUNT <- 999
-COUNT <- 999
+# PERMUTATIONS <- 999
+PERMUTATIONS <- 999
 
 COMPONENT = "Terpene"
 # COMPONENT = "Monoterpene"
@@ -32,8 +32,7 @@ VALUE = "PartsPerMillion_Mean"
 # =====================================================================
 # НАЧАЛО ПЕРЕНАПРАВЛЕНИЯ ВЫВОДА
 # =====================================================================
-output_file <- paste0("Cypresses/_{Type=IndVal}{Group=", GROUP, "}{Function=", FUNCTION, "}{Count=", COUNT, "}{Component=", COMPONENT, "}{Value=", VALUE, "}.txt")
-
+output_file <- paste0("Cypresses/_{Type=IndVal}{Group=", GROUP, "}{Function=", FUNCTION, "}{Permutations=", PERMUTATIONS, "}{Component=", COMPONENT, "}{Value=", VALUE, "}.txt")
 sink(output_file, split = FALSE)
 
 # Фиксируем генератор случайных чисел
@@ -63,11 +62,11 @@ group_factor <- as.factor(mydata[[GROUP]])
 cat("=== Результаты IndVal ===\n")
 cat("cluster:", GROUP, "\n")
 cat("func:", FUNCTION, "\n")
-cat("control:", COUNT, "\n")
+cat("control:", PERMUTATIONS, "\n")
 
 # This function studies the association between species patterns and combinations of groups of sites.
 # https://www.rdocumentation.org/packages/indicspecies/topics/multipatt
-ind_val <- multipatt(abund, group_factor, func = FUNCTION, control = how(nperm=COUNT))
+ind_val <- multipatt(abund, group_factor, func = FUNCTION, control = how(nperm=PERMUTATIONS))
 ind_val_sum <- summary(ind_val)
 print(ind_val_sum)
 
