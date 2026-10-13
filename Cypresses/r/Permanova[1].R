@@ -3,8 +3,8 @@
 library(vegan)
 
 # Укажите здесь название столбца, по которому нужно группировать данные
-GROUP <- "Genus"
-# GROUP <- "Species"
+# GROUP <- "Genus"
+GROUP <- "Species"
 # GROUP <- "Variety"
 
 # Укажите здесь метрику расстояния
@@ -64,8 +64,10 @@ abund <- mydata[, 7:ncol(mydata)]
 
 # Убедимся, что все данные числовые (на случай скрытых ошибок в файле)
 abund <- as.data.frame(lapply(abund, as.numeric))
+# View(abund)
 
 m_abund <- as.matrix(abund)
+# View(m_abund)
 
 # Динамически получаем фактор (используем двойные скобки [[ ]] для текста)
 group_factor <- as.factor(mydata[[GROUP]])
