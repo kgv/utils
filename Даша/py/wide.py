@@ -35,7 +35,7 @@ WEEK = [
 
 for kind in KIND:
     for value in VALUE:
-        input_file = f"Даша/{{Kind={kind}}}{{Fields=Ni,Week,Sample,Plant,FattyAcid,PartsPerX}}.txt"
+        input_file = f"Даша/csv/_{{Kind={kind}}}{{Fields=Ni,Week,Sample,Plant,FattyAcid,PartsPerX}}.txt"
         read_df = pl.read_csv(input_file)
         print(f"read: {read_df}")
 
