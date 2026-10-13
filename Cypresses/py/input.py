@@ -76,8 +76,7 @@ df = pc_df.join(
         "PartsPerMillion",
     ]
 )
-print(f"df: {df}")
-df.write_csv("Cypresses/{Fields=Vial,Component,CAS,RI,RT,Percent,PartsPerMillion}.txt")
+print(f"pc_df+ppm_df: {df}")
 
 # Species
 species_df = pl.read_csv(
