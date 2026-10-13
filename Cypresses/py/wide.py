@@ -18,7 +18,7 @@ import seaborn as sns
 # сесквитерпены
 
 df = pl.read_csv(
-    "Cypresses/csv/{Kind=Output}{Fields=Genus,Species,Variety,Identifier,Tree,Vial,Component,CAS,RI,RT,Percent,PartsPerMillion}.txt",
+    "Cypresses/csv/{Kind=Output}{Fields=Genus,Species,Variety,Identifier,Tree,Vial,Terpene,Component,CAS,RI,RT,Percent,PartsPerMillion}.txt",
     schema_overrides={
         "Genus": pl.String,
         "Species": pl.String,
@@ -26,6 +26,7 @@ df = pl.read_csv(
         "Identifier": pl.String,
         "Tree": pl.Int64,
         "Vial": pl.Int64,
+        "Terpene": pl.String,
         "Component": pl.String,
         "CAS": pl.String,
         "RI": pl.Float64,
@@ -43,7 +44,7 @@ print(f"filter: {df}")
 # Mean for Tree (Technical replications)
 df = (
     df.group_by(
-        ["Genus", "Species", "Variety", "Identifier", "Tree", "Component"],
+        ["Genus", "Species", "Variety", "Identifier", "Tree", "Terpene", "Component"],
         maintain_order=True,
     )
     .agg(
@@ -69,6 +70,7 @@ df = (
             "Identifier",
             "Tree",
             "Vial",
+            "Terpene",
             "Component",
             "PartsPerMillion_Mean",
             "PartsPerMillion_StandardDeviation",
@@ -83,6 +85,8 @@ df = (
 print(f"group: {df}")
 df.write_csv("Cypresses/_Stats.txt")
 
+# df = df.filter(pl.col("Terpene") == "Monoterpene")
+# df = df.filter(pl.col("Terpene") == "Sesquiterpene")
 df = (
     df.pivot(
         index=[
@@ -112,4 +116,6 @@ df = (
     )
     .with_columns(cs.float().fill_null(0.0))
 )
-df.write_csv("Cypresses/_Wide.txt")
+df.write_csv("Cypresses/_Wide{Value=PartsPerMillion_Mean}.txt")
+# df.write_csv("Cypresses/_Wide{Monoterpene}{Value=PartsPerMillion_Mean}.txt")
+# df.write_csv("Cypresses/_Wide{Sesquiterpene}{Value=PartsPerMillion_Mean}.txt")

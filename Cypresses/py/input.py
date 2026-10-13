@@ -135,6 +135,43 @@ df = species_df.join(
     ]
 )
 
+# Monoterpene
+# Sesquiterpene
+# 1166,8 (1200) - монотерпены
+# pl.when(pl.col("RI").replace("", None).cast(pl.Float64) < 1200)
+# ri = pl.col("RI").cast(pl.Float64, strict=False)
+# df = df.with_columns(
+#     pl.when(ri.is_null())
+#     .then(None)
+#     .when(ri < 1200)
+#     .then(pl.lit("Monoterpene"))
+#     .otherwise(pl.lit("Sesquiterpene"))
+#     .alias("Terpene")
+# )
+df = df.with_columns(
+    pl.when(pl.col("RI").cast(pl.Float64, strict=False) < 1200)
+    .then(pl.lit("Monoterpene"))
+    .otherwise(pl.lit("Sesquiterpene"))
+    .alias("Terpene")
+).select(
+    [
+        "Genus",
+        "Species",
+        "Variety",
+        "Identifier",
+        "Tree",
+        "Vial",
+        "Terpene",
+        "Component",
+        "CAS",
+        "RI",
+        "RT",
+        "Percent",
+        "PartsPerMillion",
+    ]
+)
+
 df.write_csv(
-    "Cypresses/csv/{Kind=Output}{Fields=Genus,Species,Variety,Identifier,Tree,Vial,Component,CAS,RI,RT,Percent,PartsPerMillion}.txt"
+    # "Cypresses/csv/{Kind=Output}{Fields=Genus,Species,Variety,Identifier,Tree,Vial,Component,CAS,RI,RT,Percent,PartsPerMillion}.txt"
+    "Cypresses/csv/{Kind=Output}{Fields=Genus,Species,Variety,Identifier,Tree,Vial,Terpene,Component,CAS,RI,RT,Percent,PartsPerMillion}.txt"
 )
