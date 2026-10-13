@@ -3,8 +3,8 @@
 library(vegan)
 
 # Укажите здесь название столбца, по которому нужно группировать данные
-# GROUP <- "Genus"
-GROUP <- "Species"
+GROUP <- "Genus"
+# GROUP <- "Species"
 # GROUP <- "Variety"
 
 # Укажите здесь метрику расстояния

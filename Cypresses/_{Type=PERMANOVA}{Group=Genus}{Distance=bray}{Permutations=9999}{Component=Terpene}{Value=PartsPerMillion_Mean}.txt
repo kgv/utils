@@ -1,5 +1,5 @@
 === PERMANOVA ===
-group: Species 
+group: Genus 
 method: bray 
 permutations: 9999 
 
@@ -9,8 +9,8 @@ Number of permutations: 9999
 
 adonis2(formula = perm_formula, data = mydata, permutations = PERMUTATIONS, method = DISTANCE)
          Df SumOfSqs      R2      F Pr(>F)    
-Model    13  10.1937 0.78744 7.4089  1e-04 ***
-Residual 26   2.7517 0.21256                  
+Model     5   5.3367 0.41225 4.7695  1e-04 ***
+Residual 34   7.6087 0.58775                  
 Total    39  12.9455 1.00000                  
 ---
 Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
