@@ -9,7 +9,7 @@ import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 
-import Cypresses.py.ndms.config as config
+import config
 
 
 class Visualizer:

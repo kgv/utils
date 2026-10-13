@@ -7,11 +7,11 @@ import tkinter as tk
 from tkinter import messagebox
 from typing import Any, Dict
 
-import Cypresses.py.ndms.config as config
-from Cypresses.py.ndms.loader import DataLoader
-from Cypresses.py.ndms.analyzer import Analyzer
-from Cypresses.py.ndms.visualizer import Visualizer
-from Cypresses.py.ndms.gui import AppGUI
+import config
+from loader import DataLoader
+from analyzer import Analyzer
+from visualizer import Visualizer
+from gui import AppGUI
 
 
 def main() -> None:
