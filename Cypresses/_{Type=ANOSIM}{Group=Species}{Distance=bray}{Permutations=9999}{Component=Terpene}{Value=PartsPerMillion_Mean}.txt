@@ -1,9 +1,10 @@
-=== Результаты ANOSIM ===
-Фактор группировки: Species 
-Метрика расстояния: bray 
+=== ANOSIM ===
+group: Species 
+method: bray 
+permutations: 9999 
 
 Call:
-anosim(x = m_abund, grouping = group_factor, permutations = 9999,      distance = TARGET_DISTANCE) 
+anosim(x = dist_matrix, grouping = group_factor, permutations = 9999) 
 Dissimilarity: bray 
 
 ANOSIM statistic R: 0.8174 
@@ -14,7 +15,7 @@ Number of permutations: 9999
 
 Upper quantiles of permutations (null model):
   90%   95% 97.5%   99% 
-0.107 0.140 0.168 0.207 
+0.110 0.143 0.174 0.211 
 
 Dissimilarity ranks between and within classes:
                           0%    25%   50%    75% 100%   N

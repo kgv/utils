@@ -57,7 +57,9 @@ sink(output_file, split = FALSE)
 set.seed(42)
 
 # Загрузка данных
-mydata <- read.csv("Cypresses/_Wide.txt", check.names = FALSE, stringsAsFactors = FALSE)
+input_file <- paste0("Cypresses/_{Type=Wide}{Component=", COMPONENT, "}{Value=", VALUE, "}.txt")
+mydata <- read.csv(input_file, check.names = FALSE, stringsAsFactors = FALSE)
+# mydata <- read.csv("Cypresses/_Wide.txt", check.names = FALSE, stringsAsFactors = FALSE)
 
 # Отделяем матрицу обилий (начиная с 7-го столбца)
 abund <- mydata[, 7:ncol(mydata)]
@@ -67,18 +69,30 @@ abund <- as.data.frame(lapply(abund, as.numeric))
 
 m_abund <- as.matrix(abund)
 
-# group_factor <- as.factor(mydata$Species) # Явно делаем фактором
 # Динамически получаем фактор (используем двойные скобки [[ ]] для текста)
-group_factor <- as.factor(mydata[[TARGET_GROUP]])
+group_factor <- as.factor(mydata[[GROUP]])
+
+# Вычисление матрицы расстояний
+if (DISTANCE == "cosine") {
+  # Formula for 1 - Cosine Similarity
+  dist_matrix <- designdist(m_abund, method = "1 - J/sqrt(A*B)", terms = "quadratic")
+} else {
+  # Для стандартных метрик
+  dist_matrix <- vegdist(m_abund, method = DISTANCE)
+}
 
 # ---------------------------------------------------------------------
 # Тест ANOSIM (Анализ сходства)
 # ---------------------------------------------------------------------
 cat("=== ANOSIM ===\n")
-cat("Фактор группировки:", TARGET_GROUP, "\n")
-cat("Метрика расстояния:", TARGET_DISTANCE, "\n")
+cat("group:", GROUP, "\n")
+cat("method:", DISTANCE, "\n")
+cat("permutations:", PERMUTATIONS, "\n")
 
-anosim_result <- anosim(m_abund, group_factor, distance = TARGET_DISTANCE, permutations = 9999)
+# anosim_result <- anosim(m_abund, group_factor, distance = DISTANCE, permutations = 9999)
+# print(summary(anosim_result))
+# https://www.rdocumentation.org/packages/vegan/topics/anosim
+anosim_result <- anosim(dist_matrix, group_factor, permutations = 9999)
 print(summary(anosim_result))
 
 # =====================================================================
