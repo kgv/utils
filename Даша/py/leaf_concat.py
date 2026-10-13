@@ -51,10 +51,12 @@ unpivot_dfs = [
     for df in dfs
 ]
 
-df = pl.concat(unpivot_dfs)
-print(f"unpivot: {df}")
+unpivot_df = pl.concat(unpivot_dfs)
+print(f"unpivot: {unpivot_df}")
 
-df.write_csv("Даша/{Kind=Leaf}{Fields=Ni,Week,Sample,FattyAcid,Standard,Area}.txt")
+unpivot_df.write_csv(
+    "Даша/{Kind=Leaf}{Fields=Ni,Week,Sample,FattyAcid,Standard,Area}.txt"
+)
 # df.group_by(["Ni", "Week", "Sample"], maintain_order=True).agg().write_csv(
 #     "Даша/output.txt"
 # )
@@ -66,13 +68,9 @@ sample_df = pl.read_csv(
 )
 print(f"sample_df: {sample_df}")
 
-df = df.join(
+join_df = unpivot_df.join(
     sample_df,
-    on=[
-        "Ni",
-        "Week",
-        "Sample",
-    ],
+    on=["Ni", "Week", "Sample"],
     how="full",
     coalesce=True,
     maintain_order="left_right",
@@ -90,6 +88,6 @@ df = df.join(
     ]
 )
 
-df.write_csv(
+join_df.write_csv(
     "Даша/{Kind=Leaf}{Fields=Ni,Week,Sample,Plant,WaterFraction,FreshWeight,FattyAcid,Standard,Area}.txt"
 )
