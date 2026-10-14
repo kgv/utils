@@ -1,30 +1,19 @@
-from pathlib import Path
-from scipy.stats import ttest_ind_from_stats
-from sklearn.feature_selection import chi2
-from sklearn.metrics import pairwise_distances
-from sklearn.metrics.pairwise import cosine_distances
-from sklearn.metrics.pairwise import cosine_distances, euclidean_distances
-from sklearn.preprocessing import normalize
 from utils import format_list
-import matplotlib.pyplot as plot
-import matplotlib.pyplot as plt
 import polars as pl
 import polars.selectors as cs
-import seaborn as sns
 
-COMPONENT = "Terpene"
-# COMPONENT = "Monoterpene"
-# COMPONENT = "Sesquiterpene"
+COMPONENT = [
+    "Terpene",
+    "Monoterpene",
+    "Sesquiterpene",
+]
 
-VALUE = "PartsPerMillion_Mean"
-# VALUE = "Percent_Mean"
+VALUE = [
+    "Percent_Mean",
+    "PartsPerMillion_Mean",
+]
 
-# Monoterpene
-# Sesquiterpene
-# 1166,8 (1200) - монотерпены
-# сесквитерпены
-
-df = pl.read_csv(
+read_df = pl.read_csv(
     "Cypresses/csv/_{Fields=Genus,Species,Variety,Identifier,Tree,Vial,Terpene,Component,CAS,RI,RT,Percent,PartsPerMillion}.txt",
     schema_overrides={
         "Genus": pl.String,
@@ -42,16 +31,26 @@ df = pl.read_csv(
         "PartsPerMillion": pl.Float64,
     },
 )
-print(f"read: {df}")
+print(f"read: {read_df}")
 
 # "н/и RI 1671.6 (вероятно, производное ионола)" - исключаем как вероятно, производное ионола
-df = df.filter(pl.col("Component") != "н/и RI 1671.6 (вероятно, производное ионола)")
-print(f"filter: {df}")
+filter_df = read_df.filter(
+    pl.col("Component") != "н/и RI 1671.6 (вероятно, производное ионола)"
+)
+print(f"filter: {filter_df}")
 
-# Mean for Tree (Technical replications)
-df = (
-    df.group_by(
-        ["Genus", "Species", "Variety", "Identifier", "Tree", "Terpene", "Component"],
+# Technical replications (Mean for Tree)
+stats_df = (
+    filter_df.group_by(
+        [
+            "Genus",
+            "Species",
+            "Variety",
+            "Identifier",
+            "Tree",
+            "Terpene",
+            "Component",
+        ],
         maintain_order=True,
     )
     .agg(
@@ -89,43 +88,46 @@ df = (
         ]
     )
 )
-print(f"group: {df}")
-# df.write_csv("Cypresses/csv/_Stats.txt")
+print(f"stats: {stats_df}")
+# stats_df.write_csv("Cypresses/csv/_Stats.txt")
 
-if COMPONENT == "Monoterpene":
-    df = df.filter(pl.col("Terpene") == "Monoterpene")
-elif COMPONENT == "Sesquiterpene":
-    df = df.filter(pl.col("Terpene") == "Sesquiterpene")
+for component in COMPONENT:
+    for value in VALUE:
+        component_df = stats_df
+        if component == "Monoterpene":
+            component_df = stats_df.filter(pl.col("Terpene") == "Monoterpene")
+        elif component == "Sesquiterpene":
+            component_df = stats_df.filter(pl.col("Terpene") == "Sesquiterpene")
 
-df = (
-    df.pivot(
-        index=[
-            "Genus",
-            "Species",
-            "Variety",
-            "Identifier",
-            "Tree",
-            "Vial",
-        ],
-        on="Component",
-        values=VALUE,
-    )
-    .with_columns(
-        [
-            pl.concat_str(
-                [pl.col("Genus"), pl.col("Species")],
-                separator=" ",
-                ignore_nulls=True,
-            ).alias("Species"),
-            pl.concat_str(
-                [pl.col("Genus"), pl.col("Species"), pl.col("Variety")],
-                separator=" ",
-                ignore_nulls=True,
-            ).alias("Variety"),
-        ]
-    )
-    .with_columns(cs.float().fill_null(0.0))
-)
-df.write_csv(
-    f"Cypresses/csv/_{{Type=Wide}}{{Component={COMPONENT}}}{{Value={VALUE}}}.txt"
-)
+        wide_df = (
+            component_df.pivot(
+                index=[
+                    "Genus",
+                    "Species",
+                    "Variety",
+                    "Identifier",
+                    "Tree",
+                    "Vial",
+                ],
+                on="Component",
+                values=value,
+            )
+            .with_columns(
+                [
+                    pl.concat_str(
+                        [pl.col("Genus"), pl.col("Species")],
+                        separator=" ",
+                        ignore_nulls=True,
+                    ).alias("Species"),
+                    pl.concat_str(
+                        [pl.col("Genus"), pl.col("Species"), pl.col("Variety")],
+                        separator=" ",
+                        ignore_nulls=True,
+                    ).alias("Variety"),
+                ]
+            )
+            .with_columns(cs.float().fill_null(0.0))
+        )
+        wide_df.write_csv(
+            f"Cypresses/csv/_{{Type=Wide}}{{Component={component}}}{{Value={value}}}.txt"
+        )
