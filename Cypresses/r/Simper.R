@@ -26,7 +26,7 @@ sink(output_file, split = FALSE)
 set.seed(42)
 
 # Загрузка данных
-input_file <- paste0("Cypresses/_{Type=Wide}{Component=", COMPONENT, "}{Value=", VALUE, "}.txt")
+input_file <- paste0("Cypresses/csv/_{Type=Wide}{Component=", COMPONENT, "}{Value=", VALUE, "}.txt")
 mydata <- read.csv(input_file, check.names = FALSE, stringsAsFactors = FALSE)
 
 # Отделяем матрицу обилий (начиная с 7-го столбца)

@@ -1,0 +1,190 @@
+=== IndVal ===
+cluster: Species 
+func: IndVal.g 
+control: 999 
+
+ Multilevel pattern analysis
+ ---------------------------
+
+ Association function: IndVal.g
+ Significance level (alpha): 0.05
+
+ Total number of species: 60
+ Selected number of species: 48 
+ Number of species associated to 1 group: 3 
+ Number of species associated to 2 groups: 12 
+ Number of species associated to 3 groups: 8 
+ Number of species associated to 4 groups: 6 
+ Number of species associated to 5 groups: 3 
+ Number of species associated to 6 groups: 0 
+ Number of species associated to 7 groups: 4 
+ Number of species associated to 8 groups: 1 
+ Number of species associated to 9 groups: 2 
+ Number of species associated to 10 groups: 2 
+ Number of species associated to 11 groups: 1 
+ Number of species associated to 12 groups: 5 
+ Number of species associated to 13 groups: 1 
+
+ List of species associated to each combination: 
+
+ Group Chamaecyparis lawsoniana  #sps.  1 
+                 stat p.value   
+Methyl myrtenate    1   0.009 **
+
+ Group Microbiota decussata  #sps.  2 
+                   stat p.value  
+(E)-beta-Farnesene    1   0.015 *
+beta-Chamigrene       1   0.015 *
+
+ Group Callitropsis nootkatensis+Chamaecyparis lawsoniana  #sps.  2 
+                           stat p.value   
+cis-Muurol-5-en-4-beta-ol     1   0.006 **
+cis-Muurol-5-en-4-alpha-ol    1   0.006 **
+
+ Group Chamaecyparis lawsoniana+Microbiota decussata  #sps.  5 
+                      stat p.value    
+н/и RI 1564.91       1.000   0.001 ***
+Microbiotol          1.000   0.001 ***
+Thujopsan-2-alpha-ol 1.000   0.001 ***
+cis-Thujopsene       0.997   0.002 ** 
+beta-Cedrene         0.985   0.004 ** 
+
+ Group Chamaecyparis pisifera+Microbiota decussata  #sps.  2 
+                stat p.value    
+н/и RI 1540.22 1.000   0.001 ***
+н/и RI 1525.21 0.961   0.002 ** 
+
+ Group Juniperus chinensis+Juniperus virginiana  #sps.  1 
+         stat p.value  
+Safrole 0.877   0.026 *
+
+ Group Thuja occidentalis+Thuja plicata  #sps.  2 
+                   stat p.value   
+6,9-Guaiadiene    0.926   0.004 **
+Neothujyl acetate 0.914   0.005 **
+
+ Group Callitropsis nootkatensis+Chamaecyparis lawsoniana+Chamaecyparis pisifera  #sps.  1 
+                stat p.value    
+10-epi-Cubebol 0.996   0.001 ***
+
+ Group Callitropsis nootkatensis+Juniperus chinensis+Juniperus sabina  #sps.  1 
+               stat p.value  
+н/и RI 1518.6 0.854   0.037 *
+
+ Group Chamaecyparis lawsoniana+Chamaecyparis pisifera+Microbiota decussata  #sps.  2 
+                                                         stat p.value    
+Cedrol                                                  1.000   0.001 ***
+н/и RI 1628.9 (сесквитерпеновый спирт, ряд туйопсанола) 0.999   0.001 ***
+
+ Group Chamaecyparis lawsoniana+Thuja occidentalis+Thuja plicata  #sps.  1 
+                stat p.value   
+н/и RI 1570.88 0.943   0.004 **
+
+ Group Juniperus chinensis+Thuja occidentalis+Thuja plicata  #sps.  1 
+              stat p.value    
+alpha-Thujone    1   0.001 ***
+
+ Group Juniperus sabina+Juniperus scopulorum+Juniperus virginiana  #sps.  2 
+                stat p.value    
+Pregeijerene B 1.000   0.001 ***
+н/и RI 1542.49 0.913   0.004 ** 
+
+ Group Callitropsis nootkatensis+Chamaecyparis lawsoniana+Chamaecyparis pisifera+Microbiota decussata  #sps.  1 
+                stat p.value    
+alpha-Bisabolol 0.98   0.001 ***
+
+ Group Callitropsis nootkatensis+Chamaecyparis pisifera+Juniperus pseudosabina+Juniperus rigida  #sps.  1 
+               stat p.value  
+(E)-Nerolidol 0.882   0.017 *
+
+ Group Callitropsis nootkatensis+Juniperus chinensis+Juniperus sabina+Thujopsis dolabrata  #sps.  1 
+              stat p.value  
+alpha-Copaene 0.85   0.046 *
+
+ Group Chamaecyparis lawsoniana+Juniperus rigida+Thuja occidentalis+Thuja plicata  #sps.  1 
+          stat p.value  
+Fenchone 0.905   0.012 *
+
+ Group Chamaecyparis lawsoniana+Juniperus scopulorum+Thuja occidentalis+Thuja plicata  #sps.  1 
+         stat p.value  
+Camphor 0.887   0.027 *
+
+ Group Juniperus chinensis+Juniperus sabina+Thuja occidentalis+Thuja plicata  #sps.  1 
+              stat p.value   
+beta-Thujone 0.912   0.002 **
+
+ Group Callitropsis nootkatensis+Chamaecyparis lawsoniana+Juniperus rigida+Thuja occidentalis+Thuja plicata  #sps.  1 
+                 stat p.value   
+Fenchyl acetate 0.904   0.007 **
+
+ Group Chamaecyparis lawsoniana+Chamaecyparis pisifera+Thuja occidentalis+Thuja plicata+Thujopsis dolabrata  #sps.  1 
+                stat p.value    
+Geranyl acetate    1   0.001 ***
+
+ Group Juniperus chinensis+Juniperus communis+Juniperus pseudosabina+Juniperus sabina+Juniperus scopulorum  #sps.  1 
+               stat p.value    
+delta-Elemene 0.966   0.001 ***
+
+ Group Callitropsis nootkatensis+Chamaecyparis lawsoniana+Chamaecyparis pisifera+Microbiota decussata+Thuja occidentalis+Thuja plicata+Thujopsis dolabrata  #sps.  1 
+                        stat p.value    
+alpha-Terpinyl acetate 0.972   0.001 ***
+
+ Group Callitropsis nootkatensis+Chamaecyparis lawsoniana+Juniperus chinensis+Juniperus communis+Juniperus rigida+Juniperus sabina+Thujopsis dolabrata  #sps.  1 
+                stat p.value    
+delta-Cadinene 0.952   0.001 ***
+
+ Group Juniperus chinensis+Juniperus communis+Juniperus pseudosabina+Juniperus rigida+Juniperus sabina+Juniperus scopulorum+Juniperus virginiana  #sps.  1 
+               stat p.value    
+gamma-Elemene 0.983   0.001 ***
+
+ Group Juniperus chinensis+Juniperus pseudosabina+Juniperus sabina+Juniperus scopulorum+Juniperus virginiana+Microbiota decussata+Thujopsis dolabrata  #sps.  1 
+       stat p.value    
+Elemol 0.97   0.001 ***
+
+ Group Callitropsis nootkatensis+Chamaecyparis lawsoniana+Chamaecyparis pisifera+Juniperus communis+Juniperus pseudosabina+Juniperus rigida+Microbiota decussata+Thujopsis dolabrata  #sps.  1 
+                   stat p.value   
+beta-Phellandrene 0.945   0.002 **
+
+ Group Callitropsis nootkatensis+Chamaecyparis lawsoniana+Chamaecyparis pisifera+Juniperus chinensis+Juniperus sabina+Juniperus scopulorum+Microbiota decussata+Thuja plicata+Thujopsis dolabrata  #sps.  1 
+                 stat p.value  
+gamma-Terpinene 0.923   0.026 *
+
+ Group Callitropsis nootkatensis+Chamaecyparis pisifera+Juniperus chinensis+Juniperus rigida+Juniperus sabina+Juniperus scopulorum+Juniperus virginiana+Thuja occidentalis+Thujopsis dolabrata  #sps.  1 
+              stat p.value    
+1-Octen-3-ol 0.967   0.001 ***
+
+ Group Callitropsis nootkatensis+Chamaecyparis lawsoniana+Chamaecyparis pisifera+Juniperus chinensis+Juniperus communis+Juniperus rigida+Juniperus scopulorum+Thuja occidentalis+Thuja plicata+Thujopsis dolabrata  #sps.  1 
+                stat p.value   
+Bornyl acetate 0.993   0.003 **
+
+ Group Callitropsis nootkatensis+Chamaecyparis lawsoniana+Chamaecyparis pisifera+Juniperus chinensis+Juniperus sabina+Juniperus scopulorum+Microbiota decussata+Thuja occidentalis+Thuja plicata+Thujopsis dolabrata  #sps.  1 
+                          stat p.value   
+Sabinene hydrate acetate 0.964   0.002 **
+
+ Group Callitropsis nootkatensis+Chamaecyparis lawsoniana+Chamaecyparis pisifera+Juniperus chinensis+Juniperus communis+Juniperus pseudosabina+Juniperus rigida+Juniperus scopulorum+Thuja occidentalis+Thuja plicata+Thujopsis dolabrata  #sps.  1 
+          stat p.value   
+Camphene 0.936   0.009 **
+
+ Group Callitropsis nootkatensis+Chamaecyparis lawsoniana+Chamaecyparis pisifera+Juniperus chinensis+Juniperus communis+Juniperus pseudosabina+Juniperus rigida+Juniperus sabina+Juniperus scopulorum+Microbiota decussata+Thuja plicata+Thujopsis dolabrata  #sps.  1 
+             stat p.value   
+Terpinolene 0.992   0.004 **
+
+ Group Callitropsis nootkatensis+Chamaecyparis lawsoniana+Juniperus chinensis+Juniperus communis+Juniperus pseudosabina+Juniperus sabina+Juniperus scopulorum+Juniperus virginiana+Microbiota decussata+Thuja occidentalis+Thuja plicata+Thujopsis dolabrata  #sps.  1 
+                   stat p.value  
+Germacrene D-4-ol 0.999    0.02 *
+
+ Group Chamaecyparis lawsoniana+Chamaecyparis pisifera+Juniperus chinensis+Juniperus communis+Juniperus pseudosabina+Juniperus rigida+Juniperus sabina+Juniperus scopulorum+Juniperus virginiana+Thuja occidentalis+Thuja plicata+Thujopsis dolabrata  #sps.  1 
+              stat p.value   
+Caryophyllene    1   0.003 **
+
+ Group Chamaecyparis lawsoniana+Juniperus chinensis+Juniperus communis+Juniperus pseudosabina+Juniperus rigida+Juniperus sabina+Juniperus scopulorum+Juniperus virginiana+Microbiota decussata+Thuja occidentalis+Thuja plicata+Thujopsis dolabrata  #sps.  2 
+              stat p.value    
+Humulene     1.000   0.001 ***
+beta-Elemene 0.998   0.001 ***
+
+ Group Callitropsis nootkatensis+Chamaecyparis lawsoniana+Chamaecyparis pisifera+Juniperus chinensis+Juniperus communis+Juniperus pseudosabina+Juniperus sabina+Juniperus scopulorum+Juniperus virginiana+Microbiota decussata+Thuja occidentalis+Thuja plicata+Thujopsis dolabrata  #sps.  1 
+         stat p.value  
+Sabinene    1   0.016 *
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1 
+NULL

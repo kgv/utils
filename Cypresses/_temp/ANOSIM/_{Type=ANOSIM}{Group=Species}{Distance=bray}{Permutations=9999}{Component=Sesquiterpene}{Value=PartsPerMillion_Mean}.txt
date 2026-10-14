@@ -1,0 +1,38 @@
+=== ANOSIM ===
+group: Species 
+method: bray 
+permutations: 9999 
+
+Call:
+anosim(x = dist_matrix, grouping = group_factor, permutations = 9999) 
+Dissimilarity: bray 
+
+ANOSIM statistic R: 0.8043 
+      Significance: 1e-04 
+
+Permutation: free
+Number of permutations: 9999
+
+Upper quantiles of permutations (null model):
+  90%   95% 97.5%   99% 
+0.111 0.146 0.173 0.210 
+
+Dissimilarity ranks between and within classes:
+                           0%    25%   50%    75% 100%   N
+Between                     1 234.25 415.5 597.75  780 722
+Callitropsis nootkatensis  NA     NA    NA     NA   NA   0
+Chamaecyparis lawsoniana    3   3.00   3.0   3.00    3   1
+Chamaecyparis pisifera      4   7.25  18.0  23.50   35   6
+Juniperus chinensis        NA     NA    NA     NA   NA   0
+Juniperus communis         25  87.75 166.5 492.75  655  10
+Juniperus pseudosabina      6  33.50  61.0  79.50   98   3
+Juniperus rigida          177 177.00 177.0 177.00  177   1
+Juniperus sabina            9  21.00  28.5  32.25   55   6
+Juniperus scopulorum       NA     NA    NA     NA   NA   0
+Juniperus virginiana        7  42.00  76.0 138.00  256  21
+Microbiota decussata        8   8.00   8.0   8.00    8   1
+Thuja occidentalis         11  17.50  31.5  37.25   60   6
+Thuja plicata              21  42.00  63.0  85.50  108   3
+Thujopsis dolabrata        NA     NA    NA     NA   NA   0
+
+NULL

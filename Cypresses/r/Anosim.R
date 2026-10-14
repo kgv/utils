@@ -41,8 +41,8 @@ DISTANCE <- "bray"
 PERMUTATIONS <- 9999
 
 COMPONENT = "Terpene"
-COMPONENT = "Monoterpene"
-COMPONENT = "Sesquiterpene"
+# COMPONENT = "Monoterpene"
+# COMPONENT = "Sesquiterpene"
 
 VALUE = "PartsPerMillion_Mean"
 
