@@ -1,10 +1,10 @@
-# source("/mnt/d/git/kgv/utils/Cypresses/r/anosim.R", encoding = "UTF-8")
+# source("/mnt/d/g/git/kgv/utils/Cypresses/r/anosim.R", encoding = "UTF-8")
 
 library(vegan)
 
 # Укажите здесь название столбца, по которому нужно группировать данные
-GROUP <- "Genus"
-# GROUP <- "Species"
+# GROUP <- "Genus"
+GROUP <- "Species"
 # GROUP <- "Variety"
 
 # Укажите здесь метрику расстояния
@@ -41,8 +41,8 @@ DISTANCE <- "bray"
 PERMUTATIONS <- 9999
 
 COMPONENT = "Terpene"
-# COMPONENT = "Monoterpene"
-# COMPONENT = "Sesquiterpene"
+COMPONENT = "Monoterpene"
+COMPONENT = "Sesquiterpene"
 
 VALUE = "PartsPerMillion_Mean"
 
@@ -57,7 +57,7 @@ sink(output_file, split = FALSE)
 set.seed(42)
 
 # Загрузка данных
-input_file <- paste0("Cypresses/_{Type=Wide}{Component=", COMPONENT, "}{Value=", VALUE, "}.txt")
+input_file <- paste0("Cypresses/csv/_{Type=Wide}{Component=", COMPONENT, "}{Value=", VALUE, "}.txt")
 mydata <- read.csv(input_file, check.names = FALSE, stringsAsFactors = FALSE)
 # mydata <- read.csv("Cypresses/_Wide.txt", check.names = FALSE, stringsAsFactors = FALSE)
 
