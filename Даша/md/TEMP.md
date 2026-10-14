@@ -1,0 +1,88 @@
+```
+=== IndVal ===
+group: Ni, Week 
+distance: bray 
+
+ Multilevel pattern analysis
+ ---------------------------
+
+ Association function: r.g
+ Significance level (alpha): 0.05
+
+ Total number of species: 21
+ Selected number of species: 16 
+ Number of species associated to 1 group: 1 
+ Number of species associated to 2 groups: 0 
+ Number of species associated to 3 groups: 3 
+ Number of species associated to 4 groups: 1 
+ Number of species associated to 5 groups: 3 
+ Number of species associated to 6 groups: 1 
+ Number of species associated to 7 groups: 1 
+ Number of species associated to 8 groups: 5 
+ Number of species associated to 9 groups: 1 
+ Number of species associated to 10 groups: 0 
+ Number of species associated to 11 groups: 0 
+
+ List of species associated to each combination: 
+
+ Group 0.5  #sps.  1 
+         stat p.value    
+11-18:1 0.536   0.001 ***
+
+ Group 50.1+1000.1+50.5  #sps.  1 
+            stat p.value   
+11,14-20:2 0.486    0.01 **
+
+ Group 500.1+750.1+1000.1  #sps.  1 
+        stat p.value    
+7-16:1 0.605   0.001 ***
+
+ Group 500.1+1000.1+50.5  #sps.  1 
+           stat p.value   
+7,10-16:2 0.521   0.004 **
+
+ Group 0.1+50.1+0.5+50.5  #sps.  1 
+           stat p.value   
+12,15-18:2 0.53   0.003 **
+
+ Group 0.1+50.1+500.1+0.5+50.5  #sps.  1 
+      stat p.value  
+20:0 0.453   0.031 *
+
+ Group 0.1+50.1+0.5+50.5+250.5  #sps.  1 
+         stat p.value  
+11-20:1 0.477   0.012 *
+
+ Group 50.1+250.1+500.1+1000.1+50.5  #sps.  1 
+           stat p.value    
+9,12-18:2 0.706   0.001 ***
+
+ Group 0.1+50.1+250.1+500.1+750.1+1000.1  #sps.  1 
+      stat p.value   
+24:0 0.506   0.002 **
+
+ Group 0.1+50.1+250.1+500.1+750.1+1000.1+50.5  #sps.  1 
+              stat p.value    
+7,10,13-16:3 0.683   0.001 ***
+
+ Group 0.1+50.1+250.1+500.1+750.1+1000.1+0.5+50.5  #sps.  3 
+         stat p.value    
+16:0    0.705   0.001 ***
+9-16:1  0.690   0.001 ***
+15-24:1 0.634   0.001 ***
+
+ Group 0.1+50.1+250.1+750.1+1000.1+0.5+50.5+250.5  #sps.  1 
+               stat p.value    
+11,14,17-20:3 0.529   0.001 ***
+
+ Group 500.1+750.1+1000.1+0.5+50.5+250.5+750.5+1000.5  #sps.  1 
+        stat p.value   
+9-18:1 0.532   0.004 **
+
+ Group 0.1+50.1+250.1+500.1+750.1+1000.1+0.5+50.5+250.5  #sps.  1 
+              stat p.value    
+9,12,15-18:3 0.764   0.001 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1 
+NULL
+```

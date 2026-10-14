@@ -1,0 +1,7 @@
+=== IndVal ===
+distance: bray 
+function: IndVal.g 
+group: Ni, Week 
+kind: Leaf 
+permutations: 999 
+value: PartsPerMillion_DryWeight 

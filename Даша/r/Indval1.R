@@ -22,7 +22,7 @@ TARGET_DISTANCE <- "bray"
 sink("Даша/_Indval.txt", split = FALSE)
 
 # Фиксируем генератор случайных чисел
-set.seed(1234)
+set.seed(42)
 
 # Загрузка данных
 mydata <- read.csv("Даша/_Wide.txt", check.names = FALSE, stringsAsFactors = FALSE)
