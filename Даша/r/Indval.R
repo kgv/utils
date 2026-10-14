@@ -4,6 +4,9 @@ library(indicspecies)
 library(knitr)
 library(vegan)
 
+# FUNCTION <- "IndVal.g"
+FUNCTION <- "r.g"
+
 # Укажите здесь название столбца, по которому нужно группировать данные
 # "Ni": Проверяет гипотезу, отличается ли в целом профиль жирных кислот у растений, которые росли без никеля (0), от тех, что росли с никелем (50, 250, 500, 750, 1000).
 # "Week": Проверяет гипотезу, изменяется ли состав жирных кислот со временем (стал ли он другими к 5-й неделе по сравнению с 1-й).
@@ -12,32 +15,24 @@ library(vegan)
 # GROUP <- "Week"
 GROUP <- c("Ni", "Week")
 
-# Укажите здесь метрику расстояния 
-# ("bray", "jaccard", "euclidean", "manhattan")
-DISTANCE <- "bray"
-
-FUNCTION <- "IndVal.g"
-# FUNCTION <- "r.g"
+KIND = "Leaf"
+# KIND = "Root"
 
 PERMUTATIONS <- 999
-
-# KIND = "Leaf"
-KIND = "Root"
 
 VALUE = "PartsPerMillion_DryWeight"
 
 # =====================================================================
 # НАЧАЛО ПЕРЕНАПРАВЛЕНИЯ ВЫВОДА
 # =====================================================================
-output_file <- paste0("Даша/_{Type=IndVal}{kind=", KIND, "}{Group=", paste(GROUP, collapse = ","), "}{Permutations=", PERMUTATIONS, "}{Value=", VALUE, "}.txt")
+output_file <- paste0("Даша/_{Type=IndVal}{Kind=", KIND, "}{Function=", FUNCTION, "}{Group=", paste(GROUP, collapse = ","), "}{Permutations=", PERMUTATIONS, "}{Value=", VALUE, "}.txt")
 sink(output_file, split = FALSE)
-# sink("Даша/_Indval.txt", split = FALSE)
 
 # Фиксируем генератор случайных чисел
 set.seed(42)
 
 # Загрузка данных
-input_file <- paste0("Даша/csv/_{Type=Wide}{kind=", KIND, "}{Value=", VALUE, "}.txt")
+input_file <- paste0("Даша/csv/_{Type=Wide}{Kind=", KIND, "}{Value=", VALUE, "}.txt")
 mydata <- read.csv(input_file, check.names = FALSE, stringsAsFactors = FALSE)
 
 # Отделяем матрицу обилий (начиная с 4-го столбца)
@@ -63,7 +58,6 @@ if (length(GROUP) > 1) {
 # Процедура IndVal (Компоненты-индикаторы)
 # ---------------------------------------------------------------------
 cat("=== IndVal ===\n")
-cat("distance:", DISTANCE, "\n")
 cat("function:", FUNCTION, "\n")
 cat("group:", paste(GROUP, collapse = ", "), "\n")
 cat("kind:", KIND, "\n")

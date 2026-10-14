@@ -33,7 +33,6 @@ mydata <- read.csv(input_file, check.names = FALSE, stringsAsFactors = FALSE)
 abund <- mydata[, 7:ncol(mydata)]
 
 # Убедимся, что все данные числовые (на случай скрытых ошибок в файле)
-# abund <- as.data.frame(lapply(abund, as.numeric))
 abund <- as.data.frame(lapply(abund, as.numeric), check.names = FALSE)
 
 m_abund <- as.matrix(abund)

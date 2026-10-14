@@ -24,8 +24,6 @@ VALUE = "PartsPerMillion_DryWeight"
 # =====================================================================
 output_file <- paste0("Даша/_{Type=SIMPER}{kind=", KIND, "}{Group=", paste(GROUP, collapse = ","), "}{Permutations=", PERMUTATIONS, "}{Value=", VALUE, "}.txt")
 sink(output_file, split = FALSE)
-# _{Type=Wide}{Kind=Leaf}{Value=PartsPerMillion_DryWeight}{Week=1}
-# sink("Даша/_Simper.txt", split = FALSE)
 
 # Фиксируем генератор случайных чисел
 set.seed(42)
@@ -33,13 +31,11 @@ set.seed(42)
 # Загрузка данных
 input_file <- paste0("Даша/csv/_{Type=Wide}{kind=", KIND, "}{Value=", VALUE, "}.txt")
 mydata <- read.csv(input_file, check.names = FALSE, stringsAsFactors = FALSE)
-# mydata <- read.csv("Даша/_Wide5.txt", check.names = FALSE, stringsAsFactors = FALSE)
 
 # Отделяем матрицу обилий (начиная с 4-го столбца)
 abund <- mydata[, 4:ncol(mydata)]
 
 # Убедимся, что все данные числовые (на случай скрытых ошибок в файле)
-# abund <- as.data.frame(lapply(abund, as.numeric))
 abund <- as.data.frame(lapply(abund, as.numeric), check.names = FALSE)
 
 m_abund <- as.matrix(abund)
@@ -59,7 +55,9 @@ if (length(GROUP) > 1) {
 # ---------------------------------------------------------------------
 cat("=== SIMPER ===\n")
 cat("group:", paste(GROUP, collapse = ", "), "\n")
-cat("distance:", DISTANCE, "\n\n")
+cat("kind:", KIND, "\n")
+cat("permutations:", PERMUTATIONS, "\n")
+cat("value:", VALUE, "\n\n")
 
 sim <- simper(m_abund, group_factor)
 sim_sum <- summary(sim)
