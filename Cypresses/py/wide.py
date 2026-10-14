@@ -17,6 +17,7 @@ COMPONENT = "Terpene"
 # COMPONENT = "Sesquiterpene"
 
 VALUE = "PartsPerMillion_Mean"
+# VALUE = "Percent_Mean"
 
 # Monoterpene
 # Sesquiterpene

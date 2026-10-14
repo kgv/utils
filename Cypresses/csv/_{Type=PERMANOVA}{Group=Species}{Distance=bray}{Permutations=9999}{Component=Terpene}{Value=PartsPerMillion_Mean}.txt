@@ -14,3 +14,16 @@ Residual 26   2.7517 0.21256
 Total    39  12.9455 1.00000                  
 ---
 Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+=== BETADISPER (Homogeneity of dispersion) ===
+
+Permutation test for homogeneity of multivariate dispersions
+Permutation: free
+Number of permutations: 9999
+
+Response: Distances
+          Df  Sum Sq  Mean Sq      F N.Perm Pr(>F)  
+Groups    13 0.66333 0.051026 2.0817   9999  0.083 .
+Residuals 26 0.63729 0.024511                       
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1

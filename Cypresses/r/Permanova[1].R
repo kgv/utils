@@ -44,19 +44,20 @@ COMPONENT = "Terpene"
 # COMPONENT = "Monoterpene"
 # COMPONENT = "Sesquiterpene"
 
+# VALUE = "Percent_Mean"
 VALUE = "PartsPerMillion_Mean"
 
 # =====================================================================
 # НАЧАЛО ПЕРЕНАПРАВЛЕНИЯ ВЫВОДА
 # =====================================================================
-output_file <- paste0("Cypresses/_{Type=PERMANOVA}{Group=", GROUP, "}{Distance=", DISTANCE, "}{Permutations=", PERMUTATIONS, "}{Component=", COMPONENT, "}{Value=", VALUE, "}.txt")
+output_file <- paste0("Cypresses/csv/_{Type=PERMANOVA}{Group=", GROUP, "}{Distance=", DISTANCE, "}{Permutations=", PERMUTATIONS, "}{Component=", COMPONENT, "}{Value=", VALUE, "}.txt")
 sink(output_file, split = FALSE)
 
 # Фиксируем генератор случайных чисел
 set.seed(42)
 
 # Загрузка данных
-input_file <- paste0("Cypresses/_{Type=Wide}{Component=", COMPONENT, "}{Value=", VALUE, "}.txt")
+input_file <- paste0("Cypresses/csv/_{Type=Wide}{Component=", COMPONENT, "}{Value=", VALUE, "}.txt")
 mydata <- read.csv(input_file, check.names = FALSE, stringsAsFactors = FALSE)
 
 # Отделяем матрицу обилий (начиная с 7-го столбца)
@@ -97,6 +98,15 @@ cat("permutations:", PERMUTATIONS, "\n\n")
 # Аргумент method убран из adonis2, так как мы передаем уже вычисленную матрицу расстояний
 permanova_result <- adonis2(perm_formula, data = mydata, permutations = PERMUTATIONS)
 print(permanova_result)
+
+
+# ---------------------------------------------------------------------
+# Проверка гомогенности многомерных дисперсий (betadisper)
+# ---------------------------------------------------------------------
+cat("\n=== BETADISPER (Homogeneity of dispersion) ===\n")
+dispersion <- betadisper(dist_matrix, group_factor)
+disp_test <- permutest(dispersion, permutations = PERMUTATIONS)
+print(disp_test)
 
 # =====================================================================
 # КОНЕЦ ПЕРЕНАПРАВЛЕНИЯ ВЫВОДА
