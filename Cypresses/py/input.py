@@ -4,7 +4,7 @@ from utils import format_list
 # Чтение данных
 
 # PartsPerMillion
-ppm_df = pl.read_csv("Cypresses/csv/{Kind=Input}{Name=PartsPerMillion}.txt")
+ppm_df = pl.read_csv("Cypresses/csv/{Type=Input}{Name=PartsPerMillion}.txt")
 print(f"ppm_df: {ppm_df}")
 ppm_df = (
     ppm_df.unpivot(
@@ -32,7 +32,7 @@ print(f"ppm_df: {ppm_df}")
 # ppm_df.write_csv("Cypresses/_PartsPerMillion.txt")
 
 # Percent
-pc_df = pl.read_csv("Cypresses/csv/{Kind=Input}{Name=Percent}.txt")
+pc_df = pl.read_csv("Cypresses/csv/{Type=Input}{Name=Percent}.txt")
 print(f"pc_df: {pc_df}")
 pc_df = (
     pc_df.unpivot(
@@ -80,12 +80,12 @@ print(f"pc_df+ppm_df: {pc_ppm_df}")
 
 # Species
 species_df = pl.read_csv(
-    "Cypresses/csv/{Kind=Input}{Fields=Identifier,Genus,Species,Variety,Url}.txt"
+    "Cypresses/csv/{Type=Input}{Fields=Identifier,Genus,Species,Variety,Url}.txt"
 )
 print(f"species_df: {species_df}")
 # Description
 description_df = pl.read_csv(
-    "Cypresses/csv/{Kind=Input}{Fields=Identifier,Tree,Vial,Description}.txt"
+    "Cypresses/csv/{Type=Input}{Fields=Identifier,Tree,Vial,Description}.txt"
 )
 print(f"description_df: {description_df}")
 
@@ -160,5 +160,5 @@ terpene_df = join_df.with_columns(
 )
 
 terpene_df.write_csv(
-    "Cypresses/csv/_{Fields=Genus,Species,Variety,Identifier,Tree,Vial,Terpene,Component,CAS,RI,RT,Percent,PartsPerMillion}.txt"
+    "Cypresses/csv/{Type=Output}{Fields=Genus,Species,Variety,Identifier,Tree,Vial,Terpene,Component,CAS,RI,RT,Percent,PartsPerMillion}.txt"
 )

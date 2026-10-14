@@ -14,7 +14,7 @@ VALUE = [
 ]
 
 read_df = pl.read_csv(
-    "Cypresses/csv/_{Fields=Genus,Species,Variety,Identifier,Tree,Vial,Terpene,Component,CAS,RI,RT,Percent,PartsPerMillion}.txt",
+    "Cypresses/csv/{Type=Output}{Fields=Genus,Species,Variety,Identifier,Tree,Vial,Terpene,Component,CAS,RI,RT,Percent,PartsPerMillion}.txt",
     schema_overrides={
         "Genus": pl.String,
         "Species": pl.String,
