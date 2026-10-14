@@ -21,8 +21,8 @@ FUNCTION <- "IndVal.g"
 
 PERMUTATIONS <- 999
 
-KIND = "Leaf"
-# KIND = "Root"
+# KIND = "Leaf"
+KIND = "Root"
 
 VALUE = "PartsPerMillion_DryWeight"
 
