@@ -1,11 +1,9 @@
 # source("/mnt/d/git/kgv/utils/Даша/r/Indval.R", encoding = "UTF-8")
 
 library(indicspecies)
-library(knitr)
-library(vegan)
 
-# FUNCTION <- "IndVal.g"
 FUNCTION <- "r.g"
+# FUNCTION <- "IndVal.g"
 
 # Укажите здесь название столбца, по которому нужно группировать данные
 # "Ni": Проверяет гипотезу, отличается ли в целом профиль жирных кислот у растений, которые росли без никеля (0), от тех, что росли с никелем (50, 250, 500, 750, 1000).
@@ -15,8 +13,8 @@ FUNCTION <- "r.g"
 # GROUP <- "Week"
 GROUP <- c("Ni", "Week")
 
-KIND = "Leaf"
-# KIND = "Root"
+# KIND = "Leaf"
+KIND = "Root"
 
 PERMUTATIONS <- 999
 
@@ -65,9 +63,9 @@ cat("permutations:", PERMUTATIONS, "\n")
 cat("value:", VALUE, "\n")
 
 # multipatt лучше работает с data.frame, передаем abund вместо m_abund
-ind_val <- multipatt(abund, group_factor, func = FUNCTION, control = how(nperm=PERMUTATIONS))
-ind_val_sum <- summary(ind_val)
-print(ind_val_sum)
+multipatt <- multipatt(abund, group_factor, func = FUNCTION, control = how(nperm=PERMUTATIONS))
+multipatt_sum <- summary(multipatt)
+print(multipatt_sum)
 
 # =====================================================================
 # КОНЕЦ ПЕРЕНАПРАВЛЕНИЯ ВЫВОДА

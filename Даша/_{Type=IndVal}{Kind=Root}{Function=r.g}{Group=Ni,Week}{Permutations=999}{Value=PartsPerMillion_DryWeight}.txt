@@ -1,6 +1,9 @@
 === IndVal ===
+function: r.g 
 group: Ni, Week 
-distance: bray 
+kind: Root 
+permutations: 999 
+value: PartsPerMillion_DryWeight 
 
  Multilevel pattern analysis
  ---------------------------

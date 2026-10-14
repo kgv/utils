@@ -12,8 +12,8 @@ library(vegan)
 # GROUP <- "Week"
 GROUP <- c("Ni", "Week")
 
-# KIND = "Leaf"
-KIND = "Root"
+KIND = "Leaf"
+# KIND = "Root"
 
 PERMUTATIONS <- 9999
 
@@ -22,14 +22,14 @@ VALUE = "PartsPerMillion_DryWeight"
 # =====================================================================
 # НАЧАЛО ПЕРЕНАПРАВЛЕНИЯ ВЫВОДА
 # =====================================================================
-output_file <- paste0("Даша/_{Type=SIMPER}{kind=", KIND, "}{Group=", paste(GROUP, collapse = ","), "}{Permutations=", PERMUTATIONS, "}{Value=", VALUE, "}.txt")
+output_file <- paste0("Даша/_{Type=SIMPER}{Kind=", KIND, "}{Group=", paste(GROUP, collapse = ","), "}{Permutations=", PERMUTATIONS, "}{Value=", VALUE, "}.txt")
 sink(output_file, split = FALSE)
 
 # Фиксируем генератор случайных чисел
 set.seed(42)
 
 # Загрузка данных
-input_file <- paste0("Даша/csv/_{Type=Wide}{kind=", KIND, "}{Value=", VALUE, "}.txt")
+input_file <- paste0("Даша/csv/_{Type=Wide}{Kind=", KIND, "}{Value=", VALUE, "}.txt")
 mydata <- read.csv(input_file, check.names = FALSE, stringsAsFactors = FALSE)
 
 # Отделяем матрицу обилий (начиная с 4-го столбца)
