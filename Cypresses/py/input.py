@@ -29,7 +29,7 @@ ppm_df = (
     )
 )
 print(f"ppm_df: {ppm_df}")
-ppm_df.write_csv("Cypresses/_PartsPerMillion.txt")
+# ppm_df.write_csv("Cypresses/_PartsPerMillion.txt")
 
 # Percent
 pc_df = pl.read_csv("Cypresses/csv/{Kind=Input}{Name=Percent}.txt")
@@ -57,9 +57,9 @@ pc_df = (
     )
 )
 print(f"pc_df: {pc_df}")
-pc_df.write_csv("Cypresses/_Percent.txt")
+# pc_df.write_csv("Cypresses/_Percent.txt")
 
-df = pc_df.join(
+pc_ppm_df = pc_df.join(
     ppm_df,
     on=["Vial", "Component", "CAS", "RI", "RT"],
     how="full",
@@ -76,7 +76,7 @@ df = pc_df.join(
         "PartsPerMillion",
     ]
 )
-print(f"pc_df+ppm_df: {df}")
+# print(f"pc_df+ppm_df: {df}")
 
 # Species
 species_df = pl.read_csv(
@@ -90,8 +90,8 @@ description_df = pl.read_csv(
 print(f"description_df: {description_df}")
 
 # + Identifier,Tree
-df = description_df.join(
-    df,
+identifier_df = description_df.join(
+    pc_ppm_df,
     on=["Vial"],
     how="full",
     coalesce=True,
@@ -111,8 +111,8 @@ df = description_df.join(
 )
 
 # + Genus,Species,Variety
-df = species_df.join(
-    df,
+genus_df = species_df.join(
+    identifier_df,
     on=["Identifier"],
     how="full",
     coalesce=True,
@@ -134,10 +134,9 @@ df = species_df.join(
     ]
 )
 
-# 1166,8 (1200) - монотерпены
-# Monoterpene
+# Monoterpene > 1200 (1166.8)
 # Sesquiterpene
-df = df.with_columns(
+terpene_df = genus_df.with_columns(
     pl.when(pl.col("RI").cast(pl.Float64, strict=False) < 1200)
     .then(pl.lit("Monoterpene"))
     .otherwise(pl.lit("Sesquiterpene"))
@@ -160,6 +159,6 @@ df = df.with_columns(
     ]
 )
 
-df.write_csv(
+terpene_df.write_csv(
     "Cypresses/csv/{Kind=Output}{Fields=Genus,Species,Variety,Identifier,Tree,Vial,Terpene,Component,CAS,RI,RT,Percent,PartsPerMillion}.txt"
 )
