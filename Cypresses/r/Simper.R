@@ -4,15 +4,15 @@ library(knitr)
 library(vegan)
 
 # Укажите здесь название столбца, по которому нужно группировать данные
-# GROUP <- "Genus"
-GROUP <- "Species"
+GROUP <- "Genus"
+# GROUP <- "Species"
 # GROUP <- "Variety"
 
-PERMUTATIONS <- 999
+PERMUTATIONS <- 9999
 
 COMPONENT = "Terpene"
-# COMPONENT = "Monoterpene"
-# COMPONENT = "Sesquiterpene"
+COMPONENT = "Monoterpene"
+COMPONENT = "Sesquiterpene"
 
 VALUE = "PartsPerMillion_Mean"
 
