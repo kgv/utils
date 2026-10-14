@@ -76,7 +76,7 @@ pc_ppm_df = pc_df.join(
         "PartsPerMillion",
     ]
 )
-# print(f"pc_df+ppm_df: {df}")
+print(f"pc_df+ppm_df: {pc_ppm_df}")
 
 # Species
 species_df = pl.read_csv(
@@ -111,7 +111,7 @@ identifier_df = description_df.join(
 )
 
 # + Genus,Species,Variety
-genus_df = species_df.join(
+join_df = species_df.join(
     identifier_df,
     on=["Identifier"],
     how="full",
@@ -134,9 +134,9 @@ genus_df = species_df.join(
     ]
 )
 
-# Monoterpene > 1200 (1166.8)
+# Monoterpene < 1200 (1166.8)
 # Sesquiterpene
-terpene_df = genus_df.with_columns(
+terpene_df = join_df.with_columns(
     pl.when(pl.col("RI").cast(pl.Float64, strict=False) < 1200)
     .then(pl.lit("Monoterpene"))
     .otherwise(pl.lit("Sesquiterpene"))
@@ -160,5 +160,5 @@ terpene_df = genus_df.with_columns(
 )
 
 terpene_df.write_csv(
-    "Cypresses/csv/{Kind=Output}{Fields=Genus,Species,Variety,Identifier,Tree,Vial,Terpene,Component,CAS,RI,RT,Percent,PartsPerMillion}.txt"
+    "Cypresses/csv/_{Fields=Genus,Species,Variety,Identifier,Tree,Vial,Terpene,Component,CAS,RI,RT,Percent,PartsPerMillion}.txt"
 )
