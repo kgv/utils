@@ -1,4 +1,4 @@
-# source("/mnt/d/g/git/kgv/utils/Даша/r/Simper.R", encoding = "UTF-8")
+# source("/mnt/d/git/kgv/utils/Даша/r/Simper.R", encoding = "UTF-8")
 
 library(indicspecies)
 library(knitr)
@@ -12,14 +12,10 @@ library(vegan)
 # GROUP <- "Week"
 GROUP <- c("Ni", "Week")
 
-# Укажите здесь метрику расстояния 
-# ("bray", "jaccard", "euclidean", "manhattan")
-DISTANCE <- "bray"
-
-PERMUTATIONS <- 9999
-
 # KIND = "Leaf"
 KIND = "Root"
+
+PERMUTATIONS <- 9999
 
 VALUE = "PartsPerMillion_DryWeight"
 
