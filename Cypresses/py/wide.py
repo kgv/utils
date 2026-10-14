@@ -24,7 +24,7 @@ VALUE = "PartsPerMillion_Mean"
 # сесквитерпены
 
 df = pl.read_csv(
-    "Cypresses/csv/{Kind=Output}{Fields=Genus,Species,Variety,Identifier,Tree,Vial,Terpene,Component,CAS,RI,RT,Percent,PartsPerMillion}.txt",
+    "Cypresses/csv/_{Fields=Genus,Species,Variety,Identifier,Tree,Vial,Terpene,Component,CAS,RI,RT,Percent,PartsPerMillion}.txt",
     schema_overrides={
         "Genus": pl.String,
         "Species": pl.String,
@@ -89,7 +89,7 @@ df = (
     )
 )
 print(f"group: {df}")
-df.write_csv("Cypresses/_Stats.txt")
+# df.write_csv("Cypresses/csv/_Stats.txt")
 
 if COMPONENT == "Monoterpene":
     df = df.filter(pl.col("Terpene") == "Monoterpene")
@@ -125,4 +125,6 @@ df = (
     )
     .with_columns(cs.float().fill_null(0.0))
 )
-df.write_csv(f"Cypresses/_{{Type=Wide}}{{Component={COMPONENT}}}{{Value={VALUE}}}.txt")
+df.write_csv(
+    f"Cypresses/csv/_{{Type=Wide}}{{Component={COMPONENT}}}{{Value={VALUE}}}.txt"
+)
