@@ -65,106 +65,108 @@ abund <- mydata[, 4:ncol(mydata)]
 # Убедимся, что все данные числовые (на случай скрытых ошибок в файле)
 abund <- as.data.frame(lapply(abund, as.numeric), check.names = FALSE)
 
+# Применить трансформацию log1p к матрице сообщества
+abund <- log1p(abund)
+
 m_abund <- as.matrix(abund)
 
-# # group_factor <- as.factor(mydata$Species) # Явно делаем фактором
-# # Создаем комбинированный фактор для графиков, SIMPER и IndVal
-# if (length(GROUP) > 1) {
-#   # Функция interaction() склеит значения. Если Ni=50 и Week=1, получится группа "50.1"
-#   group_factor <- interaction(mydata[, GROUP], drop = TRUE)
-# } else {
-#   # Динамически получаем фактор (используем двойные скобки [[ ]] для текста)
-#   group_factor <- as.factor(mydata[[GROUP]])
-# }
-
-Ni <- as.numeric(mydata$Ni)
-Week <- as.numeric(mydata$Week)
-
-# Создаем пустой вектор для новых групп
-macro_groups <- character(nrow(mydata))
-
-# macro_groups[Ni == 0 & Week == 1] <- "Control_Week1"
-# macro_groups[Ni == 50 & Week == 1] <- "Ni50_Week1"
-# macro_groups[Ni == 250 & Week == 1] <- "Ni250_Week1"
-# macro_groups[Ni == 500 & Week == 1] <- "Ni500_Week1"
-# macro_groups[Ni == 750 & Week == 1] <- "Ni750_Week1"
-# macro_groups[Ni == 1000 & Week == 1] <- "Ni1000_Week1"
-# macro_groups[Ni == 0 & Week == 5] <- "Control_Week5"
-# macro_groups[Ni == 50 & Week == 5] <- "Ni50_Week5"
-# macro_groups[Ni == 250 & Week == 5] <- "Ni250_Week5"
-# macro_groups[Ni == 500 & Week == 5] <- "Ni500_Week5"
-# macro_groups[Ni == 750 & Week == 5] <- "Ni750_Week5"
-# macro_groups[Ni == 1000 & Week == 5] <- "Ni1000_Week5"
-
-# Control/Low/Medium/High
-# macro_groups[Ni == 0 & Week == 1] <- "Control_Week1"
-# macro_groups[Ni == 0 & Week == 5] <- "Control_Week5"
-# macro_groups[Ni == 50 & Week == 1] <- "NiLow_Week1"
-# macro_groups[Ni == 50 & Week == 5] <- "NiLow_Week5"
-# macro_groups[Ni == 250 | Ni == 500 & Week == 1] <- "NiMedium_Week1"
-# macro_groups[Ni == 250 | Ni == 500 & Week == 5] <- "NiMedium_Week5"
-# macro_groups[Ni == 750 | Ni == 1000 & Week == 1] <- "NiHigh_Week1"
-# macro_groups[Ni == 750 | Ni == 1000 & Week == 5] <- "NiHigh_Week5"
-
-# Control/Low/Medium/High
-# macro_groups[Ni == 0 & Week == 1] <- "Control_Week1"
-# macro_groups[Ni == 0 & Week == 5] <- "Control_Week5"
-# macro_groups[Ni > 0 & Week == 1] <- "Ni_Week1"
-# macro_groups[Ni > 0 & Week == 5] <- "Ni_Week5"
-
-# # Week
-# macro_groups[Ni == 0] <- "Control"
-# macro_groups[Ni == 50] <- "Ni50"
-# macro_groups[Ni == 250] <- "Ni250"
-# macro_groups[Ni == 500] <- "Ni500"
-# macro_groups[Ni == 750] <- "Ni750"
-# macro_groups[Ni == 1000] <- "Ni1000"
-
-if (!is.null(TARGET_WEEK)) {
-    macro_groups[Ni == 0 & Week == TARGET_WEEK] <- paste0(
-        "Control_Week",
-        TARGET_WEEK
-    )
-    macro_groups[Ni == 50 & Week == TARGET_WEEK] <- paste0(
-        "Ni50_Week",
-        TARGET_WEEK
-    )
-    macro_groups[Ni == 250 & Week == TARGET_WEEK] <- paste0(
-        "Ni250_Week",
-        TARGET_WEEK
-    )
-    macro_groups[Ni == 500 & Week == TARGET_WEEK] <- paste0(
-        "Ni500_Week",
-        TARGET_WEEK
-    )
-    macro_groups[Ni == 750 & Week == TARGET_WEEK] <- paste0(
-        "Ni750_Week",
-        TARGET_WEEK
-    )
-    macro_groups[Ni == 1000 & Week == TARGET_WEEK] <- paste0(
-        "Ni1000_Week",
-        TARGET_WEEK
-    )
-    # ВАЖНО: Строки с ДРУГОЙ неделей останутся пустыми.
-    # Чтобы SIMPER не сошел с ума, назовем их "Ignore" (мы их потом отфильтруем)
-    # macro_groups[Week != TARGET_WEEK] <- "Ignore"
+# Создаем комбинированный фактор для графиков, SIMPER и IndVal
+if (length(GROUP) > 1) {
+  # Функция interaction() склеит значения. Если Ni=50 и Week=1, получится группа "50.1"
+  macro_groups <- interaction(mydata[, GROUP], drop = TRUE)
 } else {
-    macro_groups[Ni == 0 & Week == 1] <- "Control_Week1"
-    macro_groups[Ni == 50 & Week == 1] <- "Ni50_Week1"
-    macro_groups[Ni == 250 & Week == 1] <- "Ni250_Week1"
-    macro_groups[Ni == 500 & Week == 1] <- "Ni500_Week1"
-    macro_groups[Ni == 750 & Week == 1] <- "Ni750_Week1"
-    macro_groups[Ni == 1000 & Week == 1] <- "Ni1000_Week1"
-    macro_groups[Ni == 0 & Week == 5] <- "Control_Week5"
-    macro_groups[Ni == 50 & Week == 5] <- "Ni50_Week5"
-    macro_groups[Ni == 250 & Week == 5] <- "Ni250_Week5"
-    macro_groups[Ni == 500 & Week == 5] <- "Ni500_Week5"
-    macro_groups[Ni == 750 & Week == 5] <- "Ni750_Week5"
-    macro_groups[Ni == 1000 & Week == 5] <- "Ni1000_Week5"
+  # Динамически получаем фактор (используем двойные скобки [[ ]] для текста)
+  macro_groups <- as.factor(mydata[[GROUP]])
 }
 
-# Превращаем в фактор
-macro_groups <- as.factor(macro_groups)
+# Ni <- as.numeric(mydata$Ni)
+# Week <- as.numeric(mydata$Week)
+
+# # Создаем пустой вектор для новых групп
+# macro_groups <- character(nrow(mydata))
+
+# # macro_groups[Ni == 0 & Week == 1] <- "Control_Week1"
+# # macro_groups[Ni == 50 & Week == 1] <- "Ni50_Week1"
+# # macro_groups[Ni == 250 & Week == 1] <- "Ni250_Week1"
+# # macro_groups[Ni == 500 & Week == 1] <- "Ni500_Week1"
+# # macro_groups[Ni == 750 & Week == 1] <- "Ni750_Week1"
+# # macro_groups[Ni == 1000 & Week == 1] <- "Ni1000_Week1"
+# # macro_groups[Ni == 0 & Week == 5] <- "Control_Week5"
+# # macro_groups[Ni == 50 & Week == 5] <- "Ni50_Week5"
+# # macro_groups[Ni == 250 & Week == 5] <- "Ni250_Week5"
+# # macro_groups[Ni == 500 & Week == 5] <- "Ni500_Week5"
+# # macro_groups[Ni == 750 & Week == 5] <- "Ni750_Week5"
+# # macro_groups[Ni == 1000 & Week == 5] <- "Ni1000_Week5"
+
+# # Control/Low/Medium/High
+# # macro_groups[Ni == 0 & Week == 1] <- "Control_Week1"
+# # macro_groups[Ni == 0 & Week == 5] <- "Control_Week5"
+# # macro_groups[Ni == 50 & Week == 1] <- "NiLow_Week1"
+# # macro_groups[Ni == 50 & Week == 5] <- "NiLow_Week5"
+# # macro_groups[Ni == 250 | Ni == 500 & Week == 1] <- "NiMedium_Week1"
+# # macro_groups[Ni == 250 | Ni == 500 & Week == 5] <- "NiMedium_Week5"
+# # macro_groups[Ni == 750 | Ni == 1000 & Week == 1] <- "NiHigh_Week1"
+# # macro_groups[Ni == 750 | Ni == 1000 & Week == 5] <- "NiHigh_Week5"
+
+# # Control/Low/Medium/High
+# # macro_groups[Ni == 0 & Week == 1] <- "Control_Week1"
+# # macro_groups[Ni == 0 & Week == 5] <- "Control_Week5"
+# # macro_groups[Ni > 0 & Week == 1] <- "Ni_Week1"
+# # macro_groups[Ni > 0 & Week == 5] <- "Ni_Week5"
+
+# # # Week
+# # macro_groups[Ni == 0] <- "Control"
+# # macro_groups[Ni == 50] <- "Ni50"
+# # macro_groups[Ni == 250] <- "Ni250"
+# # macro_groups[Ni == 500] <- "Ni500"
+# # macro_groups[Ni == 750] <- "Ni750"
+# # macro_groups[Ni == 1000] <- "Ni1000"
+
+# if (!is.null(TARGET_WEEK)) {
+#     macro_groups[Ni == 0 & Week == TARGET_WEEK] <- paste0(
+#         "Control_Week",
+#         TARGET_WEEK
+#     )
+#     macro_groups[Ni == 50 & Week == TARGET_WEEK] <- paste0(
+#         "Ni50_Week",
+#         TARGET_WEEK
+#     )
+#     macro_groups[Ni == 250 & Week == TARGET_WEEK] <- paste0(
+#         "Ni250_Week",
+#         TARGET_WEEK
+#     )
+#     macro_groups[Ni == 500 & Week == TARGET_WEEK] <- paste0(
+#         "Ni500_Week",
+#         TARGET_WEEK
+#     )
+#     macro_groups[Ni == 750 & Week == TARGET_WEEK] <- paste0(
+#         "Ni750_Week",
+#         TARGET_WEEK
+#     )
+#     macro_groups[Ni == 1000 & Week == TARGET_WEEK] <- paste0(
+#         "Ni1000_Week",
+#         TARGET_WEEK
+#     )
+#     # ВАЖНО: Строки с ДРУГОЙ неделей останутся пустыми.
+#     # Чтобы SIMPER не сошел с ума, назовем их "Ignore" (мы их потом отфильтруем)
+#     # macro_groups[Week != TARGET_WEEK] <- "Ignore"
+# } else {
+#     macro_groups[Ni == 0 & Week == 1] <- "Control_Week1"
+#     macro_groups[Ni == 50 & Week == 1] <- "Ni50_Week1"
+#     macro_groups[Ni == 250 & Week == 1] <- "Ni250_Week1"
+#     macro_groups[Ni == 500 & Week == 1] <- "Ni500_Week1"
+#     macro_groups[Ni == 750 & Week == 1] <- "Ni750_Week1"
+#     macro_groups[Ni == 1000 & Week == 1] <- "Ni1000_Week1"
+#     macro_groups[Ni == 0 & Week == 5] <- "Control_Week5"
+#     macro_groups[Ni == 50 & Week == 5] <- "Ni50_Week5"
+#     macro_groups[Ni == 250 & Week == 5] <- "Ni250_Week5"
+#     macro_groups[Ni == 500 & Week == 5] <- "Ni500_Week5"
+#     macro_groups[Ni == 750 & Week == 5] <- "Ni750_Week5"
+#     macro_groups[Ni == 1000 & Week == 5] <- "Ni1000_Week5"
+# }
+
+# # Превращаем в фактор
+# macro_groups <- as.factor(macro_groups)
 
 # ---------------------------------------------------------------------
 # Процедура SIMPER (Оценка вклада компонентов в различия)
@@ -188,7 +190,8 @@ for (comp_name in names(sim_sum)) {
     if (!is.null(TARGET_WEEK)) {
         # Динамически создаем регулярное выражение.
         # Если TARGET_WEEK = 5, pattern станет "Week5_.*Week5$"
-        pattern <- paste0(".*Week", TARGET_WEEK, "_.*Week", TARGET_WEEK, "$")
+        # pattern <- paste0(".*Week", TARGET_WEEK, "_.*Week", TARGET_WEEK, "$")
+        pattern <- paste0(".*\\.", TARGET_WEEK, "_.*\\.", TARGET_WEEK, "$")
         if (!grepl(pattern, comp_name)) {
             next
         }

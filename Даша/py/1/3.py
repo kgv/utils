@@ -1,12 +1,11 @@
 import polars as pl
-import polars.selectors as sc
 import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
 import io
 import re
 import tkinter as tk
-from matplotlib.ticker import MaxNLocator
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 # 1. Исходные данные
 raw_data = """
@@ -433,29 +432,64 @@ feature_importance = (
 )
 all_features = feature_importance.get_column("Feature").to_list()
 
-# Включаем интерактивный режим matplotlib, чтобы окно настроек не блокировалось
-plt.ion()
+# Глобальная переменная для окна с графиками
+plot_window = None
 
-# 4. Функция отрисовки графиков
-def draw_plots(selected_features):
-    # Закрываем предыдущие окна с графиками перед новой отрисовкой
-    plt.close('all')
+# 4. Функция отрисовки графиков во встроенном окне Tkinter
+def draw_plots(selected_features, row_height):
+    global plot_window
     
     if not selected_features:
         print("Нет выбранных кислот для отображения.")
         return
 
+    # Создаем или очищаем окно для графиков
+    if plot_window is None or not tk.Toplevel.winfo_exists(plot_window):
+        plot_window = tk.Toplevel(root)
+        plot_window.title("Графики SIMPER")
+        plot_window.geometry("1400x800")
+    else:
+        # Очищаем старые виджеты, если окно уже открыто
+        for widget in plot_window.winfo_children():
+            widget.destroy()
+
+    # Настраиваем Canvas и Scrollbar для прокрутки
+    canvas = tk.Canvas(plot_window)
+    scrollbar = tk.Scrollbar(plot_window, orient="vertical", command=canvas.yview)
+    scrollable_frame = tk.Frame(canvas)
+
+    scrollable_frame.bind(
+        "<Configure>",
+        lambda e: canvas.configure(scrollregion=canvas.bbox("all"))
+    )
+
+    canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
+    canvas.configure(yscrollcommand=scrollbar.set)
+
+    canvas.pack(side="left", fill="both", expand=True)
+    scrollbar.pack(side="right", fill="y")
+
+    # Привязка колесика мыши для прокрутки (Windows/Mac и Linux)
+    def _on_mousewheel(event):
+        canvas.yview_scroll(int(-1 * (event.delta / 120)), "units")
+    
+    plot_window.bind("<MouseWheel>", _on_mousewheel)
+    plot_window.bind("<Button-4>", lambda e: canvas.yview_scroll(-1, "units")) # Для Linux
+    plot_window.bind("<Button-5>", lambda e: canvas.yview_scroll(1, "units"))  # Для Linux
+
+    # Построение графиков Matplotlib
     n_features = len(selected_features)
     sns.set_theme(style="whitegrid")
     
-    fig, axes = plt.subplots(nrows=n_features, ncols=4, figsize=(20, 3.5 * n_features))
+    # Используем переданную высоту строки
+    fig, axes = plt.subplots(nrows=n_features, ncols=4, figsize=(20, row_height * n_features))
     axes = np.atleast_2d(axes)
 
     fig.suptitle(
         f"Профиль SIMPER: {n_features} выбранных жирных кислот",
         fontsize=22,
         weight="bold",
-        y=0.99,
+        y=0.99 if n_features > 1 else 1.05,
     )
 
     metric_titles = [
@@ -475,15 +509,13 @@ def draw_plots(selected_features):
         ax0.set_xticks([0, 50, 250, 500, 750, 1000])
         ax0.set_ylabel(f"{feature}", fontsize=12, weight="bold")
         
-        # Добавляем вторую ось Y для avb_percent
         ax0_twin = ax0.twinx()
-        line3 = ax0_twin.plot(feat_df["Ni"], feat_df["avb_percent"], color="#8e44ad", marker="^", markersize=8, linewidth=2, linestyle="--", label="avb_percent (%)")
-        ax0_twin.set_ylabel("avb_percent (%)", color="#8e44ad", fontsize=10, weight="bold")
+        line3 = ax0_twin.plot(feat_df["Ni"], feat_df["avb_percent"], color="#8e44ad", marker="^", markersize=8, linewidth=2, linestyle="--", label="%")
+        ax0_twin.set_ylabel("%", color="#8e44ad", fontsize=10, weight="bold")
         ax0_twin.tick_params(axis='y', labelcolor="#8e44ad")
-        ax0_twin.grid(False) # Отключаем сетку для второй оси, чтобы не было мешанины
+        ax0_twin.grid(False)
 
         if row_idx == 0:
-            # Объединяем легенды с обеих осей
             lines = line1 + line2 + line3
             labels = [l.get_label() for l in lines]
             ax0.legend(lines, labels, fontsize=10, loc="best")
@@ -523,40 +555,58 @@ def draw_plots(selected_features):
                 axes[row_idx, col_idx].set_xlabel("")
 
     plt.tight_layout(rect=[0, 0, 1, 0.98])
-    plt.show()
+    
+    # Встраиваем график в Tkinter
+    canvas_tk = FigureCanvasTkAgg(fig, master=scrollable_frame)
+    canvas_tk.draw()
+    canvas_tk.get_tk_widget().pack(fill="both", expand=True)
+    
+    # Закрываем фигуру в pyplot, чтобы не утекала память
+    plt.close(fig)
 
 # 5. Создание окна настроек (GUI)
 def on_redraw_click():
-    # Получаем индексы выбранных элементов
     selected_indices = listbox.curselection()
-    # Получаем сами названия кислот по индексам
     selected_features = [listbox.get(i) for i in selected_indices]
-    draw_plots(selected_features)
+    
+    try:
+        row_height = float(row_height_var.get())
+    except ValueError:
+        row_height = 1.75 # Значение по умолчанию при ошибке ввода
+        
+    draw_plots(selected_features, row_height)
 
 root = tk.Tk()
 root.title("Настройки отображения ЖК")
-root.geometry("350x450")
+root.geometry("380x500")
 
 lbl = tk.Label(root, text="Выберите ЖК для отображения\n(Зажмите Ctrl для выбора нескольких):", font=("Arial", 10, "bold"))
 lbl.pack(pady=10)
 
-# Используем Listbox с множественным выбором (MULTIPLE/EXTENDED)
-frame = tk.Frame(root)
-frame.pack(pady=5, fill=tk.BOTH, expand=True, padx=20)
+# Listbox с множественным выбором
+frame_list = tk.Frame(root)
+frame_list.pack(pady=5, fill=tk.BOTH, expand=True, padx=20)
 
-scrollbar = tk.Scrollbar(frame)
-scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+scrollbar_list = tk.Scrollbar(frame_list)
+scrollbar_list.pack(side=tk.RIGHT, fill=tk.Y)
 
-listbox = tk.Listbox(frame, selectmode=tk.EXTENDED, yscrollcommand=scrollbar.set, font=("Arial", 11))
+listbox = tk.Listbox(frame_list, selectmode=tk.EXTENDED, yscrollcommand=scrollbar_list.set, font=("Arial", 11))
 listbox.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
-scrollbar.config(command=listbox.yview)
+scrollbar_list.config(command=listbox.yview)
 
-# Заполняем список всеми доступными кислотами
 for feature in all_features:
     listbox.insert(tk.END, feature)
 
-# По умолчанию выбираем все элементы
 listbox.select_set(0, tk.END)
+
+# Настройка высоты строки
+frame_settings = tk.Frame(root)
+frame_settings.pack(pady=10, fill=tk.X, padx=20)
+
+tk.Label(frame_settings, text="Высота строки графиков:", font=("Arial", 10)).pack(side=tk.LEFT)
+row_height_var = tk.StringVar(value="1.75")
+spinbox_height = tk.Spinbox(frame_settings, from_=1.0, to=10.0, increment=0.5, textvariable=row_height_var, width=5, font=("Arial", 10))
+spinbox_height.pack(side=tk.RIGHT)
 
 btn_redraw = tk.Button(root, text="Перерисовать графики", command=on_redraw_click, font=("Arial", 12, "bold"), bg="#4CAF50", fg="white")
 btn_redraw.pack(pady=15, fill=tk.X, padx=20)
