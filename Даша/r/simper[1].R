@@ -21,7 +21,9 @@ VALUE <- "PartsPerMillion_DryWeight"
 
 # Укажите нужную неделю (1 или 5).
 # Если хотите проанализировать всё без фильтров, укажите NULL
-TARGET_WEEK <- 5
+# TARGET_WEEK <- NULL
+TARGET_WEEK <- 1
+# TARGET_WEEK <- 5
 
 # =====================================================================
 # НАЧАЛО ПЕРЕНАПРАВЛЕНИЯ ВЫВОДА
@@ -51,6 +53,11 @@ input_file <- paste0(
     "}.txt"
 )
 mydata <- read.csv(input_file, check.names = FALSE, stringsAsFactors = FALSE)
+
+if (!is.null(TARGET_WEEK)) {
+    # Оставляем только те строки, где Week равно TARGET_WEEK
+    mydata <- mydata[mydata$Week == TARGET_WEEK, ]
+}
 
 # Отделяем матрицу обилий (начиная с 4-го столбца)
 abund <- mydata[, 4:ncol(mydata)]
@@ -140,7 +147,7 @@ if (!is.null(TARGET_WEEK)) {
     )
     # ВАЖНО: Строки с ДРУГОЙ неделей останутся пустыми.
     # Чтобы SIMPER не сошел с ума, назовем их "Ignore" (мы их потом отфильтруем)
-    macro_groups[Week != TARGET_WEEK] <- "Ignore"
+    # macro_groups[Week != TARGET_WEEK] <- "Ignore"
 } else {
     macro_groups[Ni == 0 & Week == 1] <- "Control_Week1"
     macro_groups[Ni == 50 & Week == 1] <- "Ni50_Week1"
