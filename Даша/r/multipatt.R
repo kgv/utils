@@ -1,4 +1,4 @@
-# source("/mnt/d/git/kgv/utils/Даша/r/Indval.R", encoding = "UTF-8")
+# source("/mnt/d/git/kgv/utils/Даша/r/multipatt.R", encoding = "UTF-8")
 
 library(indicspecies)
 
@@ -13,8 +13,8 @@ FUNCTION <- "r.g"
 # GROUP <- "Week"
 GROUP <- c("Ni", "Week")
 
-# KIND = "Leaf"
-KIND = "Root"
+KIND = "Leaf"
+# KIND = "Root"
 
 PERMUTATIONS <- 9999
 
@@ -23,7 +23,7 @@ VALUE = "PartsPerMillion_DryWeight"
 # =====================================================================
 # НАЧАЛО ПЕРЕНАПРАВЛЕНИЯ ВЫВОДА
 # =====================================================================
-output_file <- paste0("Даша/_{Type=IndVal}{Kind=", KIND, "}{Function=", FUNCTION, "}{Group=", paste(GROUP, collapse = ","), "}{Permutations=", PERMUTATIONS, "}{Value=", VALUE, "}.txt")
+output_file <- paste0("Даша/_{Type=multipatt}{Kind=", KIND, "}{Function=", FUNCTION, "}{Group=", paste(GROUP, collapse = ","), "}{Permutations=", PERMUTATIONS, "}{Value=", VALUE, "}.txt")
 sink(output_file, split = FALSE)
 
 # Фиксируем генератор случайных чисел
@@ -71,19 +71,21 @@ macro_groups <- character(length(Ni))
 # macro_groups[Ni == 750 & Week == 5] <- "Ni750_Week5"
 # macro_groups[Ni == 1000 & Week == 5] <- "Ni1000_Week5"
 
-macro_groups[Ni == 0 & Week == 1] <- "Control_Week1"
-macro_groups[Ni == 0 & Week == 5] <- "Control_Week5"
-macro_groups[Ni == 50 & Week == 1] <- "NiLow_Week1"
-macro_groups[Ni == 50 & Week == 5] <- "NiLow_Week5"
-macro_groups[Ni == 250 | Ni == 500 & Week == 1] <- "NiMedium_Week1"
-macro_groups[Ni == 250 | Ni == 500 & Week == 5] <- "NiMedium_Week5"
-macro_groups[Ni == 750 | Ni == 1000 & Week == 1] <- "NiHigh_Week1"
-macro_groups[Ni == 750 | Ni == 1000 & Week == 5] <- "NiHigh_Week5"
-
+# Control/Low/Medium/High
 # macro_groups[Ni == 0 & Week == 1] <- "Control_Week1"
 # macro_groups[Ni == 0 & Week == 5] <- "Control_Week5"
-# macro_groups[Ni > 0 & & Week == 1] <- "Ni_Week1"
-# macro_groups[Ni > 0 & Week == 5] <- "Ni_Week5"
+# macro_groups[Ni == 50 & Week == 1] <- "NiLow_Week1"
+# macro_groups[Ni == 50 & Week == 5] <- "NiLow_Week5"
+# macro_groups[Ni == 250 | Ni == 500 & Week == 1] <- "NiMedium_Week1"
+# macro_groups[Ni == 250 | Ni == 500 & Week == 5] <- "NiMedium_Week5"
+# macro_groups[Ni == 750 | Ni == 1000 & Week == 1] <- "NiHigh_Week1"
+# macro_groups[Ni == 750 | Ni == 1000 & Week == 5] <- "NiHigh_Week5"
+
+# Control/Low/Medium/High
+macro_groups[Ni == 0 & Week == 1] <- "Control_Week1"
+macro_groups[Ni == 0 & Week == 5] <- "Control_Week5"
+macro_groups[Ni > 0 & Week == 1] <- "Ni_Week1"
+macro_groups[Ni > 0 & Week == 5] <- "Ni_Week5"
 
 # Превращаем в фактор
 macro_groups <- as.factor(macro_groups)
@@ -99,7 +101,13 @@ cat("permutations:", PERMUTATIONS, "\n")
 cat("value:", VALUE, "\n")
 
 # multipatt лучше работает с data.frame, передаем abund вместо m_abund
-multipatt <- multipatt(abund, cluster = macro_groups, func = FUNCTION, max.order = 2, allow.negative = TRUE, control = how(nperm=PERMUTATIONS), print.perm=TRUE)
+multipatt <- multipatt(x = abund,
+                       cluster = macro_groups,
+                       func = FUNCTION,
+                      #  max.order = 2,
+                       allow.negative = TRUE,
+                       control = how(nperm=PERMUTATIONS),
+                       print.perm=TRUE)
 multipatt_sum <- summary(multipatt)
 print(multipatt_sum)
 
