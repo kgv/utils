@@ -12,8 +12,8 @@ library(vegan)
 # GROUP <- "Week"
 GROUP <- c("Ni", "Week")
 
-KIND = "Leaf"
-# KIND = "Root"
+# KIND = "Leaf"
+KIND = "Root"
 
 PERMUTATIONS <- 9999
 
@@ -65,9 +65,9 @@ sim_sum <- summary(sim)
 # print(sim_sum)
 
 for (comp_name in names(sim_sum)) {
-    # if (!grepl("*\\.5_.*\\.5$", comp_name)) {
-    #     next
-    # }
+    if (!grepl("*\\.5_.*\\.5$", comp_name)) {
+        next
+    }
     cat("## Comparison:", comp_name)
 
     df <- sim_sum[[comp_name]]
