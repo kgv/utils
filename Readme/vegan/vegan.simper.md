@@ -1,4 +1,4 @@
-# simper
+# vegan.simper
 
 - [Clarke, K.R. 1993. Non-parametric multivariate analyses of changes in community structure. Australian Journal of Ecology, 18, 117–143](https://doi.org/10.1111/j.1442-9993.1993.tb00438.x)
 - [rdocumentation.org](https://www.rdocumentation.org/packages/vegan/topics/simper)

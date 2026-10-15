@@ -19,6 +19,10 @@ PERMUTATIONS <- 9999
 
 VALUE <- "PartsPerMillion_DryWeight"
 
+# Укажите нужную неделю (1 или 5).
+# Если хотите проанализировать всё без фильтров, укажите NULL
+TARGET_WEEK <- 5
+
 # =====================================================================
 # НАЧАЛО ПЕРЕНАПРАВЛЕНИЯ ВЫВОДА
 # =====================================================================
@@ -72,18 +76,18 @@ Week <- as.numeric(mydata$Week)
 # Создаем пустой вектор для новых групп
 macro_groups <- character(nrow(mydata))
 
-macro_groups[Ni == 0 & Week == 1] <- "Control_Week1"
-macro_groups[Ni == 50 & Week == 1] <- "Ni50_Week1"
-macro_groups[Ni == 250 & Week == 1] <- "Ni250_Week1"
-macro_groups[Ni == 500 & Week == 1] <- "Ni500_Week1"
-macro_groups[Ni == 750 & Week == 1] <- "Ni750_Week1"
-macro_groups[Ni == 1000 & Week == 1] <- "Ni1000_Week1"
-macro_groups[Ni == 0 & Week == 5] <- "Control_Week5"
-macro_groups[Ni == 50 & Week == 5] <- "Ni50_Week5"
-macro_groups[Ni == 250 & Week == 5] <- "Ni250_Week5"
-macro_groups[Ni == 500 & Week == 5] <- "Ni500_Week5"
-macro_groups[Ni == 750 & Week == 5] <- "Ni750_Week5"
-macro_groups[Ni == 1000 & Week == 5] <- "Ni1000_Week5"
+# macro_groups[Ni == 0 & Week == 1] <- "Control_Week1"
+# macro_groups[Ni == 50 & Week == 1] <- "Ni50_Week1"
+# macro_groups[Ni == 250 & Week == 1] <- "Ni250_Week1"
+# macro_groups[Ni == 500 & Week == 1] <- "Ni500_Week1"
+# macro_groups[Ni == 750 & Week == 1] <- "Ni750_Week1"
+# macro_groups[Ni == 1000 & Week == 1] <- "Ni1000_Week1"
+# macro_groups[Ni == 0 & Week == 5] <- "Control_Week5"
+# macro_groups[Ni == 50 & Week == 5] <- "Ni50_Week5"
+# macro_groups[Ni == 250 & Week == 5] <- "Ni250_Week5"
+# macro_groups[Ni == 500 & Week == 5] <- "Ni500_Week5"
+# macro_groups[Ni == 750 & Week == 5] <- "Ni750_Week5"
+# macro_groups[Ni == 1000 & Week == 5] <- "Ni1000_Week5"
 
 # Control/Low/Medium/High
 # macro_groups[Ni == 0 & Week == 1] <- "Control_Week1"
@@ -109,6 +113,49 @@ macro_groups[Ni == 1000 & Week == 5] <- "Ni1000_Week5"
 # macro_groups[Ni == 750] <- "Ni750"
 # macro_groups[Ni == 1000] <- "Ni1000"
 
+if (!is.null(TARGET_WEEK)) {
+    macro_groups[Ni == 0 & Week == TARGET_WEEK] <- paste0(
+        "Control_Week",
+        TARGET_WEEK
+    )
+    macro_groups[Ni == 50 & Week == TARGET_WEEK] <- paste0(
+        "Ni50_Week",
+        TARGET_WEEK
+    )
+    macro_groups[Ni == 250 & Week == TARGET_WEEK] <- paste0(
+        "Ni250_Week",
+        TARGET_WEEK
+    )
+    macro_groups[Ni == 500 & Week == TARGET_WEEK] <- paste0(
+        "Ni500_Week",
+        TARGET_WEEK
+    )
+    macro_groups[Ni == 750 & Week == TARGET_WEEK] <- paste0(
+        "Ni750_Week",
+        TARGET_WEEK
+    )
+    macro_groups[Ni == 1000 & Week == TARGET_WEEK] <- paste0(
+        "Ni1000_Week",
+        TARGET_WEEK
+    )
+    # ВАЖНО: Строки с ДРУГОЙ неделей останутся пустыми.
+    # Чтобы SIMPER не сошел с ума, назовем их "Ignore" (мы их потом отфильтруем)
+    macro_groups[Week != TARGET_WEEK] <- "Ignore"
+} else {
+    macro_groups[Ni == 0 & Week == 1] <- "Control_Week1"
+    macro_groups[Ni == 50 & Week == 1] <- "Ni50_Week1"
+    macro_groups[Ni == 250 & Week == 1] <- "Ni250_Week1"
+    macro_groups[Ni == 500 & Week == 1] <- "Ni500_Week1"
+    macro_groups[Ni == 750 & Week == 1] <- "Ni750_Week1"
+    macro_groups[Ni == 1000 & Week == 1] <- "Ni1000_Week1"
+    macro_groups[Ni == 0 & Week == 5] <- "Control_Week5"
+    macro_groups[Ni == 50 & Week == 5] <- "Ni50_Week5"
+    macro_groups[Ni == 250 & Week == 5] <- "Ni250_Week5"
+    macro_groups[Ni == 500 & Week == 5] <- "Ni500_Week5"
+    macro_groups[Ni == 750 & Week == 5] <- "Ni750_Week5"
+    macro_groups[Ni == 1000 & Week == 5] <- "Ni1000_Week5"
+}
+
 # Превращаем в фактор
 macro_groups <- as.factor(macro_groups)
 
@@ -130,9 +177,16 @@ for (comp_name in names(sim_sum)) {
     # if (!grepl("*\\.5_.*\\.5$", comp_name)) {
     #     next
     # }
-    if (!grepl(".*Week5_.*Week5$", comp_name)) {
-        next
+    # Если константа задана, применяем фильтр
+    if (!is.null(TARGET_WEEK)) {
+        # Динамически создаем регулярное выражение.
+        # Если TARGET_WEEK = 5, pattern станет "Week5_.*Week5$"
+        pattern <- paste0(".*Week", TARGET_WEEK, "_.*Week", TARGET_WEEK, "$")
+        if (!grepl(pattern, comp_name)) {
+            next
+        }
     }
+
     cat("## Comparison:", comp_name)
 
     df <- sim_sum[[comp_name]]
