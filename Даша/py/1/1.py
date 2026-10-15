@@ -414,6 +414,10 @@ df_control = df_control.with_columns(
     .cast(pl.Int32)
     .alias("Ni")
 )
+df_control = df_control.with_columns(
+    ava_percent=(pl.col("ava") / pl.col("ava").sum() * 100).over("Ni"),
+    avb_percent=(pl.col("avb") / pl.col("avb").sum() * 100).over("Ni"),
+)
 print(f"df_control: {df_control}")
 
 df_control = df_control.with_columns(
@@ -429,14 +433,19 @@ df_control = df_control.with_columns(
 )
 
 # Оставляем только те кислоты, у которых p <= 0.05 хотя бы раз
-sig_features = (
-    df_control.filter(pl.col("p") <= 0.05)
-    .select("Feature")
-    .unique()
-    .to_series()
-    .to_list()
-)
-df_control = df_control.filter(pl.col("Feature").is_in(sig_features))
+# sig_features = (
+#     df_control.filter(pl.col("p") <= 0.05)
+#     .select("Feature")
+#     .unique()
+#     .to_series()
+#     .to_list()
+# )
+# df_control = df_control.filter(pl.col("Feature").is_in(sig_features))
+
+# .filter(
+#     (pl.col("ava_percent") >= 1).any().over("Ni")
+#     | (pl.col("avb_percent") >= 1).any().over("Ni")
+# )
 
 # Сортируем оставшиеся значимые кислоты по их среднему вкладу (average)
 feature_importance = (
