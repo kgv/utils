@@ -5,6 +5,7 @@ import seaborn as sns
 import numpy as np
 import io
 import re
+import tkinter as tk
 from matplotlib.ticker import MaxNLocator
 
 # 1. Исходные данные
@@ -363,7 +364,6 @@ for block in blocks[1:]:
     lines = block.strip().split("\n")
     comp_name = lines[0].strip()
 
-    # Очистка markdown-таблицы от лишних символов для корректного чтения
     cleaned_lines = []
     for line in lines[1:]:
         line = line.strip()
@@ -377,12 +377,10 @@ for block in blocks[1:]:
 
     table_str = "\n".join(cleaned_lines)
 
-    # Читаем через Polars
     df = pl.read_csv(io.StringIO(table_str), separator="|", null_values=[""])
     df.columns = [c.strip() for c in df.columns]
     df = df.rename({df.columns[0]: "Feature"})
 
-    # Убираем пробелы в строковых колонках
     df = df.with_columns([pl.col(pl.String).str.strip_chars()])
     df = df.with_columns(pl.lit(comp_name).alias("Comparison"))
     all_data.append(df)
@@ -400,10 +398,8 @@ full_df = full_df.with_columns(
         pl.col("p").cast(pl.Float64),
     ]
 )
-print(f"full_df: {full_df}")
 
 # 3. Подготовка данных
-# Оставляем только сравнения с контролем 0.5 и извлекаем дозу
 df_control = full_df.filter(pl.col("Comparison").str.starts_with("0.5_"))
 df_control = df_control.with_columns(
     pl.col("Comparison")
@@ -418,11 +414,9 @@ df_control = df_control.with_columns(
     ava_percent=(pl.col("ava") / pl.col("ava").sum() * 100).over("Ni"),
     avb_percent=(pl.col("avb") / pl.col("avb").sum() * 100).over("Ni"),
 )
-print(f"df_control: {df_control}")
 
 df_control = df_control.with_columns(
     [
-        # Вычисляем позицию (ранг) кислоты по её вкладу (average) до фильтрации
         pl.col("average").rank(method="min", descending=True).over("Ni").alias("Rank"),
         pl.col("cumsum")
         .diff()
@@ -432,141 +426,143 @@ df_control = df_control.with_columns(
     ]
 )
 
-# Сортируем оставшиеся значимые кислоты по их среднему вкладу (average)
 feature_importance = (
     df_control.group_by("Feature")
     .agg(pl.col("average").mean().alias("mean_avg"))
     .sort("mean_avg", descending=True)
 )
 all_features = feature_importance.get_column("Feature").to_list()
-n_features = len(all_features)
 
-# 4. Построение единой сетки графиков
-sns.set_theme(style="whitegrid")
+# Включаем интерактивный режим matplotlib, чтобы окно настроек не блокировалось
+plt.ion()
 
-# 4 колонки: Концентрация (ava/avb), Вклад (average+sd), Ранг, p-value
-fig, axes = plt.subplots(nrows=n_features, ncols=4, figsize=(20, 3.5 * n_features))
-axes = np.atleast_2d(axes)  # Защита от ошибки, если n_features == 1
+# 4. Функция отрисовки графиков
+def draw_plots(selected_features):
+    # Закрываем предыдущие окна с графиками перед новой отрисовкой
+    plt.close('all')
+    
+    if not selected_features:
+        print("Нет выбранных кислот для отображения.")
+        return
 
-fig.suptitle(
-    f"Профиль SIMPER: {n_features} статистически значимых жирных кислот (p ≤ 0.05)",
-    fontsize=22,
-    weight="bold",
-    y=0.99,
-)
+    n_features = len(selected_features)
+    sns.set_theme(style="whitegrid")
+    
+    fig, axes = plt.subplots(nrows=n_features, ncols=4, figsize=(20, 3.5 * n_features))
+    axes = np.atleast_2d(axes)
 
-metric_titles = [
-    "Концентрация (ava / avb)",
-    "Собственный вклад (Average ± SD)",
-    "Относительный вклад (%)",
-    "p-value (Значимость)",
-]
-
-for row_idx, feature in enumerate(all_features):
-    # Фильтруем данные для конкретной кислоты и переводим в pandas для удобства отрисовки в matplotlib
-    feat_df = df_control.filter(pl.col("Feature") == feature).sort("Ni").to_pandas()
-
-    # --- 1. Концентрация (ava и avb на одном графике) ---
-    ax0 = axes[row_idx, 0]
-    ax0.plot(
-        feat_df["Ni"],
-        feat_df["ava"],
-        color="#2b7bba",
-        marker="o",
-        markersize=8,
-        linewidth=2,
-        label="ava (Контроль)",
+    fig.suptitle(
+        f"Профиль SIMPER: {n_features} выбранных жирных кислот",
+        fontsize=22,
+        weight="bold",
+        y=0.99,
     )
-    ax0.plot(
-        feat_df["Ni"],
-        feat_df["avb"],
-        color="#f0ad4e",
-        marker="s",
-        markersize=8,
-        linewidth=2,
-        label="avb (Опыт)",
-    )
-    ax0.set_xticks([0, 50, 250, 500, 750, 1000])
-    ax0.set_ylabel(f"{feature}", fontsize=14, weight="bold")
-    if row_idx == 0:
-        ax0.legend(fontsize=11, loc="best")
 
-    # --- 2. Собственный вклад (Average + SD) ---
-    ax1 = axes[row_idx, 1]
-    # Столбчатая диаграмма с усами (ширина 80 подобрана так, чтобы столбцы не слипались при шаге доз)
-    ax1.bar(
-        feat_df["Ni"],
-        feat_df["average"],
-        yerr=feat_df["sd"],
-        width=80,
-        capsize=5,
-        color="#d9534f",
-        alpha=0.8,
-        edgecolor="black",
-    )
-    ax1.set_xticks([0, 50, 250, 500, 750, 1000])
-    ax1.set_ylabel("")
+    metric_titles = [
+        "Концентрация (ava / avb)",
+        "Собственный вклад (Average ± SD)",
+        "Относительный вклад (%)",
+        "p-value (Значимость)",
+    ]
 
-    # --- 3. Позиция (Ранг) ---
-    ax2 = axes[row_idx, 2]
-    ax2.plot(
-        feat_df["Ni"],
-        feat_df["cumsum_diff"],
-        color="#5cb85c",
-        marker="v",
-        markersize=8,
-        linewidth=2,
-    )
-    ax2.set_xticks([0, 50, 250, 500, 750, 1000])
-    # ax2.invert_yaxis()  # Инвертируем ось Y, чтобы 1-е место было сверху
-    # ax2.yaxis.set_major_locator(
-    #     MaxNLocator(integer=True)
-    # )  # Только целые числа на оси Y
-    ax2.set_ylabel("")
+    for row_idx, feature in enumerate(selected_features):
+        feat_df = df_control.filter(pl.col("Feature") == feature).sort("Ni").to_pandas()
 
-    # --- 4. p-value ---
-    ax3 = axes[row_idx, 3]
-    ax3.plot(
-        feat_df["Ni"],
-        feat_df["p"],
-        color="#9b59b6",
-        marker="D",
-        markersize=8,
-        linewidth=2,
-    )
-    ax3.axhline(0.05, ls="--", color="red", alpha=0.7)
+        # --- 1. Концентрация (ava и avb) + avb_percent (вторая ось) ---
+        ax0 = axes[row_idx, 0]
+        line1 = ax0.plot(feat_df["Ni"], feat_df["ava"], color="#2b7bba", marker="o", markersize=8, linewidth=2, label="ava (Контроль)")
+        line2 = ax0.plot(feat_df["Ni"], feat_df["avb"], color="#f0ad4e", marker="s", markersize=8, linewidth=2, label="avb (Опыт)")
+        ax0.set_xticks([0, 50, 250, 500, 750, 1000])
+        ax0.set_ylabel(f"{feature}", fontsize=12, weight="bold")
+        
+        # Добавляем вторую ось Y для avb_percent
+        ax0_twin = ax0.twinx()
+        line3 = ax0_twin.plot(feat_df["Ni"], feat_df["avb_percent"], color="#8e44ad", marker="^", markersize=8, linewidth=2, linestyle="--", label="avb_percent (%)")
+        ax0_twin.set_ylabel("avb_percent (%)", color="#8e44ad", fontsize=10, weight="bold")
+        ax0_twin.tick_params(axis='y', labelcolor="#8e44ad")
+        ax0_twin.grid(False) # Отключаем сетку для второй оси, чтобы не было мешанины
 
-    # Подписи значимости
-    for _, row in feat_df.iterrows():
-        if row["signif"] and str(row["signif"]).strip() not in ["", "."]:
-            ax3.text(
-                row["Ni"],
-                row["p"] + 0.02,
-                row["signif"],
-                color="red",
-                fontsize=14,
-                ha="center",
-                va="bottom",
-                weight="bold",
-            )
+        if row_idx == 0:
+            # Объединяем легенды с обеих осей
+            lines = line1 + line2 + line3
+            labels = [l.get_label() for l in lines]
+            ax0.legend(lines, labels, fontsize=10, loc="best")
 
-    ax3.set_xticks([0, 50, 250, 500, 750, 1000])
-    ax3.set_ylabel("")
+        # --- 2. Собственный вклад (Average + SD) ---
+        ax1 = axes[row_idx, 1]
+        ax1.bar(feat_df["Ni"], feat_df["average"], yerr=feat_df["sd"], width=80, capsize=5, color="#d9534f", alpha=0.8, edgecolor="black")
+        ax1.set_xticks([0, 50, 250, 500, 750, 1000])
+        ax1.set_ylabel("")
 
-    # Настройка заголовков колонок (только для самого верхнего ряда)
-    if row_idx == 0:
+        # --- 3. Позиция (Ранг) ---
+        ax2 = axes[row_idx, 2]
+        ax2.plot(feat_df["Ni"], feat_df["cumsum_diff"], color="#5cb85c", marker="v", markersize=8, linewidth=2)
+        ax2.set_xticks([0, 50, 250, 500, 750, 1000])
+        ax2.set_ylabel("")
+
+        # --- 4. p-value ---
+        ax3 = axes[row_idx, 3]
+        ax3.plot(feat_df["Ni"], feat_df["p"], color="#9b59b6", marker="D", markersize=8, linewidth=2)
+        ax3.axhline(0.05, ls="--", color="red", alpha=0.7)
+
+        for _, row in feat_df.iterrows():
+            if row["signif"] and str(row["signif"]).strip() not in ["", "."]:
+                ax3.text(row["Ni"], row["p"] + 0.02, row["signif"], color="red", fontsize=14, ha="center", va="bottom", weight="bold")
+
+        ax3.set_xticks([0, 50, 250, 500, 750, 1000])
+        ax3.set_ylabel("")
+
+        if row_idx == 0:
+            for col_idx in range(4):
+                axes[row_idx, col_idx].set_title(metric_titles[col_idx], fontsize=14, weight="bold", pad=15)
+
         for col_idx in range(4):
-            axes[row_idx, col_idx].set_title(
-                metric_titles[col_idx], fontsize=14, weight="bold", pad=15
-            )
+            if row_idx == n_features - 1:
+                axes[row_idx, col_idx].set_xlabel("Доза Ni", fontsize=12, weight="bold")
+            else:
+                axes[row_idx, col_idx].set_xlabel("")
 
-    # Настройка подписей оси X (только для самого нижнего ряда)
-    for col_idx in range(4):
-        if row_idx == n_features - 1:
-            axes[row_idx, col_idx].set_xlabel("Доза Ni", fontsize=12, weight="bold")
-        else:
-            axes[row_idx, col_idx].set_xlabel("")
+    plt.tight_layout(rect=[0, 0, 1, 0.98])
+    plt.show()
 
-# Финальная компоновка
-plt.tight_layout(rect=[0, 0, 1, 0.98])
-plt.show()
+# 5. Создание окна настроек (GUI)
+def on_redraw_click():
+    # Получаем индексы выбранных элементов
+    selected_indices = listbox.curselection()
+    # Получаем сами названия кислот по индексам
+    selected_features = [listbox.get(i) for i in selected_indices]
+    draw_plots(selected_features)
+
+root = tk.Tk()
+root.title("Настройки отображения ЖК")
+root.geometry("350x450")
+
+lbl = tk.Label(root, text="Выберите ЖК для отображения\n(Зажмите Ctrl для выбора нескольких):", font=("Arial", 10, "bold"))
+lbl.pack(pady=10)
+
+# Используем Listbox с множественным выбором (MULTIPLE/EXTENDED)
+frame = tk.Frame(root)
+frame.pack(pady=5, fill=tk.BOTH, expand=True, padx=20)
+
+scrollbar = tk.Scrollbar(frame)
+scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+
+listbox = tk.Listbox(frame, selectmode=tk.EXTENDED, yscrollcommand=scrollbar.set, font=("Arial", 11))
+listbox.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+scrollbar.config(command=listbox.yview)
+
+# Заполняем список всеми доступными кислотами
+for feature in all_features:
+    listbox.insert(tk.END, feature)
+
+# По умолчанию выбираем все элементы
+listbox.select_set(0, tk.END)
+
+btn_redraw = tk.Button(root, text="Перерисовать графики", command=on_redraw_click, font=("Arial", 12, "bold"), bg="#4CAF50", fg="white")
+btn_redraw.pack(pady=15, fill=tk.X, padx=20)
+
+# Первичная отрисовка при запуске
+on_redraw_click()
+
+# Запуск главного цикла интерфейса
+root.mainloop()
