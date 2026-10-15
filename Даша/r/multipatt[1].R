@@ -1,4 +1,4 @@
-# source("/mnt/d/git/kgv/utils/Даша/r/multipatt.R", encoding = "UTF-8")
+# source("/mnt/d/git/kgv/utils/Даша/r/multipatt[1].R", encoding = "UTF-8")
 
 library(indicspecies)
 
@@ -13,8 +13,8 @@ FUNCTION <- "r.g"
 # GROUP <- "Week"
 GROUP <- c("Ni", "Week")
 
-KIND = "Leaf"
-# KIND = "Root"
+# KIND = "Leaf"
+KIND = "Root"
 
 PERMUTATIONS <- 9999
 
@@ -33,24 +33,14 @@ set.seed(42)
 input_file <- paste0("Даша/csv/_{Type=Wide}{Kind=", KIND, "}{Value=", VALUE, "}.txt")
 mydata <- read.csv(input_file, check.names = FALSE, stringsAsFactors = FALSE)
 
+# Оставляем только те строки, где Week равно 5
+mydata <- mydata[mydata$Week == 5, ]
+
 # Отделяем матрицу обилий (начиная с 4-го столбца)
 abund <- mydata[, 4:ncol(mydata)]
 
 # Убедимся, что все данные числовые (на случай скрытых ошибок в файле)
-# abund <- as.data.frame(lapply(abund, as.numeric))
 abund <- as.data.frame(lapply(abund, as.numeric), check.names = FALSE)
-
-m_abund <- as.matrix(abund)
-
-# group_factor <- as.factor(mydata$Species) # Явно делаем фактором
-# Создаем комбинированный фактор для графиков, SIMPER и IndVal
-if (length(GROUP) > 1) {
-  # Функция interaction() склеит значения. Если Ni=50 и Week=1, получится группа "50.1"
-  group_factor <- interaction(mydata[, GROUP], drop = TRUE)
-} else {
-  # Динамически получаем фактор (используем двойные скобки [[ ]] для текста)
-  group_factor <- as.factor(mydata[[GROUP]])
-}
 
 Ni <- as.numeric(mydata$Ni)
 Week <- as.numeric(mydata$Week)
@@ -82,10 +72,18 @@ macro_groups <- character(length(Ni))
 # macro_groups[Ni == 750 | Ni == 1000 & Week == 5] <- "NiHigh_Week5"
 
 # Control/Low/Medium/High
-macro_groups[Ni == 0 & Week == 1] <- "Control_Week1"
-macro_groups[Ni == 0 & Week == 5] <- "Control_Week5"
-macro_groups[Ni > 0 & Week == 1] <- "Ni_Week1"
-macro_groups[Ni > 0 & Week == 5] <- "Ni_Week5"
+# macro_groups[Ni == 0 & Week == 1] <- "Control_Week1"
+# macro_groups[Ni == 0 & Week == 5] <- "Control_Week5"
+# macro_groups[Ni > 0 & Week == 1] <- "Ni_Week1"
+# macro_groups[Ni > 0 & Week == 5] <- "Ni_Week5"
+
+# Week
+macro_groups[Ni == 0] <- "Control"
+macro_groups[Ni == 50] <- "Ni50"
+macro_groups[Ni == 250] <- "Ni250"
+macro_groups[Ni == 500] <- "Ni500"
+macro_groups[Ni == 750] <- "Ni750"
+macro_groups[Ni == 1000] <- "Ni1000"
 
 # Превращаем в фактор
 macro_groups <- as.factor(macro_groups)
@@ -106,8 +104,7 @@ multipatt <- multipatt(x = abund,
                        func = FUNCTION,
                       #  max.order = 2,
                        allow.negative = TRUE,
-                       control = how(nperm=PERMUTATIONS),
-                       print.perm=TRUE)
+                       control = how(nperm=PERMUTATIONS))
 multipatt_sum <- summary(multipatt)
 print(multipatt_sum)
 
