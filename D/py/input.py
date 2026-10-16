@@ -7,18 +7,18 @@ KIND = [
 
 for kind in KIND:
     read_dfs = [
-        pl.read_csv(f"Даша/csv/{{Kind={kind}}}{{Ni=0mM}}{{Week=1}}.txt"),
-        pl.read_csv(f"Даша/csv/{{Kind={kind}}}{{Ni=0mM}}{{Week=5}}.txt"),
-        pl.read_csv(f"Даша/csv/{{Kind={kind}}}{{Ni=50mM}}{{Week=1}}.txt"),
-        pl.read_csv(f"Даша/csv/{{Kind={kind}}}{{Ni=50mM}}{{Week=5}}.txt"),
-        pl.read_csv(f"Даша/csv/{{Kind={kind}}}{{Ni=250mM}}{{Week=1}}.txt"),
-        pl.read_csv(f"Даша/csv/{{Kind={kind}}}{{Ni=250mM}}{{Week=5}}.txt"),
-        pl.read_csv(f"Даша/csv/{{Kind={kind}}}{{Ni=500mM}}{{Week=1}}.txt"),
-        pl.read_csv(f"Даша/csv/{{Kind={kind}}}{{Ni=500mM}}{{Week=5}}.txt"),
-        pl.read_csv(f"Даша/csv/{{Kind={kind}}}{{Ni=750mM}}{{Week=1}}.txt"),
-        pl.read_csv(f"Даша/csv/{{Kind={kind}}}{{Ni=750mM}}{{Week=5}}.txt"),
-        pl.read_csv(f"Даша/csv/{{Kind={kind}}}{{Ni=1000mM}}{{Week=1}}.txt"),
-        pl.read_csv(f"Даша/csv/{{Kind={kind}}}{{Ni=1000mM}}{{Week=5}}.txt"),
+        pl.read_csv(f"D/csv/{{Kind={kind}}}{{Ni=0mM}}{{Week=1}}.txt"),
+        pl.read_csv(f"D/csv/{{Kind={kind}}}{{Ni=0mM}}{{Week=5}}.txt"),
+        pl.read_csv(f"D/csv/{{Kind={kind}}}{{Ni=50mM}}{{Week=1}}.txt"),
+        pl.read_csv(f"D/csv/{{Kind={kind}}}{{Ni=50mM}}{{Week=5}}.txt"),
+        pl.read_csv(f"D/csv/{{Kind={kind}}}{{Ni=250mM}}{{Week=1}}.txt"),
+        pl.read_csv(f"D/csv/{{Kind={kind}}}{{Ni=250mM}}{{Week=5}}.txt"),
+        pl.read_csv(f"D/csv/{{Kind={kind}}}{{Ni=500mM}}{{Week=1}}.txt"),
+        pl.read_csv(f"D/csv/{{Kind={kind}}}{{Ni=500mM}}{{Week=5}}.txt"),
+        pl.read_csv(f"D/csv/{{Kind={kind}}}{{Ni=750mM}}{{Week=1}}.txt"),
+        pl.read_csv(f"D/csv/{{Kind={kind}}}{{Ni=750mM}}{{Week=5}}.txt"),
+        pl.read_csv(f"D/csv/{{Kind={kind}}}{{Ni=1000mM}}{{Week=1}}.txt"),
+        pl.read_csv(f"D/csv/{{Kind={kind}}}{{Ni=1000mM}}{{Week=5}}.txt"),
     ]
 
     unpivot_dfs = [
@@ -53,7 +53,7 @@ for kind in KIND:
     # join #####################################################################
 
     sample_df = pl.read_csv(
-        f"Даша/csv/{{Kind={kind}}}{{Fields=Ni,Week,Sample,Plant,WaterFraction,FreshWeight}}.txt"
+        f"D/csv/{{Kind={kind}}}{{Fields=Ni,Week,Sample,Plant,WaterFraction,FreshWeight}}.txt"
     )
     print(f"sample_df: {sample_df}")
 
@@ -79,7 +79,7 @@ for kind in KIND:
     print(f"join_df: {join_df}")
 
     # join_df.write_csv(
-    #     f"Даша/csv/_{{Kind={kind}}}{{Fields=Ni,Week,Sample,Plant,WaterFraction,FreshWeight,FattyAcid,Standard,Area}}.txt"
+    #     f"D/csv/_{{Kind={kind}}}{{Fields=Ni,Week,Sample,Plant,WaterFraction,FreshWeight,FattyAcid,Standard,Area}}.txt"
     # )
 
     # ppx ######################################################################
@@ -175,5 +175,5 @@ for kind in KIND:
     print(f"calculate_df: {calculate_df}")
 
     calculate_df.write_csv(
-        f"Даша/csv/_{{Kind={kind}}}{{Fields=Ni,Week,Sample,Plant,FattyAcid,PartsPerX}}.txt"
+        f"D/csv/_{{Kind={kind}}}{{Fields=Ni,Week,Sample,Plant,FattyAcid,PartsPerX}}.txt"
     )
