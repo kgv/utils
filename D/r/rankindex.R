@@ -1,4 +1,4 @@
-# source("/mnt/d/git/kgv/utils/D/r/rankindex.R", encoding = "UTF-8")
+# source("/mnt/d/g/git/kgv/utils/D/r/rankindex.R", encoding = "UTF-8")
 
 library(vegan)
 

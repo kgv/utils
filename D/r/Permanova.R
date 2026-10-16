@@ -1,4 +1,4 @@
-# source("/mnt/d/git/kgv/utils/D/r/Permanova.R", encoding = "UTF-8")
+# source("/mnt/d/g/git/kgv/utils/D/r/Permanova.R", encoding = "UTF-8")
 
 library(indicspecies)
 library(knitr)
