@@ -124,7 +124,7 @@ for (current_organ in TARGET_ORGANS) {
                     symbols = c("***", "**", "*", ".", " ")
                 )
                 # Add contribution
-                df$contribution <- c(df$cumsum[1], diff(df$cumsum)) * 100
+                df$cumsum_diff <- c(df$cumsum[1], diff(df$cumsum)) * 100
                 df <- df[, c(
                     names(df)[0],
                     "average",
@@ -132,7 +132,7 @@ for (current_organ in TARGET_ORGANS) {
                     "ratio",
                     "ava",
                     "avb",
-                    "contribution",
+                    "cumsum_diff",
                     "cumsum",
                     "p",
                     "significance"
