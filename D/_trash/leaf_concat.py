@@ -1,18 +1,18 @@
 import polars as pl
 
 # Чтение данных
-df_0_1 = pl.read_csv("Даша/csv/{Kind=Leaf}{Ni=0mM}{Week=1}.txt")
-df_0_5 = pl.read_csv("Даша/csv/{Kind=Leaf}{Ni=0mM}{Week=5}.txt")
-df_50_1 = pl.read_csv("Даша/csv/{Kind=Leaf}{Ni=50mM}{Week=1}.txt")
-df_50_5 = pl.read_csv("Даша/csv/{Kind=Leaf}{Ni=50mM}{Week=5}.txt")
-df_250_1 = pl.read_csv("Даша/csv/{Kind=Leaf}{Ni=250mM}{Week=1}.txt")
-df_250_5 = pl.read_csv("Даша/csv/{Kind=Leaf}{Ni=250mM}{Week=5}.txt")
-df_500_1 = pl.read_csv("Даша/csv/{Kind=Leaf}{Ni=500mM}{Week=1}.txt")
-df_500_5 = pl.read_csv("Даша/csv/{Kind=Leaf}{Ni=500mM}{Week=5}.txt")
-df_750_1 = pl.read_csv("Даша/csv/{Kind=Leaf}{Ni=750mM}{Week=1}.txt")
-df_750_5 = pl.read_csv("Даша/csv/{Kind=Leaf}{Ni=750mM}{Week=5}.txt")
-df_1000_1 = pl.read_csv("Даша/csv/{Kind=Leaf}{Ni=1000mM}{Week=1}.txt")
-df_1000_5 = pl.read_csv("Даша/csv/{Kind=Leaf}{Ni=1000mM}{Week=5}.txt")
+df_0_1 = pl.read_csv("D/csv/{Kind=Leaf}{Ni=0mM}{Week=1}.txt")
+df_0_5 = pl.read_csv("D/csv/{Kind=Leaf}{Ni=0mM}{Week=5}.txt")
+df_50_1 = pl.read_csv("D/csv/{Kind=Leaf}{Ni=50mM}{Week=1}.txt")
+df_50_5 = pl.read_csv("D/csv/{Kind=Leaf}{Ni=50mM}{Week=5}.txt")
+df_250_1 = pl.read_csv("D/csv/{Kind=Leaf}{Ni=250mM}{Week=1}.txt")
+df_250_5 = pl.read_csv("D/csv/{Kind=Leaf}{Ni=250mM}{Week=5}.txt")
+df_500_1 = pl.read_csv("D/csv/{Kind=Leaf}{Ni=500mM}{Week=1}.txt")
+df_500_5 = pl.read_csv("D/csv/{Kind=Leaf}{Ni=500mM}{Week=5}.txt")
+df_750_1 = pl.read_csv("D/csv/{Kind=Leaf}{Ni=750mM}{Week=1}.txt")
+df_750_5 = pl.read_csv("D/csv/{Kind=Leaf}{Ni=750mM}{Week=5}.txt")
+df_1000_1 = pl.read_csv("D/csv/{Kind=Leaf}{Ni=1000mM}{Week=1}.txt")
+df_1000_5 = pl.read_csv("D/csv/{Kind=Leaf}{Ni=1000mM}{Week=5}.txt")
 
 dfs = [
     df_0_1,
@@ -55,16 +55,16 @@ unpivot_df = pl.concat(unpivot_dfs)
 print(f"unpivot: {unpivot_df}")
 
 unpivot_df.write_csv(
-    "Даша/{Kind=Leaf}{Fields=Ni,Week,Sample,FattyAcid,Standard,Area}.txt"
+    "D/{Kind=Leaf}{Fields=Ni,Week,Sample,FattyAcid,Standard,Area}.txt"
 )
 # df.group_by(["Ni", "Week", "Sample"], maintain_order=True).agg().write_csv(
-#     "Даша/output.txt"
+#     "D/output.txt"
 # )
 
 ################################################################################
 
 sample_df = pl.read_csv(
-    "Даша/csv/{Kind=Leaf}{Fields=Ni,Week,Sample,Plant,WaterFraction,FreshWeight}.txt"
+    "D/csv/{Kind=Leaf}{Fields=Ni,Week,Sample,Plant,WaterFraction,FreshWeight}.txt"
 )
 print(f"sample_df: {sample_df}")
 
@@ -89,5 +89,5 @@ join_df = unpivot_df.join(
 )
 
 join_df.write_csv(
-    "Даша/{Kind=Leaf}{Fields=Ni,Week,Sample,Plant,WaterFraction,FreshWeight,FattyAcid,Standard,Area}.txt"
+    "D/{Kind=Leaf}{Fields=Ni,Week,Sample,Plant,WaterFraction,FreshWeight,FattyAcid,Standard,Area}.txt"
 )

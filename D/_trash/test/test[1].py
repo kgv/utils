@@ -6,7 +6,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 
 # Чтение данных
-df = pl.read_csv("Даша/Ni,Week,Plant,Sample,FattyAcid,ppm.txt")
+df = pl.read_csv("D/Ni,Week,Plant,Sample,FattyAcid,ppm.txt")
 print(f"df: {df}")
 
 # Исключаем внутренний стандарт

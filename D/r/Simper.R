@@ -1,4 +1,4 @@
-# source("/mnt/d/git/kgv/utils/Даша/r/Simper.R", encoding = "UTF-8")
+# source("/mnt/d/git/kgv/utils/D/r/Simper.R", encoding = "UTF-8")
 
 library(indicspecies)
 library(knitr)
@@ -22,14 +22,14 @@ VALUE = "PartsPerMillion_DryWeight"
 # =====================================================================
 # НАЧАЛО ПЕРЕНАПРАВЛЕНИЯ ВЫВОДА
 # =====================================================================
-output_file <- paste0("Даша/_{Type=SIMPER}{Kind=", KIND, "}{Group=", paste(GROUP, collapse = ","), "}{Permutations=", PERMUTATIONS, "}{Value=", VALUE, "}.txt")
+output_file <- paste0("D/_{Type=SIMPER}{Kind=", KIND, "}{Group=", paste(GROUP, collapse = ","), "}{Permutations=", PERMUTATIONS, "}{Value=", VALUE, "}.txt")
 sink(output_file, split = FALSE)
 
 # Фиксируем генератор случайных чисел
 set.seed(42)
 
 # Загрузка данных
-input_file <- paste0("Даша/csv/_{Type=Wide}{Kind=", KIND, "}{Value=", VALUE, "}.txt")
+input_file <- paste0("D/csv/_{Type=Wide}{Kind=", KIND, "}{Value=", VALUE, "}.txt")
 mydata <- read.csv(input_file, check.names = FALSE, stringsAsFactors = FALSE)
 
 # Отделяем матрицу обилий (начиная с 4-го столбца)

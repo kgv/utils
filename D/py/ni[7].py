@@ -12,7 +12,7 @@ import tkinter as tk
 # ==========================================
 # 1. ЧТЕНИЕ ДАННЫХ
 # ==========================================
-df = pl.read_csv("Даша/Ni,Week,Plant,Sample,FattyAcid,PartsPerMillion,Percent.txt")
+df = pl.read_csv("D/Ni,Week,Plant,Sample,FattyAcid,PartsPerMillion,Percent.txt")
 
 epsilon_val = np.finfo(float).eps
 
@@ -178,7 +178,7 @@ def update_plot(event=None):
             format_list("Ctrl_Plants", round_decimals),
             format_list("Ctrl_Values", round_decimals),
         ]
-    ).write_csv("Даша/df_joined.txt")
+    ).write_csv("D/df_joined.txt")
 
     valid_mask = df_joined["p_value"].is_not_null() & ~df_joined["p_value"].is_nan()
     df_valid = df_joined.filter(valid_mask)

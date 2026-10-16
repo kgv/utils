@@ -25,7 +25,7 @@ EPSILON = np.finfo(float).eps  # Можно заменить на кастомн
 # ==========================================
 
 # Чтение данных
-df = pl.read_csv("Даша/Ni,Week,Plant,Sample,FattyAcid,ppm.txt")
+df = pl.read_csv("D/Ni,Week,Plant,Sample,FattyAcid,ppm.txt")
 print(f"Исходный df:\n{df.head()}")
 
 # Определяем выражение для трансформации на основе настроек
@@ -142,7 +142,7 @@ df_joined.with_columns(
         format_list("treat_values"),
         format_list("ctrl_values"),
     ]
-).write_csv("Даша/output.txt")
+).write_csv("D/output.txt")
 
 # Расставляем звездочки значимости
 df_joined = df_joined.with_columns(

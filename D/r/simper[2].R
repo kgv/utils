@@ -1,4 +1,4 @@
-# source("/mnt/d/git/kgv/utils/Даша/r/simper[2].R", encoding = "UTF-8")
+# source("/mnt/d/git/kgv/utils/D/r/simper[2].R", encoding = "UTF-8")
 
 library(indicspecies)
 library(knitr)
@@ -29,7 +29,7 @@ TARGET_WEEK <- 5
 # НАЧАЛО ПЕРЕНАПРАВЛЕНИЯ ВЫВОДА
 # =====================================================================
 output_file <- paste0(
-    "Даша/_{Type=SIMPER}{Kind=",
+    "D/_{Type=SIMPER}{Kind=",
     KIND,
     "}{Group=",
     paste(GROUP, collapse = ","),
@@ -46,7 +46,7 @@ set.seed(42)
 
 # Загрузка данных
 input_file <- paste0(
-    "Даша/csv/_{Type=Wide}{Kind=",
+    "D/csv/_{Type=Wide}{Kind=",
     KIND,
     "}{Value=",
     VALUE,

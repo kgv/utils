@@ -4,7 +4,7 @@ over = ["Ni", "Week", "Sample", "Plant"]
 
 # Чтение данных
 df = pl.read_csv(
-    "Даша/{Kind=Leaf}{Fields=Ni,Week,Sample,Plant,WaterFraction,FreshWeight,FattyAcid,Standard,Area}.txt"
+    "D/{Kind=Leaf}{Fields=Ni,Week,Sample,Plant,WaterFraction,FreshWeight,FattyAcid,Standard,Area}.txt"
 )
 print(f"df: {df}")
 
@@ -79,6 +79,6 @@ df = df.select(
     ]
 )
 
-df.write_csv("Даша/{Kind=Leaf}{Fields=Ni,Week,Sample,Plant,FattyAcid,PartsPerX}.txt")
+df.write_csv("D/{Kind=Leaf}{Fields=Ni,Week,Sample,Plant,FattyAcid,PartsPerX}.txt")
 # https://en.wikipedia.org/wiki/Parts-per_notation
 # PartsPerHundred PartsPerThousand PartsPerMillion

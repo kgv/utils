@@ -6,7 +6,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 
 # Чтение данных
-df = pl.read_csv("Даша/Ni,Week,Plant,Sample,FattyAcid,ppm.txt")
+df = pl.read_csv("D/Ni,Week,Plant,Sample,FattyAcid,ppm.txt")
 print(f"df: {df}")
 
 # 1. Исключаем внутренний стандарт
@@ -25,7 +25,7 @@ df_calc = df_filtered.with_columns(
 )
 
 print(f"df_calc: {df_calc}")
-df_calc.write_csv("Даша/output_percentages.txt")
+df_calc.write_csv("D/output_percentages.txt")
 
 # 2. Группируем данные: собираем все значения в списки и считаем среднее (теперь на основе процентов)
 df_agg = df_calc.group_by(["Ni", "Week", "FattyAcid"], maintain_order=True).agg(

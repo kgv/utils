@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 # ==========================================
 # 1. ЧТЕНИЕ ДАННЫХ
 # ==========================================
-df = pl.read_csv("Даша/Ni,Week,Plant,Sample,FattyAcid,ppm.txt")
+df = pl.read_csv("D/Ni,Week,Plant,Sample,FattyAcid,ppm.txt")
 
 
 epsilon_val = np.finfo(float).eps
@@ -170,7 +170,7 @@ def update_plot(event=None):
     # Сохраняем текущий результат в файл
     df_joined.with_columns(
         [format_list("treat_values"), format_list("ctrl_values")]
-    ).write_csv("Даша/output.txt")
+    ).write_csv("D/output.txt")
 
     # 1. Считаем во сколько раз изменилось значение (2 в степени модуля Log2FC)
     fold_change = (2 ** pl.col("Log2FC").abs()).round(1)

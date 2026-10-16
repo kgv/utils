@@ -1,4 +1,4 @@
-# source("/mnt/d/git/kgv/utils/Даша/r/Permanova.R", encoding = "UTF-8")
+# source("/mnt/d/git/kgv/utils/D/r/Permanova.R", encoding = "UTF-8")
 
 library(indicspecies)
 library(knitr)
@@ -17,19 +17,19 @@ TARGET_DISTANCE <- "bray"
 # =====================================================================
 # НАЧАЛО ПЕРЕНАПРАВЛЕНИЯ ВЫВОДА
 # =====================================================================
-sink("Даша/_Permanova.txt", split = FALSE)
+sink("D/_Permanova.txt", split = FALSE)
 
 # Фиксируем генератор случайных чисел
 set.seed(42)
 
 # Загрузка данных
-# mydata <- read.csv("Даша/_Wide{Kind=Leaf}{Value=PartsPerMillion_DryWeight}.txt", check.names = FALSE, stringsAsFactors = FALSE)
-# mydata <- read.csv("Даша/_Wide{Kind=Leaf}{Value=PartsPerMillion_DryWeight}{Week=1}.txt", check.names = FALSE, stringsAsFactors = FALSE)
-# mydata <- read.csv("Даша/_Wide{Kind=Leaf}{Value=PartsPerMillion_DryWeight}{Week=5}.txt", check.names = FALSE, stringsAsFactors = FALSE)
-mydata <- read.csv("Даша/_Wide{Kind=Root}{Value=PartsPerMillion_DryWeight}.txt", check.names = FALSE, stringsAsFactors = FALSE)
-# mydata <- read.csv("Даша/_Wide{Kind=Root}{Value=PartsPerMillion_DryWeight}{Week=1}.txt", check.names = FALSE, stringsAsFactors = FALSE)
-# mydata <- read.csv("Даша/_Wide{Kind=Root}{Value=PartsPerMillion_DryWeight}{Week=5}.txt", check.names = FALSE, stringsAsFactors = FALSE)
-# mydata <- read.csv("Даша/_Wide.txt", check.names = FALSE, stringsAsFactors = FALSE)
+# mydata <- read.csv("D/_Wide{Kind=Leaf}{Value=PartsPerMillion_DryWeight}.txt", check.names = FALSE, stringsAsFactors = FALSE)
+# mydata <- read.csv("D/_Wide{Kind=Leaf}{Value=PartsPerMillion_DryWeight}{Week=1}.txt", check.names = FALSE, stringsAsFactors = FALSE)
+# mydata <- read.csv("D/_Wide{Kind=Leaf}{Value=PartsPerMillion_DryWeight}{Week=5}.txt", check.names = FALSE, stringsAsFactors = FALSE)
+mydata <- read.csv("D/_Wide{Kind=Root}{Value=PartsPerMillion_DryWeight}.txt", check.names = FALSE, stringsAsFactors = FALSE)
+# mydata <- read.csv("D/_Wide{Kind=Root}{Value=PartsPerMillion_DryWeight}{Week=1}.txt", check.names = FALSE, stringsAsFactors = FALSE)
+# mydata <- read.csv("D/_Wide{Kind=Root}{Value=PartsPerMillion_DryWeight}{Week=5}.txt", check.names = FALSE, stringsAsFactors = FALSE)
+# mydata <- read.csv("D/_Wide.txt", check.names = FALSE, stringsAsFactors = FALSE)
 
 # Отделяем матрицу обилий (начиная с 4-го столбца)
 abund <- mydata[, 4:ncol(mydata)]

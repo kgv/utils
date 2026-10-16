@@ -1,4 +1,4 @@
-# source("/mnt/d/git/kgv/utils/Даша/r/Anosim.R", encoding = "UTF-8")
+# source("/mnt/d/git/kgv/utils/D/r/Anosim.R", encoding = "UTF-8")
 
 library(indicspecies)
 library(knitr)
@@ -17,13 +17,13 @@ TARGET_DISTANCE <- "bray"
 # =====================================================================
 # НАЧАЛО ПЕРЕНАПРАВЛЕНИЯ ВЫВОДА
 # =====================================================================
-sink("Даша/_Anosim.txt", split = FALSE)
+sink("D/_Anosim.txt", split = FALSE)
 
 # Фиксируем генератор случайных чисел
 set.seed(42)
 
 # Загрузка данных
-mydata <- read.csv("Даша/_Wide.txt", check.names = FALSE, stringsAsFactors = FALSE)
+mydata <- read.csv("D/_Wide.txt", check.names = FALSE, stringsAsFactors = FALSE)
 
 # Отделяем матрицу обилий (начиная с 4-го столбца)
 abund <- mydata[, 4:ncol(mydata)]

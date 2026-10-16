@@ -9,7 +9,7 @@ from matplotlib.widgets import RadioButtons
 # ==========================================
 # 1. ЧТЕНИЕ ДАННЫХ (выполняется один раз)
 # ==========================================
-df = pl.read_csv("Даша/Ni,Week,Plant,Sample,FattyAcid,ppm.txt")
+df = pl.read_csv("D/Ni,Week,Plant,Sample,FattyAcid,ppm.txt")
 # Убедитесь, что в файле есть и колонка 'ppm', и колонка 'pct'.
 
 epsilon_val = np.finfo(float).eps
@@ -141,7 +141,7 @@ def update_plot(val=None):
     # Сохраняем текущий результат в файл
     df_joined.with_columns(
         [format_list("treat_values"), format_list("ctrl_values")]
-    ).write_csv("Даша/output.txt")
+    ).write_csv("D/output.txt")
 
     df_joined = df_joined.with_columns(
         Significance=pl.format(

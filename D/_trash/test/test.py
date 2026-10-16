@@ -1,7 +1,7 @@
 import polars as pl
 
 # Чтение данных
-df = pl.read_csv("Даша/Ni,Week,Plant,Sample,FattyAcid,ppm.txt")
+df = pl.read_csv("D/Ni,Week,Plant,Sample,FattyAcid,ppm.txt")
 print(f"df: {df}")
 
 df = df.filter(pl.col("FattyAcid") != "17:0")

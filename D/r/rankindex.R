@@ -1,4 +1,4 @@
-# source("/mnt/d/git/kgv/utils/Даша/r/rankindex.R", encoding = "UTF-8")
+# source("/mnt/d/git/kgv/utils/D/r/rankindex.R", encoding = "UTF-8")
 
 library(vegan)
 
@@ -9,7 +9,7 @@ KIND = "Root"
 VALUE = "PartsPerMillion_DryWeight"
 
 # Загрузка данных
-input_file <- paste0("Даша/csv/_{Type=Wide}{Kind=", KIND, "}{Value=", VALUE, "}.txt")
+input_file <- paste0("D/csv/_{Type=Wide}{Kind=", KIND, "}{Value=", VALUE, "}.txt")
 mydata <- read.csv(input_file, check.names = FALSE, stringsAsFactors = FALSE)
 
 # Подготавливаем "градиент среды" (ваши факторы) Поскольку Ni измеряется в

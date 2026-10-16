@@ -47,7 +47,7 @@ for kind in KIND:
     print(f"unpivot: {unpivot_df}")
 
     # unpivot_df.write_csv(
-    #     "Даша/csv/_{{Kind={kind}}}{{Fields=Ni,Week,Sample,FattyAcid,Standard,Area}}.txt"
+    #     "D/csv/_{{Kind={kind}}}{{Fields=Ni,Week,Sample,FattyAcid,Standard,Area}}.txt"
     # )
 
     # join #####################################################################

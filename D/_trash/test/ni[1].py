@@ -6,7 +6,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 
 # Чтение данных
-df = pl.read_csv("Даша/Ni,Week,Plant,Sample,FattyAcid,ppm.txt")
+df = pl.read_csv("D/Ni,Week,Plant,Sample,FattyAcid,ppm.txt")
 print(f"df: {df}")
 
 # 1. Исключаем внутренний стандарт и считаем log1p_ppm = ln(1 + ppm)
@@ -122,7 +122,7 @@ df_joined.with_columns(
         format_list("treat_values"),
         format_list("ctrl_values"),
     ]
-).write_csv("Даша/output.txt")
+).write_csv("D/output.txt")
 
 # Расставляем звездочки значимости
 df_joined = df_joined.with_columns(

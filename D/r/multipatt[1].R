@@ -1,4 +1,4 @@
-# source("/mnt/d/git/kgv/utils/Даша/r/multipatt[1].R", encoding = "UTF-8")
+# source("/mnt/d/git/kgv/utils/D/r/multipatt[1].R", encoding = "UTF-8")
 
 library(indicspecies)
 
@@ -23,14 +23,14 @@ VALUE = "PartsPerMillion_DryWeight"
 # =====================================================================
 # НАЧАЛО ПЕРЕНАПРАВЛЕНИЯ ВЫВОДА
 # =====================================================================
-output_file <- paste0("Даша/_{Type=multipatt}{Kind=", KIND, "}{Function=", FUNCTION, "}{Group=", paste(GROUP, collapse = ","), "}{Permutations=", PERMUTATIONS, "}{Value=", VALUE, "}.txt")
+output_file <- paste0("D/_{Type=multipatt}{Kind=", KIND, "}{Function=", FUNCTION, "}{Group=", paste(GROUP, collapse = ","), "}{Permutations=", PERMUTATIONS, "}{Value=", VALUE, "}.txt")
 sink(output_file, split = FALSE)
 
 # Фиксируем генератор случайных чисел
 set.seed(42)
 
 # Загрузка данных
-input_file <- paste0("Даша/csv/_{Type=Wide}{Kind=", KIND, "}{Value=", VALUE, "}.txt")
+input_file <- paste0("D/csv/_{Type=Wide}{Kind=", KIND, "}{Value=", VALUE, "}.txt")
 mydata <- read.csv(input_file, check.names = FALSE, stringsAsFactors = FALSE)
 
 # Оставляем только те строки, где Week равно 5

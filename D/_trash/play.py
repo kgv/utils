@@ -1,9 +1,9 @@
 import polars as pl
 
 # Чтение данных
-df = pl.read_csv("Даша/Plant,FattyAcid,Standard,Ni,Week,Area.txt")
+df = pl.read_csv("D/Plant,FattyAcid,Standard,Ni,Week,Area.txt")
 print(f"df: {df}")
-plant_df = pl.read_csv("Даша/csv/Plant,Sample.txt")
+plant_df = pl.read_csv("D/csv/Plant,Sample.txt")
 print(f"plant_df: {plant_df}")
 
 df = df.join(
@@ -26,4 +26,4 @@ df = df.join(
     ]
 )
 
-df.write_csv("Даша/output.txt")
+df.write_csv("D/output.txt")
