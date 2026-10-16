@@ -27,15 +27,10 @@ VALUES = [
     "PartsPerMillion_DryWeight",
 ]
 
-# WEEKS = [
-#     None,
-#     1,
-#     5,
-# ]
 WEEKS = [
-    "1,5",
-    "1",
-    "5",
+    "[1,5]",
+    "[1]",
+    "[5]",
 ]
 
 LEAF_MAJORS = [
@@ -63,9 +58,9 @@ OVER = ["Ni", "Week", "Sample", "Plant"]
 
 for organ in ORGANS:
     for value in VALUES:
-        input_file = f"D/csv/_{{Organ={organ}}}{{Fields=Ni,Week,Sample,Plant,FattyAcid,PartsPerX}}.txt"
-        read_df = pl.read_csv(input_file)
-        print(f"read: {read_df}")
+        input_file = f"D/csv/_{{Organ={organ}}}{{Fields=[Ni,Week,Sample,Plant,FattyAcid,PartsPerX]}}.txt"
+        read_df = pl.read_csv(input_file, glob=False)
+        print(f"read_df: {read_df}")
 
         # Фильтруем, оставляя только биохимически обоснованные ЖК
         filter_df = read_df.filter(pl.col("FattyAcid") != "17:0")
@@ -97,7 +92,7 @@ for organ in ORGANS:
         # Превращаем в широкий формат
         pivot_df = group_df.pivot(
             index=["Ni", "Week", "Sample"],
-            on="FattyAcid",  # Столбец, значения которого станут новыми заголовками
+            on="FattyAcid",  # Столбец, значения которого станут новыми столбцами
             values=value,
         )
 
@@ -110,20 +105,12 @@ for organ in ORGANS:
         # Убираем подробности Minors
         pivot_df = pivot_df.rename({minors_name: "Minors"})
 
-        for week in WEEKS:
-            week_df = pivot_df
+        for weeks in WEEKS:
+            weeks_df = pivot_df
 
-            week_list = week.split(",")
+            week_list = weeks.strip("[]").split(",")
             week_list = [int(w) for w in week_list]
-            week_df = week_df.filter(pl.col("Week").is_in(week_list))
+            weeks_df = weeks_df.filter(pl.col("Week").is_in(week_list))
 
-            output_file = f"D/csv/_{{Type=Wide}}{{Organ={organ}}}{{Value={value}}}{{Weeks=[{week}]}}.txt"
-            week_df.write_csv(output_file)
-
-        # df = df.filter(pl.col("Week") == 5)
-        # df = df.with_columns(
-        #     pl.when(pl.col("Ni") == 0)
-        #     .then(pl.lit("Control"))
-        #     .otherwise(pl.lit("Experiment"))
-        #     .alias("Ni")
-        # )
+            output_file = f"D/csv/_{{Type=Wide}}{{Organ={organ}}}{{Value={value}}}{{Weeks={weeks}}}.txt"
+            weeks_df.write_csv(output_file)
