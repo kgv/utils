@@ -175,5 +175,5 @@ for organ in ORGANS:
     print(f"calculate_df: {calculate_df}")
 
     calculate_df.write_csv(
-        f"D/csv/_{{Organ={organ}}}{{Fields=Ni,Week,Sample,Plant,FattyAcid,PartsPerX}}.txt"
+        f"D/csv/_{{Organ={organ}}}{{Fields=[Ni,Week,Sample,Plant,FattyAcid,PartsPerX]}}.txt"
     )
