@@ -47,7 +47,7 @@ for organ in ORGANS:
     print(f"unpivot: {unpivot_df}")
 
     # unpivot_df.write_csv(
-    #     "D/csv/_{{Organ={kind}}}{{Fields=Ni,Week,Sample,FattyAcid,Standard,Area}}.txt"
+    #     "D/csv/_{{Organ={organ}}}{{Fields=Ni,Week,Sample,FattyAcid,Standard,Area}}.txt"
     # )
 
     # join #####################################################################
@@ -79,7 +79,7 @@ for organ in ORGANS:
     print(f"join_df: {join_df}")
 
     # join_df.write_csv(
-    #     f"D/csv/_{{Organ={kind}}}{{Fields=Ni,Week,Sample,Plant,WaterFraction,FreshWeight,FattyAcid,Standard,Area}}.txt"
+    #     f"D/csv/_{{Organ={organ}}}{{Fields=Ni,Week,Sample,Plant,WaterFraction,FreshWeight,FattyAcid,Standard,Area}}.txt"
     # )
 
     # ppx ######################################################################
