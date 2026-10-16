@@ -7,18 +7,18 @@ ORGANS = [
 
 for organ in ORGANS:
     read_dfs = [
-        pl.read_csv(f"D/csv/{{Kind={organ}}}{{Ni=0mM}}{{Week=1}}.txt"),
-        pl.read_csv(f"D/csv/{{Kind={organ}}}{{Ni=0mM}}{{Week=5}}.txt"),
-        pl.read_csv(f"D/csv/{{Kind={organ}}}{{Ni=50mM}}{{Week=1}}.txt"),
-        pl.read_csv(f"D/csv/{{Kind={organ}}}{{Ni=50mM}}{{Week=5}}.txt"),
-        pl.read_csv(f"D/csv/{{Kind={organ}}}{{Ni=250mM}}{{Week=1}}.txt"),
-        pl.read_csv(f"D/csv/{{Kind={organ}}}{{Ni=250mM}}{{Week=5}}.txt"),
-        pl.read_csv(f"D/csv/{{Kind={organ}}}{{Ni=500mM}}{{Week=1}}.txt"),
-        pl.read_csv(f"D/csv/{{Kind={organ}}}{{Ni=500mM}}{{Week=5}}.txt"),
-        pl.read_csv(f"D/csv/{{Kind={organ}}}{{Ni=750mM}}{{Week=1}}.txt"),
-        pl.read_csv(f"D/csv/{{Kind={organ}}}{{Ni=750mM}}{{Week=5}}.txt"),
-        pl.read_csv(f"D/csv/{{Kind={organ}}}{{Ni=1000mM}}{{Week=1}}.txt"),
-        pl.read_csv(f"D/csv/{{Kind={organ}}}{{Ni=1000mM}}{{Week=5}}.txt"),
+        pl.read_csv(f"D/csv/{{Organ={organ}}}{{Ni=0mM}}{{Week=1}}.txt"),
+        pl.read_csv(f"D/csv/{{Organ={organ}}}{{Ni=0mM}}{{Week=5}}.txt"),
+        pl.read_csv(f"D/csv/{{Organ={organ}}}{{Ni=50mM}}{{Week=1}}.txt"),
+        pl.read_csv(f"D/csv/{{Organ={organ}}}{{Ni=50mM}}{{Week=5}}.txt"),
+        pl.read_csv(f"D/csv/{{Organ={organ}}}{{Ni=250mM}}{{Week=1}}.txt"),
+        pl.read_csv(f"D/csv/{{Organ={organ}}}{{Ni=250mM}}{{Week=5}}.txt"),
+        pl.read_csv(f"D/csv/{{Organ={organ}}}{{Ni=500mM}}{{Week=1}}.txt"),
+        pl.read_csv(f"D/csv/{{Organ={organ}}}{{Ni=500mM}}{{Week=5}}.txt"),
+        pl.read_csv(f"D/csv/{{Organ={organ}}}{{Ni=750mM}}{{Week=1}}.txt"),
+        pl.read_csv(f"D/csv/{{Organ={organ}}}{{Ni=750mM}}{{Week=5}}.txt"),
+        pl.read_csv(f"D/csv/{{Organ={organ}}}{{Ni=1000mM}}{{Week=1}}.txt"),
+        pl.read_csv(f"D/csv/{{Organ={organ}}}{{Ni=1000mM}}{{Week=5}}.txt"),
     ]
 
     unpivot_dfs = [
@@ -47,13 +47,13 @@ for organ in ORGANS:
     print(f"unpivot: {unpivot_df}")
 
     # unpivot_df.write_csv(
-    #     "D/csv/_{{Kind={kind}}}{{Fields=Ni,Week,Sample,FattyAcid,Standard,Area}}.txt"
+    #     "D/csv/_{{Organ={kind}}}{{Fields=Ni,Week,Sample,FattyAcid,Standard,Area}}.txt"
     # )
 
     # join #####################################################################
 
     sample_df = pl.read_csv(
-        f"D/csv/{{Kind={organ}}}{{Fields=Ni,Week,Sample,Plant,WaterFraction,FreshWeight}}.txt"
+        f"D/csv/{{Organ={organ}}}{{Fields=Ni,Week,Sample,Plant,WaterFraction,FreshWeight}}.txt"
     )
     print(f"sample_df: {sample_df}")
 
@@ -79,7 +79,7 @@ for organ in ORGANS:
     print(f"join_df: {join_df}")
 
     # join_df.write_csv(
-    #     f"D/csv/_{{Kind={kind}}}{{Fields=Ni,Week,Sample,Plant,WaterFraction,FreshWeight,FattyAcid,Standard,Area}}.txt"
+    #     f"D/csv/_{{Organ={kind}}}{{Fields=Ni,Week,Sample,Plant,WaterFraction,FreshWeight,FattyAcid,Standard,Area}}.txt"
     # )
 
     # ppx ######################################################################
@@ -175,5 +175,5 @@ for organ in ORGANS:
     print(f"calculate_df: {calculate_df}")
 
     calculate_df.write_csv(
-        f"D/csv/_{{Kind={organ}}}{{Fields=Ni,Week,Sample,Plant,FattyAcid,PartsPerX}}.txt"
+        f"D/csv/_{{Organ={organ}}}{{Fields=Ni,Week,Sample,Plant,FattyAcid,PartsPerX}}.txt"
     )
