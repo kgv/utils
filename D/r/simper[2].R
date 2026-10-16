@@ -25,6 +25,9 @@ VALUE <- "PartsPerMillion_DryWeight"
 # TARGET_WEEK <- 1
 TARGET_WEEK <- 5
 
+TRANSFORM <- NULL
+# TRANSFORM <- "log2"
+
 # =====================================================================
 # НАЧАЛО ПЕРЕНАПРАВЛЕНИЯ ВЫВОДА
 # =====================================================================
@@ -67,6 +70,7 @@ abund <- as.data.frame(lapply(abund, as.numeric), check.names = FALSE)
 
 # Применить трансформацию log1p к матрице сообщества
 # abund <- log1p(abund)
+abund <- log2(abund)
 
 m_abund <- as.matrix(abund)
 
@@ -82,11 +86,11 @@ if (length(GROUP) > 1) {
 # ---------------------------------------------------------------------
 # Процедура SIMPER (Оценка вклада компонентов в различия)
 # ---------------------------------------------------------------------
-cat("=== SIMPER ===\n")
-cat("group:", paste(GROUP, collapse = ", "), "\n")
-cat("kind:", KIND, "\n")
-cat("permutations:", PERMUTATIONS, "\n")
-cat("value:", VALUE, "\n\n")
+cat("# SIMPER\n\n")
+cat("- **group**:", paste(GROUP, collapse = ", "), "\n")
+cat("- **kind**:", KIND, "\n")
+cat("- **permutations**:", PERMUTATIONS, "\n")
+cat("- **value**:", VALUE, "\n\n")
 
 sim <- simper(comm = m_abund, group = macro_groups)
 sim_sum <- summary(sim)

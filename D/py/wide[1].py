@@ -70,16 +70,22 @@ for kind in KIND:
         )
         print(f"filter_df: {filter_df}")
 
-        # Группируем минорные кислоты в "Minors"
+        majors = LEAF_MAJORS if kind == "Leaf" else ROOT_MAJORS
+        unique_fa = filter_df["FattyAcid"].unique().to_list()
+        # Оставляем только те, которых нет в списке majors
+        minors = [fa for fa in unique_fa if fa not in majors]
+        # Формируем динамическое название. Сортируем для красоты.
+        if minors:
+            minors_name = f"Minors[{';'.join(sorted(minors))}]"
+        else:
+            minors_name = "Minors"  # На случай, если миноров вообще нет
+
+        # Группируем минорные кислоты в "Minors[]"
         group_df = (
             filter_df.with_columns(
-                pl.when(
-                    pl.col("FattyAcid").is_in(
-                        LEAF_MAJORS if kind == "Leaf" else ROOT_MAJORS
-                    )
-                )
+                pl.when(pl.col("FattyAcid").is_in(majors))
                 .then(pl.col("FattyAcid"))
-                .otherwise(pl.lit("Minors"))
+                .otherwise(pl.lit(minors_name))
                 .alias("FattyAcid")
             )
             .group_by(OVER + ["FattyAcid"], maintain_order=True)
@@ -92,8 +98,12 @@ for kind in KIND:
             index=["Ni", "Week", "Sample"],
             on="FattyAcid",  # Столбец, значения которого станут новыми заголовками
             values=value,
-        ).select(pl.all().exclude("Minors"), pl.col("Minors"))
-        # print(f"pivot_df: {group_df}")
+        )
+
+        if minors_name in pivot_df.columns:
+            pivot_df = pivot_df.select(
+                pl.all().exclude(minors_name), pl.col(minors_name)
+            )
 
         for week in WEEK:
             week_df = pivot_df
