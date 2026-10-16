@@ -27,10 +27,15 @@ VALUES = [
     "PartsPerMillion_DryWeight",
 ]
 
+# WEEKS = [
+#     None,
+#     1,
+#     5,
+# ]
 WEEKS = [
-    None,
-    1,
-    5,
+    "1,5",
+    "1",
+    "5",
 ]
 
 LEAF_MAJORS = [
@@ -107,12 +112,12 @@ for organ in ORGANS:
 
         for week in WEEKS:
             week_df = pivot_df
-            if week is not None:
-                week_df = week_df.filter(pl.col("Week") == week)
 
-            week_suffix = f"{{Week={week}}}" if week is not None else ""
+            week_list = week.split(",")
+            week_list = [int(w) for w in week_list]
+            week_df = week_df.filter(pl.col("Week").is_in(week_list))
 
-            output_file = f"D/csv/_{{Type=Wide}}{{Organ={organ}}}{{Value={value}}}{week_suffix}.txt"
+            output_file = f"D/csv/_{{Type=Wide}}{{Organ={organ}}}{{Value={value}}}{{Weeks=[{week}]}}.txt"
             week_df.write_csv(output_file)
 
         # df = df.filter(pl.col("Week") == 5)

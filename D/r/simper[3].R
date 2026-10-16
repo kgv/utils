@@ -33,7 +33,7 @@ TARGET_WEEKS <- c(
 for (current_organ in TARGET_ORGANS) {
     # Загрузка данных для текущего типа (Leaf или Root)
     input_file <- paste0(
-        "D/csv/_{Type=Wide}{Kind=",
+        "D/csv/_{Type=Wide}{Organ=",
         current_organ,
         "}{Value=",
         VALUE,
@@ -49,18 +49,18 @@ for (current_organ in TARGET_ORGANS) {
         for (current_transform in TARGET_TRANSFORMS) {
             # Формируем уникальное имя файла
             output_file <- paste0(
-                "D/_{Type=SIMPER}{Group=",
-                paste(GROUP, collapse = ","),
-                "}{Organ=",
+                "D/_{Type=SIMPER}{Organ=",
                 current_organ,
-                "}{Permutations=",
-                PERMUTATIONS,
-                "}{Transform=",
-                current_transform,
                 "}{Value=",
                 VALUE,
                 "}{Week=",
                 current_week,
+                "}{Group=",
+                paste(GROUP, collapse = ","),
+                "}{Permutations=",
+                PERMUTATIONS,
+                "}{Transform=",
+                current_transform,
                 "}.txt"
             )
 
@@ -142,7 +142,7 @@ for (current_organ in TARGET_ORGANS) {
 
             # Вывод в консоль для отслеживания прогресса
             message(sprintf(
-                "Завершено: Organ=%s, Week=%s, Transform=%s",
+                "Finished: Organ=%s, Week=%s, Transform=%s",
                 current_organ,
                 current_week,
                 current_transform
