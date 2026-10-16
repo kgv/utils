@@ -22,13 +22,12 @@ ORGANS = [
     "Root",
 ]
 
-# Столбец, откуда берем сами цифры
-VALUE = [
+VALUES = [
     "Percent_Area",
     "PartsPerMillion_DryWeight",
 ]
 
-WEEK = [
+WEEKS = [
     None,
     1,
     5,
@@ -57,17 +56,14 @@ ROOT_MAJORS = [
 
 OVER = ["Ni", "Week", "Sample", "Plant"]
 
-
 for organ in ORGANS:
-    for value in VALUE:
+    for value in VALUES:
         input_file = f"D/csv/_{{Organ={organ}}}{{Fields=Ni,Week,Sample,Plant,FattyAcid,PartsPerX}}.txt"
         read_df = pl.read_csv(input_file)
         print(f"read: {read_df}")
 
         # Фильтруем, оставляя только биохимически обоснованные ЖК
-        filter_df = read_df.filter(
-            (pl.col("FattyAcid") != "17:0") & (pl.col("FattyAcid") != "15:0")
-        )
+        filter_df = read_df.filter(pl.col("FattyAcid") != "17:0")
         print(f"filter_df: {filter_df}")
 
         majors = LEAF_MAJORS if organ == "Leaf" else ROOT_MAJORS
@@ -109,7 +105,7 @@ for organ in ORGANS:
         # Убираем подробности Minors
         pivot_df = pivot_df.rename({minors_name: "Minors"})
 
-        for week in WEEK:
+        for week in WEEKS:
             week_df = pivot_df
             if week is not None:
                 week_df = week_df.filter(pl.col("Week") == week)
