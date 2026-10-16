@@ -17,7 +17,7 @@ import polars.selectors as cs
 # "Sum_PartsPerThousand_DryWeight": pl.Float64,
 # "Sum_PartsPerMillion_DryWeight": pl.Float64,
 
-KIND = [
+ORGANS = [
     "Leaf",
     "Root",
 ]
@@ -58,9 +58,9 @@ ROOT_MAJORS = [
 OVER = ["Ni", "Week", "Sample", "Plant"]
 
 
-for kind in KIND:
+for organ in ORGANS:
     for value in VALUE:
-        input_file = f"D/csv/_{{Kind={kind}}}{{Fields=Ni,Week,Sample,Plant,FattyAcid,PartsPerX}}.txt"
+        input_file = f"D/csv/_{{Organ={organ}}}{{Fields=Ni,Week,Sample,Plant,FattyAcid,PartsPerX}}.txt"
         read_df = pl.read_csv(input_file)
         print(f"read: {read_df}")
 
@@ -70,7 +70,7 @@ for kind in KIND:
         )
         print(f"filter_df: {filter_df}")
 
-        majors = LEAF_MAJORS if kind == "Leaf" else ROOT_MAJORS
+        majors = LEAF_MAJORS if organ == "Leaf" else ROOT_MAJORS
         unique_fa = filter_df["FattyAcid"].unique().to_list()
         # Оставляем только те, которых нет в списке majors
         minors = [fa for fa in unique_fa if fa not in majors]
@@ -100,10 +100,14 @@ for kind in KIND:
             values=value,
         )
 
+        # Переставляем Minors последним
         if minors_name in pivot_df.columns:
             pivot_df = pivot_df.select(
                 pl.all().exclude(minors_name), pl.col(minors_name)
             )
+
+        # Убираем подробности Minors
+        pivot_df = pivot_df.rename({minors_name: "Minors"})
 
         for week in WEEK:
             week_df = pivot_df
@@ -112,9 +116,7 @@ for kind in KIND:
 
             week_suffix = f"{{Week={week}}}" if week is not None else ""
 
-            output_file = (
-                f"D/csv/_{{Type=Wide}}{{Kind={kind}}}{{Value={value}}}{week_suffix}.txt"
-            )
+            output_file = f"D/csv/_{{Type=Wide}}{{Organ={organ}}}{{Value={value}}}{week_suffix}.txt"
             week_df.write_csv(output_file)
 
         # df = df.filter(pl.col("Week") == 5)

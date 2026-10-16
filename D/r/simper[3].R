@@ -27,9 +27,6 @@ TARGET_WEEKS <- c(
     "5"
 )
 
-# Фиксируем генератор случайных чисел
-set.seed(42)
-
 # =====================================================================
 # ОСНОВНОЙ ЦИКЛ ПО ВСЕМ КОМБИНАЦИЯМ
 # =====================================================================
@@ -114,24 +111,13 @@ for (current_organ in TARGET_ORGANS) {
             cat("- **value**:", VALUE, "\n")
             cat("- **week**:", current_week, "\n\n")
 
+            # Фиксируем генератор случайных чисел
+            set.seed(42)
+
             sim <- simper(comm = m_abund, group = macro_groups)
             sim_sum <- summary(sim)
 
             for (comp_name in names(sim_sum)) {
-                # Если фильтруем по конкретной неделе, применяем регулярное выражение
-                if (!is.null(current_week)) {
-                    pattern <- paste0(
-                        ".*\\.",
-                        current_week,
-                        "_.*\\.",
-                        current_week,
-                        "$"
-                    )
-                    if (!grepl(pattern, comp_name)) {
-                        next
-                    }
-                }
-
                 cat("## Comparison:", comp_name)
 
                 df <- sim_sum[[comp_name]]
