@@ -22,30 +22,31 @@ TARGET_TRANSFORMS <- c(
     "log2"
 )
 TARGET_WEEKS <- c(
-    "All",
-    "1",
-    "5"
+    "[1,5]",
+    "[1]",
+    "[5]"
 )
 
 # =====================================================================
 # ОСНОВНОЙ ЦИКЛ ПО ВСЕМ КОМБИНАЦИЯМ
 # =====================================================================
 for (current_organ in TARGET_ORGANS) {
-    # Загрузка данных для текущего типа (Leaf или Root)
-    input_file <- paste0(
-        "D/csv/_{Type=Wide}{Organ=",
-        current_organ,
-        "}{Value=",
-        VALUE,
-        "}.txt"
-    )
-    mydata_raw <- read.csv(
-        input_file,
-        check.names = FALSE,
-        stringsAsFactors = FALSE
-    )
-
-    for (current_week in TARGET_WEEKS) {
+    for (current_weeks in TARGET_WEEKS) {
+        # Загрузка входных данных
+        input_file <- paste0(
+            "D/csv/_{Type=Wide}{Organ=",
+            current_organ,
+            "}{Value=",
+            VALUE,
+            "}{Weeks=",
+            current_weeks,
+            "}.txt"
+        )
+        mydata_raw <- read.csv(
+            input_file,
+            check.names = FALSE,
+            stringsAsFactors = FALSE
+        )
         for (current_transform in TARGET_TRANSFORMS) {
             # Формируем уникальное имя файла
             output_file <- paste0(
@@ -54,9 +55,7 @@ for (current_organ in TARGET_ORGANS) {
                 "}{Value=",
                 VALUE,
                 "}{Week=",
-                current_week,
-                "}{Group=",
-                paste(GROUP, collapse = ","),
+                current_weeks,
                 "}{Permutations=",
                 PERMUTATIONS,
                 "}{Transform=",
@@ -69,11 +68,6 @@ for (current_organ in TARGET_ORGANS) {
 
             # Копируем исходные данные для текущей итерации
             mydata <- mydata_raw
-
-            # Фильтрация по неделе
-            if (current_week != "All") {
-                mydata <- mydata[mydata$Week == as.numeric(current_week), ]
-            }
 
             # Отделяем матрицу обилий (начиная с 4-го столбца)
             abund <- mydata[, 4:ncol(mydata)]
@@ -109,7 +103,7 @@ for (current_organ in TARGET_ORGANS) {
             cat("- **permutations**:", PERMUTATIONS, "\n")
             cat("- **transform**:", current_transform, "\n")
             cat("- **value**:", VALUE, "\n")
-            cat("- **week**:", current_week, "\n\n")
+            cat("- **weeks**:", current_weeks, "\n\n")
 
             # Фиксируем генератор случайных чисел
             set.seed(42)
@@ -122,13 +116,27 @@ for (current_organ in TARGET_ORGANS) {
 
                 df <- sim_sum[[comp_name]]
 
-                df$signif <- symnum(
+                df$significance <- symnum(
                     df$p,
                     corr = FALSE,
                     na = FALSE,
                     cutpoints = c(0, 0.001, 0.01, 0.05, 0.1, 1),
                     symbols = c("***", "**", "*", ".", " ")
                 )
+                # Add contribution
+                df$contribution <- c(df$cumsum[1], diff(df$cumsum)) * 100
+                df <- df[, c(
+                    names(df)[0],
+                    "average",
+                    "sd",
+                    "ratio",
+                    "ava",
+                    "avb",
+                    "contribution",
+                    "cumsum",
+                    "p",
+                    "significance"
+                )]
 
                 is_num <- sapply(df, is.numeric)
                 df[is_num] <- lapply(df[is_num], round, 4)
@@ -142,9 +150,9 @@ for (current_organ in TARGET_ORGANS) {
 
             # Вывод в консоль для отслеживания прогресса
             message(sprintf(
-                "Finished: Organ=%s, Week=%s, Transform=%s",
+                "Finished: Organ=%s, Weeks=%s, Transform=%s",
                 current_organ,
-                current_week,
+                current_weeks,
                 current_transform
             ))
         }
