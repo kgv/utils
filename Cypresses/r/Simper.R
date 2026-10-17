@@ -1,4 +1,4 @@
-# source("/mnt/d/g/git/kgv/utils/Cypresses/r/simper.R", encoding = "UTF-8")
+# source("/mnt/d/git/kgv/utils/Cypresses/r/simper.R", encoding = "UTF-8")
 
 library(knitr)
 library(vegan)
@@ -10,23 +10,39 @@ GROUP <- "Genus"
 
 PERMUTATIONS <- 9999
 
-COMPONENT = "Terpene"
-COMPONENT = "Monoterpene"
-COMPONENT = "Sesquiterpene"
+COMPONENT <- "Terpene"
+COMPONENT <- "Monoterpene"
+COMPONENT <- "Sesquiterpene"
 
-VALUE = "PartsPerMillion_Mean"
+VALUE <- "PartsPerMillion_Mean"
 
 # =====================================================================
 # НАЧАЛО ПЕРЕНАПРАВЛЕНИЯ ВЫВОДА
 # =====================================================================
-output_file <- paste0("Cypresses/_{Type=SIMPER}{Group=", GROUP, "}{Permutations=", PERMUTATIONS, "}{Component=", COMPONENT, "}{Value=", VALUE, "}.txt")
+output_file <- paste0(
+    "Cypresses/_{Type=SIMPER}{Group=",
+    GROUP,
+    "}{Permutations=",
+    PERMUTATIONS,
+    "}{Component=",
+    COMPONENT,
+    "}{Value=",
+    VALUE,
+    "}.txt"
+)
 sink(output_file, split = FALSE)
 
 # Фиксируем генератор случайных чисел
 set.seed(42)
 
 # Загрузка данных
-input_file <- paste0("Cypresses/csv/_{Type=Wide}{Component=", COMPONENT, "}{Value=", VALUE, "}.txt")
+input_file <- paste0(
+    "Cypresses/csv/_{Type=Wide}{Component=",
+    COMPONENT,
+    "}{Value=",
+    VALUE,
+    "}.txt"
+)
 mydata <- read.csv(input_file, check.names = FALSE, stringsAsFactors = FALSE)
 
 # Отделяем матрицу обилий (начиная с 7-го столбца)
@@ -50,7 +66,7 @@ cat("permutations:", PERMUTATIONS, "\n")
 
 # какие именно виды (или признаки) вносят наибольший вклад в различия между двумя группами образцов
 # https://www.rdocumentation.org/packages/vegan/topics/simper
-sim <- simper(m_abund, group_factor, permutations=PERMUTATIONS)
+sim <- simper(m_abund, group_factor, permutations = PERMUTATIONS)
 sim_sum <- summary(sim)
 
 # print(sim_sum)
@@ -64,15 +80,21 @@ for (comp_name in names(sim_sum)) {
     # Оставляем только те строки, где значение в колонке average больше 0.1
     df <- df[df$average > 0.1, ]
 
-    # Проверяем, остались ли строки после фильтрации. 
+    # Проверяем, остались ли строки после фильтрации.
     # Если нет, выводим сообщение и переходим к следующему сравнению
     if (nrow(df) == 0) {
         cat("Нет видов с average > 0.1 для этого сравнения.\n\n")
-        next 
+        next
     }
 
     # Функция symnum автоматически разобьет p-value на нужные интервалы
-    df$signif <- symnum(df$p, corr = FALSE, na = FALSE, cutpoints = c(0, 0.001, 0.01, 0.05, 0.1, 1), symbols = c("***", "**", "*", ".", " "))
+    df$signif <- symnum(
+        df$p,
+        corr = FALSE,
+        na = FALSE,
+        cutpoints = c(0, 0.001, 0.01, 0.05, 0.1, 1),
+        symbols = c("***", "**", "*", ".", " ")
+    )
 
     # Округляем длинные числа до 4 знаков после запятой
     is_num <- sapply(df, is.numeric)
