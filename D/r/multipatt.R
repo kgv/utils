@@ -1,4 +1,4 @@
-# source("/mnt/d/g/git/kgv/utils/D/r/multipatt.R", encoding = "UTF-8")
+# source("/mnt/d/git/kgv/utils/D/r/multipatt.R", encoding = "UTF-8")
 
 library(indicspecies)
 
