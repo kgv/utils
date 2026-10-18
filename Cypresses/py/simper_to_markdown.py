@@ -235,36 +235,41 @@ for component in COMPONENTS:
 
                     select_df = select_and_rename_fields(read_df)
 
-                    df_plot = select_df.filter(
-                        (pl.col("Rank") <= 10)
-                        # & (pl.col("p") < 0.05)
-                    ).with_columns(
-                        [
-                            # Определяем, у кого вещества больше
-                            (
-                                pl.col("AverageAbundances_Right")
-                                - pl.col("AverageAbundances_Left")
-                            ).alias("Abundance_Diff"),
-                            # Направленный вклад: если больше справа, то +, если слева, то -
-                            pl.when(
-                                pl.col("AverageAbundances_Right")
-                                > pl.col("AverageAbundances_Left")
-                            )
-                            .then(pl.col("Contribution"))
-                            .otherwise(-pl.col("Contribution"))
-                            .alias("Directional_Contribution"),
-                            # Создаем колонку с названием пары для удобства
-                            (pl.col("Left") + " vs " + pl.col("Right")).alias(
-                                "Comparison"
-                            ),
-                        ]
+                    filter_df = select_df.filter(
+                        (pl.col("Contribution") > 10)
+                        # | ((pl.col("Contribution") > 1) & (pl.col("p") < 0.05))
                     )
+                    # df_plot = filter_df.filter(
+                    #     (pl.col("Rank") <= 10)
+                    #     # & (pl.col("p") < 0.05)
+                    # )
+                    # filter_df.with_columns(
+                    #     [
+                    #         # Определяем, у кого вещества больше
+                    #         (
+                    #             pl.col("AverageAbundances_Right")
+                    #             - pl.col("AverageAbundances_Left")
+                    #         ).alias("Abundance_Diff"),
+                    #         # Направленный вклад: если больше справа, то +, если слева, то -
+                    #         pl.when(
+                    #             pl.col("AverageAbundances_Right")
+                    #             > pl.col("AverageAbundances_Left")
+                    #         )
+                    #         .then(pl.col("Contribution"))
+                    #         .otherwise(-pl.col("Contribution"))
+                    #         .alias("Directional_Contribution"),
+                    #         # Создаем колонку с названием пары для удобства
+                    #         (pl.col("Left") + " vs " + pl.col("Right")).alias(
+                    #             "Comparison"
+                    #         ),
+                    #     ]
+                    # )
                     # diverging_bar_chart(df_plot)
                     # bubble_plot(df_plot)
                     # dual_axis_plot(df_plot)
 
                     write_markdown(
-                        select_df,
+                        filter_df,
                         round_decimals=4,
                         name=output_file,
                     )
