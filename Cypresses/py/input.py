@@ -160,5 +160,5 @@ terpene_df = join_df.with_columns(
 )
 
 terpene_df.write_csv(
-    "Cypresses/csv/{Type=Output}{Fields=Genus,Species,Variety,Identifier,Tree,Vial,Terpene,Component,CAS,RI,RT,Percent,PartsPerMillion}.txt"
+    "Cypresses/csv/_{Type=Output}{Fields=Genus,Species,Variety,Identifier,Tree,Vial,Terpene,Component,CAS,RI,RT,Percent,PartsPerMillion}.txt"
 )

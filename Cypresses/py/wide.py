@@ -14,7 +14,7 @@ VALUE = [
 ]
 
 read_df = pl.read_csv(
-    "Cypresses/csv/{Type=Output}{Fields=Genus,Species,Variety,Identifier,Tree,Vial,Terpene,Component,CAS,RI,RT,Percent,PartsPerMillion}.txt",
+    "Cypresses/csv/_{Type=Output}{Fields=Genus,Species,Variety,Identifier,Tree,Vial,Terpene,Component,CAS,RI,RT,Percent,PartsPerMillion}.txt",
     schema_overrides={
         "Genus": pl.String,
         "Species": pl.String,
@@ -88,7 +88,10 @@ stats_df = (
         ]
     )
 )
-print(f"stats: {stats_df}")
+# 1. Мы целенаправленно брали наиболее отличающиеся друг от друга технические повторности (свет/тень, среднестатистический/с особенностями развития, чтобы охватить весь возможный разброс профилей.
+# 2. Пройтись по всем техническим повторностям еще раз и понять причину различий.
+# stats_df = stats_df.filter(pl.col("PartsPerMillion_RelativeStandardDeviation") > 25)
+# print(f"stats: {stats_df}")
 # stats_df.write_csv("Cypresses/csv/_Stats.txt")
 
 for component in COMPONENT:

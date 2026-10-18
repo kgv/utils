@@ -63,7 +63,7 @@ def select_and_rename_fields(df):
     return df.select(
         Left=pl.col("id").str.split("_").list[0],
         Right=pl.col("id").str.split("_").list[1],
-        FattyAcid=pl.nth(0).str.split("...").list[0],
+        Component=pl.nth(0).str.split("...").list[0],
         AverageAbundances_Left=pl.col("ava"),
         AverageAbundances_Right=pl.col("avb"),
         Rank=pl.col("average").rank(method="min", descending=True).over("id"),
@@ -220,9 +220,19 @@ for component in COMPONENTS:
         for group in GROUPS:
             for permutations in PERMUTATIONS:
                 for transformations in TRANSFORMATIONS:
-                    read_df = read_csv(
-                        component, value, group, permutations, transformations
+                    base_name = (
+                        f"_{{Type=SIMPER}}"
+                        f"{{Component={component}}}"
+                        f"{{Value={value}}}"
+                        f"{{Group={group}}}"
+                        f"{{Permutations={permutations}}}"
+                        f"{{Transformations={transformations}}}"
                     )
+                    input_file = f"Cypresses/csv/{base_name}.txt"
+                    output_file = f"Cypresses/md/{base_name}.md"
+
+                    read_df = pl.read_csv(input_file, glob=False, null_values="NA")
+
                     select_df = select_and_rename_fields(read_df)
 
                     df_plot = select_df.filter(
@@ -256,5 +266,5 @@ for component in COMPONENTS:
                     write_markdown(
                         select_df,
                         round_decimals=4,
-                        name="Cypresses/md/_markdown_table.md",
+                        name=output_file,
                     )
