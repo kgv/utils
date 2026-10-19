@@ -1,10 +1,6 @@
-=== ANOSIM ===
-group: Genus 
-method: bray 
-permutations: 9999 
 
 Call:
-anosim(x = dist_matrix, grouping = group_factor, permutations = 9999) 
+anosim(x = dist_matrix, grouping = group, permutations = 9999) 
 Dissimilarity: bray 
 
 ANOSIM statistic R: 0.5942 
