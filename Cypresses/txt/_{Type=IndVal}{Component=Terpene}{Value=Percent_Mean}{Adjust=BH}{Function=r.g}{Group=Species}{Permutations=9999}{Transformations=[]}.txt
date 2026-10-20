@@ -1,0 +1,95 @@
+
+ Multilevel pattern analysis
+ ---------------------------
+
+ Association function: r.g
+ Significance level (alpha): 0.05
+
+ Total number of species: 60
+ Selected number of species: 20 
+ Number of species associated to 1 group: 9 
+ Number of species associated to 2 groups: 4 
+ Number of species associated to 3 groups: 1 
+ Number of species associated to 4 groups: 3 
+ Number of species associated to 5 groups: 2 
+ Number of species associated to 6 groups: 1 
+ Number of species associated to 7 groups: 0 
+ Number of species associated to 8 groups: 0 
+ Number of species associated to 9 groups: 0 
+ Number of species associated to 10 groups: 0 
+ Number of species associated to 11 groups: 0 
+ Number of species associated to 12 groups: 0 
+ Number of species associated to 13 groups: 0 
+
+ List of species associated to each combination: 
+
+ Group Chamaecyparis lawsoniana  #sps.  1 
+                  stat p.value  
+Methyl myrtenate 0.996  0.0262 *
+
+ Group Chamaecyparis pisifera  #sps.  1 
+                stat p.value  
+Bornyl acetate 0.888  0.0338 *
+
+ Group Microbiota decussata  #sps.  4 
+                                                         stat p.value  
+Thujopsan-2-alpha-ol                                    0.999  0.0413 *
+(E)-beta-Farnesene                                      0.982  0.0262 *
+Microbiotol                                             0.981  0.0413 *
+н/и RI 1628.9 (сесквитерпеновый спирт, ряд туйопсанола) 0.959  0.0413 *
+
+ Group Thuja occidentalis  #sps.  2 
+                   stat p.value  
+Neothujyl acetate 0.947  0.0210 *
+Fenchone          0.901  0.0413 *
+
+ Group Thujopsis dolabrata  #sps.  1 
+                 stat p.value  
+gamma-Terpinene 0.942  0.0462 *
+
+ Group Chamaecyparis lawsoniana+Juniperus sabina  #sps.  1 
+          stat p.value  
+Limonene 0.872  0.0338 *
+
+ Group Chamaecyparis lawsoniana+Microbiota decussata  #sps.  1 
+       stat p.value  
+Cedrol 0.95   0.018 *
+
+ Group Juniperus scopulorum+Juniperus virginiana  #sps.  1 
+                stat p.value  
+Pregeijerene B 0.899  0.0204 *
+
+ Group Thuja occidentalis+Thuja plicata  #sps.  1 
+               stat p.value   
+alpha-Thujone 0.975   0.006 **
+
+ Group Callitropsis nootkatensis+Juniperus communis+Juniperus rigida  #sps.  1 
+                   stat p.value  
+beta-Phellandrene 0.833  0.0462 *
+
+ Group Chamaecyparis lawsoniana+Chamaecyparis pisifera+Thuja occidentalis+Thujopsis dolabrata  #sps.  1 
+                        stat p.value  
+alpha-Terpinyl acetate 0.791  0.0462 *
+
+ Group Chamaecyparis pisifera+Juniperus rigida+Juniperus scopulorum+Thuja occidentalis  #sps.  1 
+          stat p.value  
+Camphene 0.796  0.0413 *
+
+ Group Juniperus chinensis+Juniperus communis+Juniperus rigida+Thuja occidentalis  #sps.  1 
+               stat p.value  
+cis-3-hexenal 0.793  0.0338 *
+
+ Group Callitropsis nootkatensis+Chamaecyparis pisifera+Juniperus communis+Juniperus pseudosabina+Juniperus rigida  #sps.  1 
+              stat p.value   
+alpha-Pinene 0.879   0.006 **
+
+ Group Juniperus chinensis+Juniperus pseudosabina+Juniperus sabina+Juniperus scopulorum+Juniperus virginiana  #sps.  1 
+                   stat p.value  
+Germacrene D-4-ol 0.803   0.036 *
+
+ Group Chamaecyparis lawsoniana+Juniperus chinensis+Juniperus scopulorum+Thuja occidentalis+Thuja plicata+Thujopsis dolabrata  #sps.  1 
+                         stat p.value  
+Sabinene hydrate acetate 0.83   0.018 *
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1 
+NULL
