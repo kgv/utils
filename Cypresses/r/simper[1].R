@@ -1,4 +1,4 @@
-# source("/mnt/d/git/kgv/utils/Cypresses/r/simper[1].R", encoding = "UTF-8")
+# source("/mnt/d/g/git/kgv/utils/Cypresses/r/simper[1].R", encoding = "UTF-8")
 
 library(vegan)
 
@@ -65,9 +65,6 @@ for (current_component in TARGET_COMPONENTS) {
                         "}.txt"
                     )
 
-                    # НАЧАЛО ПЕРЕНАПРАВЛЕНИЯ ВЫВОДА
-                    sink(output_file, split = FALSE)
-
                     # Копируем исходные данные для текущей итерации
                     mydata <- mydata_raw
 
@@ -97,22 +94,32 @@ for (current_component in TARGET_COMPONENTS) {
                     # Фиксируем генератор случайных чисел
                     set.seed(42)
 
-                    # SIMPER
-                    sim <- simper(comm = m_abund, group = group)
-                    sim_sum <- summary(sim)
+                    sink(output_file, split = FALSE)
+                    tryCatch(
+                        {
+                            # simper
 
-                    sim_all <- dplyr::bind_rows(
-                        lapply(sim_sum, as.data.frame),
-                        .id = "id"
-                    )
-                    write.csv(
-                        sim_all,
-                        file = output_file,
-                        row.names = TRUE
-                    )
+                            sim <- simper(comm = m_abund, group = group)
+                            sim_sum <- summary(sim)
 
-                    # КОНЕЦ ПЕРЕНАПРАВЛЕНИЯ ВЫВОДА
-                    sink()
+                            sim_all <- dplyr::bind_rows(
+                                lapply(sim_sum, as.data.frame),
+                                .id = "id"
+                            )
+                            write.csv(
+                                sim_all,
+                                file = output_file,
+                                row.names = TRUE
+                            )
+                        },
+                        error = function(e) {
+                            cat("Error:\n")
+                            print(e)
+                        },
+                        finally = {
+                            sink()
+                        }
+                    )
 
                     # Вывод в консоль для отслеживания прогресса
                     message(paste0("Finished:", output_file))

@@ -1,4 +1,4 @@
-# source("/mnt/d/git/kgv/utils/Cypresses/r/indval[1].R", encoding = "UTF-8")
+# source("/mnt/d/g/git/kgv/utils/Cypresses/r/indval[1].R", encoding = "UTF-8")
 
 library(indicspecies)
 
@@ -91,9 +91,6 @@ for (current_component in TARGET_COMPONENTS) {
                                 "}.txt"
                             )
 
-                            # НАЧАЛО ПЕРЕНАПРАВЛЕНИЯ ВЫВОДА
-                            sink(output_file, split = FALSE)
-
                             # Копируем исходные данные для текущей итерации
                             mydata <- mydata_raw
 
@@ -123,29 +120,42 @@ for (current_component in TARGET_COMPONENTS) {
                             # Фиксируем генератор случайных чисел
                             set.seed(42)
 
-                            # IndVal (Компоненты-индикаторы)
-                            # This function studies the association between species patterns and combinations of groups of sites.
-                            # https://www.rdocumentation.org/packages/indicspecies/topics/multipatt
-                            multipatt_result <- multipatt(
-                                abund,
-                                cluster = group,
-                                func = current_function,
-                                control = how(nperm = current_permutations),
-                                allow.negative = TRUE,
+                            sink(output_file, split = FALSE)
+                            tryCatch(
+                                {
+                                    # IndVal (Компоненты-индикаторы)
+                                    # This function studies the association between species patterns and combinations of groups of sites.
+                                    # https://www.rdocumentation.org/packages/indicspecies/topics/multipatt
+                                    multipatt_result <- multipatt(
+                                        abund,
+                                        cluster = group,
+                                        func = current_function,
+                                        control = how(
+                                            nperm = current_permutations
+                                        ),
+                                        allow.negative = TRUE,
+                                    )
+                                    # print(multipatt_result)
+
+                                    # Коррекция на множественное тестирование (bonferroni, fdr)
+                                    multipatt_result$sign$p.value <- p.adjust(
+                                        multipatt_result$sign$p.value,
+                                        method = current_adjust
+                                    )
+
+                                    multipatt_summary <- summary(
+                                        multipatt_result
+                                    )
+                                    print(multipatt_summary)
+                                },
+                                error = function(e) {
+                                    cat("Error:\n")
+                                    print(e)
+                                },
+                                finally = {
+                                    sink()
+                                }
                             )
-                            # print(multipatt_result)
-
-                            # Коррекция на множественное тестирование (bonferroni, fdr)
-                            multipatt_result$sign$p.value <- p.adjust(
-                                multipatt_result$sign$p.value,
-                                method = current_adjust
-                            )
-
-                            multipatt_summary <- summary(multipatt_result)
-                            print(multipatt_summary)
-
-                            # КОНЕЦ ПЕРЕНАПРАВЛЕНИЯ ВЫВОДА
-                            sink()
 
                             # Вывод в консоль для отслеживания прогресса
                             message(paste0("Finished:", output_file))

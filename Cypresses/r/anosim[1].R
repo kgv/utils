@@ -1,4 +1,4 @@
-# source("/mnt/d/git/kgv/utils/Cypresses/r/anosim[1].R", encoding = "UTF-8")
+# source("/mnt/d/g/git/kgv/utils/Cypresses/r/anosim[1].R", encoding = "UTF-8")
 
 library(vegan)
 
@@ -95,9 +95,6 @@ for (current_component in TARGET_COMPONENTS) {
                             "}.txt"
                         )
 
-                        # НАЧАЛО ПЕРЕНАПРАВЛЕНИЯ ВЫВОДА
-                        sink(output_file, split = FALSE)
-
                         # Копируем исходные данные для текущей итерации
                         mydata <- mydata_raw
 
@@ -143,16 +140,26 @@ for (current_component in TARGET_COMPONENTS) {
                         # Фиксируем генератор случайных чисел
                         set.seed(42)
 
-                        # https://www.rdocumentation.org/packages/vegan/topics/anosim
-                        anosim_result <- anosim(
-                            dist_matrix,
-                            grouping = group,
-                            permutations = 9999
+                        sink(output_file, split = FALSE)
+                        tryCatch(
+                            {
+                                # anosim
+                                # https://www.rdocumentation.org/packages/vegan/topics/anosim
+                                anosim_result <- anosim(
+                                    dist_matrix,
+                                    grouping = group,
+                                    permutations = current_permutations
+                                )
+                                print(summary(anosim_result))
+                            },
+                            error = function(e) {
+                                cat("Error:\n")
+                                print(e)
+                            },
+                            finally = {
+                                sink()
+                            }
                         )
-                        print(summary(anosim_result))
-
-                        # КОНЕЦ ПЕРЕНАПРАВЛЕНИЯ ВЫВОДА
-                        sink()
 
                         # Вывод в консоль для отслеживания прогресса
                         message(paste0("Finished:", output_file))

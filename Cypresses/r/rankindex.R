@@ -1,4 +1,4 @@
-# source("/mnt/d/git/kgv/utils/Cypresses/r/rankindex.R", encoding = "UTF-8")
+# source("/mnt/d/g/git/kgv/utils/Cypresses/r/rankindex.R", encoding = "UTF-8")
 
 library(cluster)
 library(vegan)
@@ -123,7 +123,7 @@ for (current_component in TARGET_COMPONENTS) {
                 sink(output_file, split = FALSE)
                 tryCatch(
                     {
-                        # https://www.rdocumentation.org/packages/vegan/topics/rankindex
+                        # [rankindex](https://www.rdocumentation.org/packages/vegan/topics/rankindex)
                         rankindex_result <- rankindex(
                             grad = group,
                             veg = abund,
@@ -139,7 +139,7 @@ for (current_component in TARGET_COMPONENTS) {
                         print(sorted_distances)
                     },
                     error = function(e) {
-                        cat("Произошла ошибка при вычислении:\n")
+                        cat("Error:\n")
                         print(e)
                     },
                     finally = {
