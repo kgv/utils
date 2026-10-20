@@ -155,14 +155,7 @@ for (current_component in TARGET_COMPONENTS) {
                         sink()
 
                         # Вывод в консоль для отслеживания прогресса
-                        message(sprintf(
-                            "Finished: component=%s, value=%s, group=%s, permutations=%s, transformations=%s",
-                            current_component,
-                            current_value,
-                            current_group,
-                            current_permutations,
-                            current_transformations
-                        ))
+                        message(paste0("Finished:", output_file))
                     }
                 }
             }

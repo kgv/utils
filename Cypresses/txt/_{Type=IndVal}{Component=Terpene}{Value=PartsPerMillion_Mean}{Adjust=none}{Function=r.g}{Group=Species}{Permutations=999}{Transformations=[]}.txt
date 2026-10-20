@@ -1,0 +1,81 @@
+
+ Multilevel pattern analysis
+ ---------------------------
+
+ Association function: r.g
+ Significance level (alpha): 0.05
+
+ Total number of species: 60
+ Selected number of species: 24 
+ Number of species associated to 1 group: 20 
+ Number of species associated to 2 groups: 2 
+ Number of species associated to 3 groups: 1 
+ Number of species associated to 4 groups: 0 
+ Number of species associated to 5 groups: 0 
+ Number of species associated to 6 groups: 0 
+ Number of species associated to 7 groups: 1 
+ Number of species associated to 8 groups: 0 
+ Number of species associated to 9 groups: 0 
+ Number of species associated to 10 groups: 0 
+ Number of species associated to 11 groups: 0 
+ Number of species associated to 12 groups: 0 
+ Number of species associated to 13 groups: 0 
+
+ List of species associated to each combination: 
+
+ Group Chamaecyparis lawsoniana  #sps.  4 
+                            stat p.value   
+cis-Muurol-5-en-4-beta-ol  0.998   0.003 **
+10-epi-Cubebol             0.998   0.006 **
+Geranyl acetate            0.974   0.008 **
+cis-Muurol-5-en-4-alpha-ol 0.970   0.023 * 
+
+ Group Chamaecyparis pisifera  #sps.  2 
+                stat p.value   
+Bornyl acetate 0.971   0.002 **
+Camphene       0.833   0.011 * 
+
+ Group Microbiota decussata  #sps.  11 
+                                                         stat p.value   
+Microbiotol                                             0.999   0.015 * 
+(E)-beta-Farnesene                                      0.998   0.004 **
+Thujopsan-2-alpha-ol                                    0.996   0.003 **
+alpha-Bisabolol                                         0.994   0.014 * 
+н/и RI 1628.9 (сесквитерпеновый спирт, ряд туйопсанола) 0.994   0.015 * 
+beta-Chamigrene                                         0.991   0.004 **
+н/и RI 1540.22                                          0.988   0.010 **
+cis-Thujopsene                                          0.987   0.015 * 
+н/и RI 1564.91                                          0.986   0.015 * 
+Cedrol                                                  0.985   0.015 * 
+beta-Cedrene                                            0.984   0.015 * 
+
+ Group Thuja occidentalis  #sps.  1 
+                     stat p.value  
+Caryophyllene oxide 0.836   0.032 *
+
+ Group Thuja plicata  #sps.  1 
+               stat p.value   
+alpha-Thujone 0.935   0.004 **
+
+ Group Thujopsis dolabrata  #sps.  1 
+                stat p.value   
+gamma-Terpinene 0.93   0.007 **
+
+ Group Chamaecyparis lawsoniana+Chamaecyparis pisifera  #sps.  1 
+                        stat p.value  
+alpha-Terpinyl acetate 0.828   0.016 *
+
+ Group Juniperus communis+Juniperus pseudosabina  #sps.  1 
+              stat p.value  
+beta-Elemene 0.797   0.037 *
+
+ Group Juniperus sabina+Thuja occidentalis+Thuja plicata  #sps.  1 
+              stat p.value   
+beta-Thujone 0.847   0.006 **
+
+ Group Callitropsis nootkatensis+Chamaecyparis pisifera+Juniperus chinensis+Juniperus sabina+Juniperus scopulorum+Juniperus virginiana+Thuja occidentalis  #sps.  1 
+              stat p.value   
+1-Octen-3-ol 0.758   0.008 **
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1 
+NULL

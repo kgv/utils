@@ -1,0 +1,4 @@
+  Canberra      Gower  Hellinger  Manhattan       Bray Kulczynski    Jaccard 
+ 0.3931382  0.3651197  0.3487404  0.3334406  0.3332528  0.3332528  0.3332528 
+     Chord     Cosine  Euclidean   AltGower 
+ 0.3134006  0.3134006  0.3112182  0.2341793 

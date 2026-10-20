@@ -1,0 +1,80 @@
+
+ Multilevel pattern analysis
+ ---------------------------
+
+ Association function: IndVal.g
+ Significance level (alpha): 0.05
+
+ Total number of species: 60
+ Selected number of species: 22 
+ Number of species associated to 1 group: 9 
+ Number of species associated to 2 groups: 3 
+ Number of species associated to 3 groups: 3 
+ Number of species associated to 4 groups: 5 
+ Number of species associated to 5 groups: 2 
+
+ List of species associated to each combination: 
+
+ Group Juniperus  #sps.  2 
+               stat p.value   
+gamma-Elemene 0.973 0.00408 **
+delta-Elemene 0.899 0.01767 * 
+
+ Group Microbiota  #sps.  4 
+                      stat p.value   
+(E)-beta-Farnesene   1.000 0.00624 **
+beta-Chamigrene      1.000 0.00624 **
+Thujopsan-2-alpha-ol 0.997 0.00408 **
+Microbiotol          0.981 0.01116 * 
+
+ Group Thuja  #sps.  3 
+                   stat p.value   
+alpha-Thujone     1.000 0.00408 **
+Neothujyl acetate 0.982 0.00408 **
+beta-Thujone      0.958 0.00408 **
+
+ Group Callitropsis+Chamaecyparis  #sps.  1 
+                stat p.value   
+10-epi-Cubebol 0.997 0.00624 **
+
+ Group Chamaecyparis+Microbiota  #sps.  2 
+                                                         stat p.value   
+Cedrol                                                  1.000 0.00408 **
+н/и RI 1628.9 (сесквитерпеновый спирт, ряд туйопсанола) 0.998 0.00408 **
+
+ Group Callitropsis+Chamaecyparis+Microbiota  #sps.  1 
+                 stat p.value   
+alpha-Bisabolol 0.974 0.00408 **
+
+ Group Chamaecyparis+Thuja+Thujopsis  #sps.  1 
+                stat p.value   
+Geranyl acetate    1 0.00408 **
+
+ Group Juniperus+Microbiota+Thujopsis  #sps.  1 
+        stat p.value  
+Elemol 0.941  0.0177 *
+
+ Group Callitropsis+Chamaecyparis+Microbiota+Thujopsis  #sps.  2 
+                 stat p.value   
+3-Carene        0.987 0.00624 **
+gamma-Terpinene 0.959 0.00883 **
+
+ Group Callitropsis+Chamaecyparis+Thuja+Thujopsis  #sps.  1 
+               stat p.value   
+Bornyl acetate 0.98 0.00408 **
+
+ Group Chamaecyparis+Juniperus+Thuja+Thujopsis  #sps.  1 
+              stat p.value   
+Caryophyllene    1 0.00408 **
+
+ Group Juniperus+Microbiota+Thuja+Thujopsis  #sps.  1 
+          stat p.value  
+Humulene 0.973  0.0434 *
+
+ Group Callitropsis+Chamaecyparis+Microbiota+Thuja+Thujopsis  #sps.  2 
+                          stat p.value   
+alpha-Terpinyl acetate   0.988 0.00408 **
+Sabinene hydrate acetate 0.968 0.00408 **
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1 
+NULL

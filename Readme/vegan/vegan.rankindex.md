@@ -1,5 +1,6 @@
 # vegan.rankindex
 
+- [rdocumentation.org](https://www.rdocumentation.org/packages/vegan/topics/rankindex)
 - [Faith, F.P., Minchin, P.R. and Belbin, L. (1987). Compositional dissimilarity as a robust measure of ecological distance. Vegetatio 69, 57-68](https://doi.org/10.1007/BF00038687)
 
 Используется чтоб найти оптимальное расстояние.

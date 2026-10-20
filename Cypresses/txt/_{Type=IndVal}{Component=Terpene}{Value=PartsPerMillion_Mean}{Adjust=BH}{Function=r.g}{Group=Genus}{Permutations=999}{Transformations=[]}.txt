@@ -1,0 +1,36 @@
+
+ Multilevel pattern analysis
+ ---------------------------
+
+ Association function: r.g
+ Significance level (alpha): 0.05
+
+ Total number of species: 60
+ Selected number of species: 11 
+ Number of species associated to 1 group: 11 
+ Number of species associated to 2 groups: 0 
+ Number of species associated to 3 groups: 0 
+ Number of species associated to 4 groups: 0 
+ Number of species associated to 5 groups: 0 
+
+ List of species associated to each combination: 
+
+ Group Microbiota  #sps.  10 
+                                                         stat p.value   
+Microbiotol                                             1.000  0.0075 **
+(E)-beta-Farnesene                                      0.998  0.0075 **
+alpha-Bisabolol                                         0.997  0.0109 * 
+Thujopsan-2-alpha-ol                                    0.996  0.0075 **
+н/и RI 1628.9 (сесквитерпеновый спирт, ряд туйопсанола) 0.995  0.0075 **
+Cedrol                                                  0.992  0.0109 * 
+cis-Thujopsene                                          0.991  0.0075 **
+beta-Chamigrene                                         0.990  0.0075 **
+н/и RI 1540.22                                          0.988  0.0075 **
+н/и RI 1564.91                                          0.987  0.0075 **
+
+ Group Thuja  #sps.  1 
+              stat p.value  
+beta-Thujone 0.908  0.0109 *
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1 
+NULL
