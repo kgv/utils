@@ -1,6 +1,6 @@
 
 Call:
-anosim(x = dist_matrix, grouping = group, permutations = 9999) 
+anosim(x = dist_matrix, grouping = group, permutations = current_permutations) 
 Dissimilarity: bray 
 
 ANOSIM statistic R: 0.5942 
