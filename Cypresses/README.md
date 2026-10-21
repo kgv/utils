@@ -1,6 +1,8 @@
 **DOI**: [10.25345/C5348GX17](https://doi.org/doi:10.25345/C5348GX17)
 X27bWKn21B4zwDuo
 
+https://github.com/obophenotype/ncbitaxon
+
 Примеры титульных страниц :
 1. https://riorpub.com/en/nauka/
 2. https://www.monografi.ru/ru/nauka/

@@ -55,11 +55,13 @@ stats_df = (
     )
     .agg(
         pl.col("Vial"),
+        pl.col("PartsPerMillion"),
         pl.col("PartsPerMillion").mean().alias("PartsPerMillion_Mean"),
         pl.col("PartsPerMillion").std().alias("PartsPerMillion_StandardDeviation"),
         (
             pl.col("PartsPerMillion").std() / pl.col("PartsPerMillion").mean() * 100
         ).alias("PartsPerMillion_RelativeStandardDeviation"),
+        pl.col("Percent").alias("Percent"),
         pl.col("Percent").mean().alias("Percent_Mean"),
         pl.col("Percent").std().alias("Percent_StandardDeviation"),
         (pl.col("Percent").std() / pl.col("Percent").mean() * 100).alias(
@@ -67,7 +69,9 @@ stats_df = (
         ),
         pl.len().alias("N"),
     )
-    .with_columns(format_list("Vial"))
+    .with_columns(
+        [format_list("Vial"), format_list("PartsPerMillion"), format_list("Percent")]
+    )
     .select(
         [
             "Genus",
@@ -78,9 +82,11 @@ stats_df = (
             "Vial",
             "Terpene",
             "Component",
+            "PartsPerMillion",
             "PartsPerMillion_Mean",
             "PartsPerMillion_StandardDeviation",
             "PartsPerMillion_RelativeStandardDeviation",
+            "Percent",
             "Percent_Mean",
             "Percent_StandardDeviation",
             "Percent_RelativeStandardDeviation",
@@ -90,6 +96,8 @@ stats_df = (
 )
 # 1. Мы целенаправленно брали наиболее отличающиеся друг от друга технические повторности (свет/тень, среднестатистический/с особенностями развития, чтобы охватить весь возможный разброс профилей.
 # 2. Пройтись по всем техническим повторностям еще раз и понять причину различий.
+# трейты для биологических объектов: возраст, пол
+# gps координаты для объектов
 # stats_df = stats_df.filter(pl.col("PartsPerMillion_RelativeStandardDeviation") > 25)
 # print(f"stats: {stats_df}")
 # stats_df.write_csv("Cypresses/csv/_Stats.txt")

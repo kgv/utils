@@ -1,0 +1,26 @@
+
+Call:
+anosim(x = dist_matrix, grouping = group, permutations = current_permutations) 
+Dissimilarity: bray 
+
+ANOSIM statistic R: 0.5942 
+      Significance: 1e-04 
+
+Permutation: free
+Number of permutations: 9999
+
+Upper quantiles of permutations (null model):
+  90%   95% 97.5%   99% 
+0.109 0.138 0.167 0.195 
+
+Dissimilarity ranks between and within classes:
+              0%    25%   50%    75% 100%   N
+Between       24 323.25 492.5 654.75  780 490
+Callitropsis  NA     NA    NA     NA   NA   0
+Chamaecyparis  4  38.50 496.0 592.50  651  15
+Juniperus      1 112.00 220.0 379.00  704 253
+Microbiota     8   8.00   8.0   8.00    8   1
+Thuja          3  14.00  62.0 109.00  154  21
+Thujopsis     NA     NA    NA     NA   NA   0
+
+NULL

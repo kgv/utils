@@ -243,7 +243,7 @@ for component in COMPONENTS:
                     #     (pl.col("Rank") <= 10)
                     #     # & (pl.col("p") < 0.05)
                     # )
-                    # filter_df.with_columns(
+                    # df_plot= filter_df.with_columns(
                     #     [
                     #         # Определяем, у кого вещества больше
                     #         (

@@ -40,8 +40,8 @@ TARGET_GROUPS <- c(
     # "Variety"
 )
 TARGET_PERMUTATIONS <- c(
-    # 999
-    9999
+    999
+    # 9999
 )
 TARGET_TRANSFORMATIONS <- c(
     # "[log1p]",
