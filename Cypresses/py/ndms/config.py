@@ -12,6 +12,7 @@ DATA_FILE_PATH: Final[str] = (
 
 SCHEMA_OVERRIDES: Final[dict[str, type]] = {
     "Genus": str,
+    "Subgenus": str,
     "Species": str,
     "Variety": str,
     "Identifier": str,
@@ -45,7 +46,7 @@ DISTANCE_METRICS: Final[List[str]] = [
     "seuclidean",
     "sqeuclidean",
 ]
-TAXONOMY_LEVELS: Final[List[str]] = ["Genus", "Species", "Variety"]
+TAXONOMY_LEVELS: Final[List[str]] = ["Genus", "Subgenus", "Species", "Variety"]
 N_INIT_VALUES: Final[List[str]] = ["10", "100", "1000"]
 MAX_ITER_VALUES: Final[List[str]] = ["10", "100", "1000"]
 SEED_VALUES: Final[List[str]] = ["42", "1234"]

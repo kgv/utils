@@ -49,13 +49,33 @@ class DataLoader:
             # Формирование составных колонок Species и Variety
             self.df = raw_df.with_columns(
                 [
+                    # pl.concat_str(
+                    #     [pl.col("Genus"), pl.col("Species")],
+                    #     separator=" ",
+                    #     ignore_nulls=True,
+                    # ).alias("Species"),
+                    # pl.concat_str(
+                    #     [pl.col("Genus"), pl.col("Species"), pl.col("Variety")],
+                    #     separator=" ",
+                    #     ignore_nulls=True,
+                    # ).alias("Variety"),
                     pl.concat_str(
-                        [pl.col("Genus"), pl.col("Species")],
+                        [pl.col("Genus"), pl.col("Subgenus")],
+                        separator=" ",
+                        ignore_nulls=True,
+                    ).alias("Subgenus"),
+                    pl.concat_str(
+                        [pl.col("Genus"), pl.col("Subgenus"), pl.col("Species")],
                         separator=" ",
                         ignore_nulls=True,
                     ).alias("Species"),
                     pl.concat_str(
-                        [pl.col("Genus"), pl.col("Species"), pl.col("Variety")],
+                        [
+                            pl.col("Genus"),
+                            pl.col("Subgenus"),
+                            pl.col("Species"),
+                            pl.col("Variety"),
+                        ],
                         separator=" ",
                         ignore_nulls=True,
                     ).alias("Variety"),
