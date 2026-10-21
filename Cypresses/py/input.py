@@ -120,6 +120,7 @@ join_df = species_df.join(
 ).select(
     [
         "Genus",
+        "Subgenus",
         "Species",
         "Variety",
         "Identifier",
@@ -144,6 +145,7 @@ terpene_df = join_df.with_columns(
 ).select(
     [
         "Genus",
+        "Subgenus",
         "Species",
         "Variety",
         "Identifier",

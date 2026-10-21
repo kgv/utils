@@ -17,6 +17,7 @@ read_df = pl.read_csv(
     "Cypresses/csv/_{Type=Output}{Fields=Genus,Species,Variety,Identifier,Tree,Vial,Terpene,Component,CAS,RI,RT,Percent,PartsPerMillion}.txt",
     schema_overrides={
         "Genus": pl.String,
+        "Subgenus": pl.String,
         "Species": pl.String,
         "Variety": pl.String,
         "Identifier": pl.String,
@@ -44,6 +45,7 @@ stats_df = (
     filter_df.group_by(
         [
             "Genus",
+            "Subgenus",
             "Species",
             "Variety",
             "Identifier",
@@ -75,6 +77,7 @@ stats_df = (
     .select(
         [
             "Genus",
+            "Subgenus",
             "Species",
             "Variety",
             "Identifier",
@@ -114,6 +117,7 @@ for component in COMPONENT:
             component_df.pivot(
                 index=[
                     "Genus",
+                    "Subgenus",
                     "Species",
                     "Variety",
                     "Identifier",
@@ -126,12 +130,22 @@ for component in COMPONENT:
             .with_columns(
                 [
                     pl.concat_str(
-                        [pl.col("Genus"), pl.col("Species")],
+                        [pl.col("Genus"), pl.col("Subgenus")],
+                        separator=" ",
+                        ignore_nulls=True,
+                    ).alias("Subgenus"),
+                    pl.concat_str(
+                        [pl.col("Genus"), pl.col("Subgenus"), pl.col("Species")],
                         separator=" ",
                         ignore_nulls=True,
                     ).alias("Species"),
                     pl.concat_str(
-                        [pl.col("Genus"), pl.col("Species"), pl.col("Variety")],
+                        [
+                            pl.col("Genus"),
+                            pl.col("Subgenus"),
+                            pl.col("Species"),
+                            pl.col("Variety"),
+                        ],
                         separator=" ",
                         ignore_nulls=True,
                     ).alias("Variety"),

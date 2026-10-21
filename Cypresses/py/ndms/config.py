@@ -6,7 +6,9 @@
 from typing import Final, List, Tuple
 
 # --- Настройки данных ---
-DATA_FILE_PATH: Final[str] = "Cypresses/csv/_{Type=Wide}{Component=Terpene}{Value=PartsPerMillion_Mean}.txt"
+DATA_FILE_PATH: Final[str] = (
+    "Cypresses/csv/_{Type=Wide}{Component=Terpene}{Value=PartsPerMillion_Mean}.txt"
+)
 
 SCHEMA_OVERRIDES: Final[dict[str, type]] = {
     "Genus": str,
@@ -19,6 +21,7 @@ SCHEMA_OVERRIDES: Final[dict[str, type]] = {
 
 META_COLUMNS: Final[List[str]] = [
     "Genus",
+    "Subgenus",
     "Species",
     "Variety",
     "Identifier",
